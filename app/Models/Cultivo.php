@@ -59,11 +59,12 @@ class Cultivo extends Model
         return $this->hasMany(Actividad::class, 'id_cultivo');
     }
 
-    /** Galería de fotos del cultivo. */
+    /** Fotos asociadas a este cultivo. */
     public function fotos(): HasMany
     {
-        return $this->hasMany(FotoCultivo::class, 'id_cultivo');
+        return $this->hasMany(FotoCultivo::class, 'id_cultivo')->orderByDesc('fecha_captura');
     }
+
 
     /** Notificaciones relacionadas con este cultivo. */
     public function notificaciones(): HasMany

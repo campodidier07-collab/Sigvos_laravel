@@ -123,7 +123,7 @@ class CultivoController extends Controller
      */
     public function show(Cultivo $cultivo)
     {
-        $cultivo->load(['lote', 'variedad.tipoCultivo', 'registradoPor', 'actividades.tipoActividad', 'actividades.asignadoA']);
+        $cultivo->load(['lote', 'variedad.tipoCultivo', 'registradoPor', 'actividades.tipoActividad', 'actividades.asignadoA', 'fotos.usuario']);
         return view('cultivos.show', compact('cultivo'));
     }
 

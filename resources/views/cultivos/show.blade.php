@@ -98,6 +98,7 @@
       <div class="card-header p-2">
         <ul class="nav nav-pills">
           <li class="nav-item"><a class="nav-link active" href="#actividades" data-toggle="tab">Actividades</a></li>
+          <li class="nav-item"><a class="nav-link" href="#galeria" data-toggle="tab">Galería Fotográfica</a></li>
           <li class="nav-item"><a class="nav-link" href="#observaciones" data-toggle="tab">Observaciones</a></li>
         </ul>
       </div>
@@ -162,6 +163,50 @@
             @endif
           </div>
           
+          <!-- Tab Galería Fotográfica -->
+          <div class="tab-pane" id="galeria">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="mb-0 text-muted">Evidencias Visuales del Cultivo</h5>
+              @if($cultivo->estaActivo() || auth()->user()->isAdmin())
+              <button type="button" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#modalSubirFoto">
+                <i class="fas fa-camera mr-1"></i> Subir Fotografía
+              </button>
+              @endif
+            </div>
+
+            @if($cultivo->fotos->isEmpty())
+              <div class="text-center py-5 text-muted bg-light rounded border">
+                <i class="far fa-image fa-3x mb-3 text-secondary"></i>
+                <p>No hay fotografías registradas para este cultivo.</p>
+              </div>
+            @else
+              <div class="row">
+                @foreach($cultivo->fotos as $foto)
+                <div class="col-sm-4 mb-4">
+                  <div class="card h-100 shadow-sm">
+                    <a href="{{ Storage::url($foto->ruta) }}" data-toggle="lightbox" data-title="Subida por {{ $foto->usuario->nombre }}" data-gallery="gallery">
+                      <img src="{{ Storage::url($foto->ruta) }}" class="card-img-top" alt="Foto Cultivo" style="height: 150px; object-fit: cover;">
+                    </a>
+                    <div class="card-body p-2">
+                      <p class="card-text text-sm mb-1">{{ $foto->descripcion ?: 'Sin descripción' }}</p>
+                      <small class="text-muted"><i class="far fa-clock"></i> {{ $foto->fecha_captura->format('d/m/Y H:i') }}</small>
+                    </div>
+                    @if(auth()->user()->isAdmin() || auth()->id() == $foto->id_usuario)
+                    <div class="card-footer p-1 text-right bg-white">
+                      <form action="{{ route('fotos.destroy', $foto) }}" method="POST" onsubmit="return confirm('¿Borrar esta fotografía?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-xs btn-outline-danger"><i class="fas fa-trash"></i> Borrar</button>
+                      </form>
+                    </div>
+                    @endif
+                  </div>
+                </div>
+                @endforeach
+              </div>
+            @endif
+          </div>
+          
           <!-- Tab Observaciones -->
           <div class="tab-pane" id="observaciones">
             <h5 class="text-muted mb-3">Notas del Cultivo</h5>
@@ -179,4 +224,56 @@
     </div>
   </div>
 </div>
+
+<!-- Modal Subir Foto -->
+<div class="modal fade" id="modalSubirFoto" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="{{ route('fotos.store', $cultivo) }}" method="POST" enctype="multipart/form-data">
+      @csrf
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title"><i class="fas fa-camera mr-2"></i> Subir Evidencia</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="foto">Seleccionar Imagen (Max 5MB) <span class="text-danger">*</span></label>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="foto" name="foto" accept="image/*" required>
+              <label class="custom-file-label" for="foto" data-browse="Buscar">Elegir archivo...</label>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label for="descripcion">Descripción Breve (Opcional)</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="2" placeholder="Ej: Avance de crecimiento mes 2..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success"><i class="fas fa-upload mr-1"></i> Subir Foto</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+@endsection
+
+@section('scripts')
+<!-- Ekko Lightbox -->
+<script src="{{ asset('AdminLTE-3.2.0/plugins/ekko-lightbox/ekko-lightbox.min.js') }}"></script>
+<!-- bs-custom-file-input -->
+<script src="{{ asset('AdminLTE-3.2.0/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+<script>
+  $(function () {
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+      event.preventDefault();
+      $(this).ekkoLightbox({
+        alwaysShowClose: true
+      });
+    });
+    bsCustomFileInput.init();
+  })
+</script>
 @endsection

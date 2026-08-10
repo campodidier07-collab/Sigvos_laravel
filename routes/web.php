@@ -40,6 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Actividades
     Route::resource('actividades', \App\Http\Controllers\ActividadController::class);
 
+    // Fotos de Cultivo
+    Route::post('cultivos/{cultivo}/fotos', [\App\Http\Controllers\FotoCultivoController::class, 'store'])->name('fotos.store');
+    Route::delete('fotos/{foto}', [\App\Http\Controllers\FotoCultivoController::class, 'destroy'])->name('fotos.destroy');
+
     // ── Solo Administradores ──────────────────────────────────────────────
     Route::middleware('role:admin')->group(function () {
 
