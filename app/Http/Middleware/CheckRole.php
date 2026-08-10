@@ -31,7 +31,7 @@ class CheckRole
         $allowedIds = array_map(fn ($r) => $roleMap[$r] ?? (int) $r, $roles);
 
         // Verifica cuenta activa
-        if (! $user->is_active) {
+        if (! $user->activo) {
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

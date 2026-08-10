@@ -48,7 +48,7 @@
         <p>Actividades Pendientes</p>
       </div>
       <div class="icon"><i class="fas fa-tasks"></i></div>
-      <a href="{{ route('activities.index') }}" class="small-box-footer">
+      <a href="{{ route('actividades.index') }}" class="small-box-footer">
         Ver actividades <i class="fas fa-arrow-circle-right"></i>
       </a>
     </div>
@@ -76,7 +76,7 @@
         <p>Actividades Completadas</p>
       </div>
       <div class="icon"><i class="fas fa-check-circle"></i></div>
-      <a href="{{ route('activities.index') }}" class="small-box-footer">
+      <a href="{{ route('actividades.index') }}" class="small-box-footer">
         Ver historial <i class="fas fa-arrow-circle-right"></i>
       </a>
     </div>
