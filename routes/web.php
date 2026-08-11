@@ -50,8 +50,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('actividades', \App\Http\Controllers\ActividadController::class);
 
     // Fotos de Cultivo
+    Route::get('/fotografias', [\App\Http\Controllers\FotoCultivoController::class, 'index'])->name('fotografias.index');
     Route::post('cultivos/{cultivo}/fotos', [\App\Http\Controllers\FotoCultivoController::class, 'store'])->name('fotos.store');
     Route::delete('fotos/{foto}', [\App\Http\Controllers\FotoCultivoController::class, 'destroy'])->name('fotos.destroy');
+
+    // Asignaciones
+    Route::get('/asignaciones', [\App\Http\Controllers\AsignacionController::class, 'index'])->name('asignaciones.index');
+
+    // Cosecha
+    Route::get('/cosecha', [\App\Http\Controllers\CosechaController::class, 'index'])->name('cosecha.index');
+
+    // Calendario
+    Route::get('/calendario', [\App\Http\Controllers\CalendarioController::class, 'index'])->name('calendario.index');
+    Route::get('/calendario/eventos', [\App\Http\Controllers\CalendarioController::class, 'eventos'])->name('calendario.eventos');
+
 
     // ── Solo Administradores ──────────────────────────────────────────────
     Route::middleware('role:admin')->group(function () {

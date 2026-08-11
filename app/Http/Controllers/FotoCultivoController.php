@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\Storage;
 class FotoCultivoController extends Controller
 {
     /**
+     * Muestra la galería general de fotos.
+     */
+    public function index(Request $request)
+    {
+        $query = FotoCultivo::with(['cultivo.lote', 'usuario'])
+            ->orderBy('fecha_captura', 'desc');
+
+        $fotos = $query->paginate(24); // 24 fotos por página para la galería
+
+        return view('fotografias.index', compact('fotos'));
+    }
+
+    /**
      * Sube una nueva foto para un cultivo.
      */
     public function store(Request $request, Cultivo $cultivo)
