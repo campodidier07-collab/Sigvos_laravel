@@ -20,6 +20,10 @@ Route::get('/', function () {
         : view('welcome');
 });
 
+Route::get('/desarrollador', function () {
+    return view('desarrollador');
+})->name('desarrollador');
+
 // ── Rutas autenticadas (admin y trabajador) ───────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
 

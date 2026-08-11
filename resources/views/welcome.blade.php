@@ -51,7 +51,7 @@
                 <!-- Menú desktop -->
                 <div class="hidden md:flex items-center space-x-8 font-medium text-white/90">
                     <a href="#inicio" class="hover:text-agro-300 transition-colors duration-200 text-sm tracking-wide uppercase">Inicio</a>
-                    <a href="#que-es" class="hover:text-agro-300 transition-colors duration-200 text-sm tracking-wide uppercase">Plataforma</a>
+                    <a href="{{ route('desarrollador') }}" class="hover:text-agro-300 transition-colors duration-200 text-sm tracking-wide uppercase">Desarrollador</a>
                     <a href="#roles" class="hover:text-agro-300 transition-colors duration-200 text-sm tracking-wide uppercase">Roles</a>
                     <a href="#objetivos" class="hover:text-agro-300 transition-colors duration-200 text-sm tracking-wide uppercase">Beneficios</a>
                     <a href="{{ route('login') }}" class="bg-agro-500 hover:bg-agro-400 text-white px-6 py-2.5 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(58,165,116,0.5)] hover:shadow-[0_0_25px_rgba(58,165,116,0.7)] text-sm font-bold tracking-wide uppercase border border-agro-400/50">
@@ -68,7 +68,7 @@
         <div id="mobile-menu" class="hidden md:hidden bg-agro-950/95 backdrop-blur-md border-t border-white/10 absolute w-full left-0 top-full">
             <div class="flex flex-col px-6 py-6 space-y-4 font-medium text-white/90">
                 <a href="#inicio" class="hover:text-agro-300 transition py-2 border-b border-white/5" onclick="closeMobileMenu()">Inicio</a>
-                <a href="#que-es" class="hover:text-agro-300 transition py-2 border-b border-white/5" onclick="closeMobileMenu()">Plataforma</a>
+                <a href="{{ route('desarrollador') }}" class="hover:text-agro-300 transition py-2 border-b border-white/5" onclick="closeMobileMenu()">Desarrolladores</a>
                 <a href="#roles" class="hover:text-agro-300 transition py-2 border-b border-white/5" onclick="closeMobileMenu()">Roles</a>
                 <a href="#objetivos" class="hover:text-agro-300 transition py-2 border-b border-white/5" onclick="closeMobileMenu()">Beneficios</a>
                 <a href="{{ route('login') }}" class="bg-agro-500 text-white px-5 py-3 rounded-xl text-center font-bold mt-4 shadow-lg">Ingresar al Sistema</a>
@@ -366,7 +366,7 @@
             <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
                 <p>&copy; 2026 SIGVOS. Todos los derechos reservados.</p>
                 <div class="flex gap-4">
-                    <a href="{{ route('login') }}" class="hover:text-white transition-colors">Panel de Control</a>
+                    <a href="{{ route('desarrollador') }}" class="hover:text-white transition-colors">Desarrolladores</a>
                 </div>
             </div>
         </div>

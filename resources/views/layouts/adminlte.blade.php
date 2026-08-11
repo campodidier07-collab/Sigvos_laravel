@@ -35,6 +35,8 @@
     .sidebar-search-results .list-group-item a { color: #333; }
     /* Badge activo */
     .nav-sidebar .badge { font-size: .7rem; }
+    /* Fondo general */
+    body, .content-wrapper { background-color: #f2fbf5 !important; }
   </style>
   @stack('styles')
 </head>
@@ -260,17 +262,6 @@
             </a>
           </li>
 
-          <li class="nav-item">
-            <form method="POST" action="{{ route('logout') }}">
-              @csrf
-              <button type="submit" class="nav-link btn btn-link text-left w-100"
-                      style="color:#c2c7d0;">
-                <i class="nav-icon fas fa-sign-out-alt"></i>
-                <p>Cerrar sesión</p>
-              </button>
-            </form>
-          </li>
-
         </ul>
       </nav>
     </div>
@@ -280,12 +271,13 @@
   {{-- ══ CONTENT WRAPPER ══════════════════════════════════════════════════ --}}
   <div class="content-wrapper">
 
+    @hasSection('page-title')
     {{-- Cabecera de página --}}
     <div class="content-header">
-      <div class="container-fluid">
+      <div class="container-fluid px-4">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">@yield('page-title', 'Panel')</h1>
+            <h1 class="m-0">@yield('page-title')</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -298,6 +290,7 @@
         </div>
       </div>
     </div>
+    @endif
 
     {{-- Alertas flash --}}
     <div class="container-fluid px-3">

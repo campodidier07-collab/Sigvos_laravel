@@ -35,9 +35,23 @@ class LoteController extends Controller
             });
         }
 
-        $lotes = $query->orderBy('identificador')->paginate(10);
+        // Calcular totales por estado para los KPIs ANTES del orderBy y paginate
+        $queryStats = clone $query;
+        $estadosRaw = $queryStats->select('estado', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+                                 ->groupBy('estado')
+                                 ->get();
 
-        return view('lotes.index', compact('lotes'));
+        $lotes = $query->orderBy('identificador')->paginate(10);
+        $estadosLotes = [];
+        // Asegurar que existan los 4 estados principales
+        foreach(['disponible', 'ocupado', 'en_descanso', 'inactivo'] as $est) {
+            $estadosLotes[$est] = 0;
+        }
+        foreach($estadosRaw as $row) {
+            $estadosLotes[$row->estado] = $row->total;
+        }
+
+        return view('lotes.index', compact('lotes', 'estadosLotes'));
     }
 
     /**
