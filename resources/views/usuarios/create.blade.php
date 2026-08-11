@@ -1,144 +1,215 @@
 @extends('layouts.adminlte')
 
 @section('title', 'Nuevo Usuario')
-@section('page-title', 'Registrar Nuevo Usuario')
 
-@section('breadcrumb')
-  <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="{{ route('usuarios.index') }}">Usuarios</a></li>
-  <li class="breadcrumb-item active">Nuevo</li>
-@endsection
+@push('styles')
+<style>
+    .glass-form-card {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(29, 69, 51, 0.08);
+        padding: 40px;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(58, 165, 116, 0.1);
+    }
+    .form-header-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #065f46;
+        margin-bottom: 1.5rem;
+        font-family: 'Outfit', sans-serif;
+    }
+    
+    .custom-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 0.35rem;
+        letter-spacing: 0.05em;
+    }
+    .custom-input {
+        width: 100%;
+        padding: 12px 16px;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        color: #334155;
+        transition: all 0.2s;
+    }
+    .custom-input:focus {
+        outline: none;
+        border-color: #2563eb;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .custom-input::placeholder {
+        color: #94a3b8;
+    }
+    
+    .is-invalid-custom {
+        border-color: #ef4444 !important;
+        background-color: #fef2f2 !important;
+    }
+    .error-text {
+        color: #ef4444;
+        font-size: 0.75rem;
+        margin-top: 4px;
+        font-weight: 500;
+    }
+    
+    .btn-cancel-custom {
+        display: inline-block;
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        background-color: transparent;
+        color: #64748b;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .btn-cancel-custom:hover {
+        background-color: #f1f5f9;
+        color: #475569;
+        text-decoration: none;
+    }
+    
+    .btn-submit-custom {
+        display: inline-block;
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: none;
+        background-color: #2563eb;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    .btn-submit-custom:hover {
+        background-color: #1d4ed8;
+    }
+
+    .section-divider {
+        margin: 32px 0 24px 0;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 24px;
+    }
+    .section-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+@endpush
 
 @section('content')
-<div class="row">
-  <div class="col-md-8 mx-auto">
-    <div class="card card-primary card-outline">
-      <div class="card-header">
-        <h3 class="card-title">Datos del Usuario</h3>
-      </div>
-      
-      <form action="{{ route('usuarios.store') }}" method="POST">
-        @csrf
-        <div class="card-body">
-          
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="nombre">Nombre Completo <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                  </div>
-                  <input type="text" class="form-control @error('nombre') is-invalid @enderror" 
-                         id="nombre" name="nombre" value="{{ old('nombre') }}" required>
-                  @error('nombre')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                  @enderror
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="id_rol">Rol en el Sistema <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
-                  </div>
-                  <select class="form-control @error('id_rol') is-invalid @enderror" id="id_rol" name="id_rol" required>
-                    <option value="">-- Seleccionar Rol --</option>
-                    @foreach($roles as $rol)
-                      <option value="{{ $rol->id }}" {{ old('id_rol') == $rol->id ? 'selected' : '' }}>
-                        {{ $rol->nombre }} ({{ $rol->codigo }})
-                      </option>
-                    @endforeach
-                  </select>
-                  @error('id_rol')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                  @enderror
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="email">Correo Electrónico <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                  </div>
-                  <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                         id="email" name="email" value="{{ old('email') }}" required>
-                  @error('email')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                  @enderror
-                </div>
-              </div>
+<div class="container-fluid px-4">
+    <div class="mx-auto" style="max-width: 800px;">
+        <div class="glass-form-card">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="form-header-title m-0">Registrar Nuevo Usuario</h3>
+                <a href="{{ route('usuarios.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
             </div>
             
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="telefono">Teléfono (Opcional)</label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                  </div>
-                  <input type="text" class="form-control @error('telefono') is-invalid @enderror" 
-                         id="telefono" name="telefono" value="{{ old('telefono') }}">
-                  @error('telefono')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                  @enderror
-                </div>
-              </div>
-            </div>
-          </div>
+            <form action="{{ route('usuarios.store') }}" method="POST">
+                @csrf
+                
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="custom-label" for="nombre">Nombre Completo *</label>
+                        <input type="text" class="custom-input @error('nombre') is-invalid-custom @enderror" 
+                               id="nombre" name="nombre" value="{{ old('nombre') }}" placeholder="Ej: Juan Pérez" required>
+                        @error('nombre')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-          <hr>
-          <h5 class="mb-3 text-muted"><i class="fas fa-lock"></i> Credenciales de Acceso</h5>
+                    <div class="col-md-6">
+                        <label class="custom-label" for="id_rol">Rol en el Sistema *</label>
+                        <select class="custom-input @error('id_rol') is-invalid-custom @enderror" id="id_rol" name="id_rol" required>
+                            <option value="">Seleccionar Rol</option>
+                            @foreach($roles as $rol)
+                                <option value="{{ $rol->id }}" {{ old('id_rol') == $rol->id ? 'selected' : '' }}>
+                                    {{ $rol->nombre }} ({{ $rol->codigo }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_rol')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
 
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="password">Contraseña <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fas fa-key"></i></span>
-                  </div>
-                  <input type="password" class="form-control @error('password') is-invalid @enderror" 
-                         id="password" name="password" required>
-                  @error('password')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                  @enderror
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="custom-label" for="email">Correo Electrónico *</label>
+                        <input type="email" class="custom-input @error('email') is-invalid-custom @enderror" 
+                               id="email" name="email" value="{{ old('email') }}" placeholder="ejemplo@sigvos.com" required>
+                        @error('email')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="custom-label" for="telefono">Teléfono (Opcional)</label>
+                        <input type="text" class="custom-input @error('telefono') is-invalid-custom @enderror" 
+                               id="telefono" name="telefono" value="{{ old('telefono') }}" placeholder="+57 300 000 0000">
+                        @error('telefono')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
-              </div>
-            </div>
-            
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="password_confirmation">Confirmar Contraseña <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fas fa-key"></i></span>
-                  </div>
-                  <input type="password" class="form-control" 
-                         id="password_confirmation" name="password_confirmation" required>
+
+                <div class="section-divider"></div>
+                <h5 class="section-title"><i class="fas fa-lock mr-2 text-muted"></i> Credenciales de Acceso</h5>
+                <p class="text-sm text-muted mb-4">Establece la contraseña inicial para este usuario.</p>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="custom-label" for="password">Contraseña *</label>
+                        <input type="password" class="custom-input @error('password') is-invalid-custom @enderror" 
+                               id="password" name="password" placeholder="••••••••" required>
+                        @error('password')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="custom-label" for="password_confirmation">Confirmar Contraseña *</label>
+                        <input type="password" class="custom-input" 
+                               id="password_confirmation" name="password_confirmation" placeholder="••••••••" required>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
+                
+                <div class="row mt-5">
+                    <div class="col-6">
+                        <a href="{{ route('usuarios.index') }}" class="btn-cancel-custom">
+                            Cancelar
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn-submit-custom">
+                            Guardar Usuario
+                        </button>
+                    </div>
+                </div>
+
+            </form>
 
         </div>
-        
-        <div class="card-footer text-right">
-          <a href="{{ route('usuarios.index') }}" class="btn btn-default mr-2">Cancelar</a>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save mr-1"></i> Guardar Usuario
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 @endsection

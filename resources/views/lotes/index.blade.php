@@ -236,14 +236,14 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 @if(auth()->user()->isAdmin())
-                                <a href="{{ route('lotes.edit', $l) }}" class="btn-action-primary">
-                                    <i class="fas fa-pen mr-1"></i> Editar
+                                <a href="{{ route('lotes.edit', $l) }}" class="btn-action-primary" title="Editar">
+                                    <i class="fas fa-pen"></i>
                                 </a>
                                 <form action="{{ route('lotes.destroy', $l) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar el lote {{ addslashes($l->nombre) }}?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn-action-danger">
-                                        <i class="fas fa-trash mr-1"></i> Eliminar
+                                    <button type="submit" class="btn-action-danger" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
                                 @endif

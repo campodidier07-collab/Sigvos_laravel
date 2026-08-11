@@ -154,10 +154,11 @@
   {{-- ══ SIDEBAR ══════════════════════════════════════════════════════════ --}}
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     {{-- Logo --}}
-    <a href="{{ route('dashboard') }}" class="brand-link">
-      <i class="fas fa-leaf brand-image elevation-3 text-success"
-         style="font-size:1.6rem;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:50%;padding:6px;opacity:.9;"></i>
-      <span class="brand-text">SIGVOS</span>
+    <a href="{{ route('dashboard') }}" class="brand-link" style="display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 16px;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-right: 12px;">
+        <img src="{{ asset('img/icono.png') }}" style="width: 28px; height: 28px; object-fit: contain;" alt="SIGVOS">
+      </div>
+      <span class="brand-text font-weight-bold" style="font-size: 1.3rem; letter-spacing: 0.5px; color: #ffffff;">SIGVOS</span>
     </a>
 
     <div class="sidebar">
