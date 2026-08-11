@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Notificacion extends Model
 {
     protected $table = 'notificaciones';
-    public $timestamps = false;
+
+    /** La tabla usa 'creado_en' en vez de 'created_at'. */
+    const CREATED_AT = 'creado_en';
+    const UPDATED_AT = null;
 
     protected $fillable = [
         'id_usuario',
@@ -18,6 +21,7 @@ class Notificacion extends Model
         'prioridad',
         'titulo',
         'mensaje',
+        'url',
         'leida',
         'leida_en',
         'programada_para',

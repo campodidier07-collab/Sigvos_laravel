@@ -21,6 +21,7 @@ return new class extends Migration
             // Valores: baja | media | alta
             $table->string('titulo', 150);
             $table->string('mensaje', 500);
+            $table->string('url', 255)->nullable();
             $table->boolean('leida')->default(false);
             $table->dateTime('leida_en')->nullable();
             $table->dateTime('programada_para')->nullable();

@@ -79,12 +79,23 @@
           </span>
           <div class="dropdown-divider"></div>
           @if($unreadCount === 0)
-            <a href="#" class="dropdown-item text-muted text-center">
+            <a href="{{ route('notificaciones.index') }}" class="dropdown-item text-muted text-center">
               <i class="fas fa-check-circle text-success mr-1"></i> Todo al día
             </a>
+          @else
+            @foreach(auth()->user()->notificaciones()->where('leida', false)->latest()->take(3)->get() as $noti)
+              <div class="dropdown-divider"></div>
+              <a href="{{ route('notificaciones.index') }}" class="dropdown-item">
+                <i class="fas fa-info-circle mr-2 text-primary"></i> 
+                <span class="text-wrap" style="font-size: 0.85rem; display:inline-block; width: 220px;">
+                  {{ Str::limit($noti->titulo, 40) }}
+                </span>
+                <span class="float-right text-muted text-sm">{{ $noti->creado_en->diffForHumans() }}</span>
+              </a>
+            @endforeach
           @endif
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">Ver todas</a>
+          <a href="{{ route('notificaciones.index') }}" class="dropdown-item dropdown-footer">Ver todas las notificaciones</a>
         </div>
       </li>
 
@@ -227,6 +238,19 @@
 
           {{-- ─── CUENTA ──────────────────────────────────────── --}}
           <li class="nav-header">MI CUENTA</li>
+
+          <li class="nav-item">
+            <a href="{{ route('notificaciones.index') }}"
+               class="nav-link {{ request()->routeIs('notificaciones.*') ? 'active' : '' }}">
+              <i class="nav-icon far fa-bell"></i>
+              <p>
+                Notificaciones
+                @if($unreadCount > 0)
+                  <span class="badge badge-warning right">{{ $unreadCount }}</span>
+                @endif
+              </p>
+            </a>
+          </li>
 
           <li class="nav-item">
             <a href="{{ route('profile.edit') }}"
