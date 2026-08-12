@@ -239,20 +239,27 @@
     </div>
 
     <!-- Filtros -->
-    <div class="filters-container">
-        <form action="{{ route('usuarios.index') }}" method="GET" id="form-filtro" style="display: flex; gap: 12px;">
-            <select name="rol" class="custom-select-filter" onchange="document.getElementById('form-filtro').submit();">
-                <option value="">Todos los roles</option>
-                @foreach($roles as $r)
-                    <option value="{{ $r->id }}" {{ request('rol') == $r->id ? 'selected' : '' }}>{{ $r->nombre }}</option>
-                @endforeach
-            </select>
+    <div class="unified-search-bar">
+        <form action="{{ route('usuarios.index') }}" method="GET" id="form-filtro" class="unified-search-form">
+            <i class="fas fa-search unified-search-icon"></i>
+            <input type="text" name="buscar" class="unified-search-input" placeholder="Buscar nombre o correo..." value="{{ request('buscar') }}">
             
-            <div style="display: flex;">
-                <input type="text" name="buscar" class="custom-input-filter" placeholder="Buscar nombre o correo..." value="{{ request('buscar') }}" style="border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none;">
-                <button type="submit" class="btn-search" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
-                    <i class="fas fa-search"></i>
+            <div class="unified-search-filters-wrapper">
+                <button type="button" class="btn-filtros-toggle" onclick="toggleFiltros(event)">
+                    <i class="fas fa-sliders-h"></i> Filtros
                 </button>
+                <div class="filtros-dropdown-menu" id="unified-filtros-dropdown">
+                    <label class="custom-label mb-2 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Rol del Usuario</label>
+                    <select name="rol" class="custom-input w-100 mb-3" onchange="document.getElementById('form-filtro').submit();">
+                        <option value="">Todos los roles</option>
+                        @foreach($roles as $r)
+                            <option value="{{ $r->id }}" {{ request('rol') == $r->id ? 'selected' : '' }}>{{ $r->nombre }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="btn-primary-custom w-100 justify-content-center py-2" style="font-size:0.875rem;">
+                        Aplicar Filtros
+                    </button>
+                </div>
             </div>
         </form>
     </div>

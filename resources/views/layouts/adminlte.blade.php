@@ -76,11 +76,11 @@
     }
     
     /* Top Navbar */
-    .main-header.navbar { 
+    .main-header {
         border-bottom: none !important;
-        background: #ffffff !important;
+        background: transparent !important;
         padding: 16px 24px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        box-shadow: none !important;
     }
     
     .navbar-title-section {
@@ -166,6 +166,87 @@
     }
     .btn-top-icon:hover { background: #f1f5f9; }
 
+    /* Unified Search Bar UI */
+    .unified-search-bar {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 9999px;
+        padding: 4px 12px 4px 20px;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 24px;
+        transition: all 0.2s;
+    }
+    .unified-search-bar:focus-within {
+        border-color: #34d399;
+        box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.15);
+        background: #ffffff;
+    }
+    .unified-search-form {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        margin: 0;
+    }
+    .unified-search-icon {
+        color: #94a3b8;
+        font-size: 1.1rem;
+        margin-right: 12px;
+    }
+    .unified-search-input {
+        border: none;
+        background: transparent;
+        flex-grow: 1;
+        font-size: 0.95rem;
+        color: #334155;
+        outline: none;
+        padding: 8px 0;
+        min-width: 0;
+    }
+    .unified-search-input::placeholder {
+        color: #94a3b8;
+    }
+    .unified-search-filters-wrapper {
+        position: relative;
+    }
+    .btn-filtros-toggle {
+        background: transparent;
+        border: none;
+        color: #10b981;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        padding: 6px 12px;
+        border-radius: 9999px;
+        transition: background 0.2s;
+        margin-left: 8px;
+    }
+    .btn-filtros-toggle:hover {
+        background: #ecfdf5;
+    }
+    .filtros-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 8px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        padding: 16px;
+        border: 1px solid #e2e8f0;
+        z-index: 1000;
+        min-width: 250px;
+    }
+    .filtros-dropdown-menu.show {
+        display: block;
+    }
+
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
   @stack('styles')
@@ -183,6 +264,7 @@
           <i class="fas fa-bars"></i>
         </a>
       </li>
+      @if (Route::is('dashboard'))
       <li class="nav-item d-none d-sm-inline-block">
         <div class="navbar-title-section">
             <div class="navbar-icon-box">
@@ -198,11 +280,13 @@
             </div>
         </div>
       </li>
+      @endif
     </ul>
 
     {{-- Right: Search, Filters, Notifications --}}
     <ul class="navbar-nav ml-auto top-actions">
         
+        @if (Route::is('dashboard'))
         <li class="nav-item d-none d-md-block">
             <div class="top-search-wrapper">
                 <i class="fas fa-search"></i>
@@ -215,6 +299,7 @@
                 <i class="fas fa-sliders-h"></i> Filtros
             </button>
         </li>
+        @endif
 
         {{-- ══ Campana de Notificaciones ═══════════════════════════════════════ --}}
         <style>
@@ -465,18 +550,22 @@
                 position: relative;
                 display: flex;
                 align-items: center;
-                gap: 10px;
-                padding: 6px 12px 6px 6px !important;
-                border-radius: 50px;
-                background: rgba(255,255,255,0.08);
-                border: 1px solid rgba(255,255,255,0.12);
-                transition: all 0.3s ease;
+                justify-content: center;
+                width: 40px !important;
+                height: 40px !important;
+                padding: 0 !important;
+                border-radius: 50%;
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+                transition: all 0.2s ease;
                 cursor: pointer;
                 text-decoration: none !important;
+                margin-top: 1px;
             }
             .user-dropdown-toggle:hover {
-                background: rgba(255,255,255,0.15);
-                border-color: rgba(255,255,255,0.25);
+                background: #f8fafc;
+                border-color: #cbd5e1;
                 transform: translateY(-1px);
             }
             .user-avatar-btn {
@@ -491,8 +580,8 @@
                 overflow: hidden;
             }
             .user-name-label {
-                color: rgba(255,255,255,0.9);
-                font-size: 0.82rem;
+                color: #334155;
+                font-size: 0.85rem;
                 font-weight: 600;
                 max-width: 110px;
                 white-space: nowrap;
@@ -502,9 +591,9 @@
             }
             @media(min-width: 768px) { .user-name-label { display: block; } }
             .user-chevron {
-                color: rgba(255,255,255,0.6);
-                font-size: 0.65rem;
-                transition: transform 0.3s ease;
+                color: #94a3b8;
+                font-size: 0.75rem;
+                transition: transform 0.2s ease;
             }
             .nav-item.dropdown.show .user-chevron { transform: rotate(180deg); }
 
@@ -643,7 +732,7 @@
             }
         </style>
 
-        <li class="nav-item dropdown ml-2">
+        <li class="nav-item dropdown ml-3" style="display:flex; align-items:center;">
             <a class="nav-link user-dropdown-toggle p-0" data-toggle="dropdown" href="#" id="userDropdownBtn">
                 <div class="user-avatar-btn">
                     @if(auth()->user()?->profile_photo)
@@ -654,8 +743,6 @@
                         {{ strtoupper(substr(auth()->user()?->nombre ?? 'U', 0, 1)) }}
                     @endif
                 </div>
-                <span class="user-name-label">{{ auth()->user()?->nombre ?? 'Usuario' }}</span>
-                <i class="fas fa-chevron-down user-chevron"></i>
             </a>
 
             <div class="dropdown-menu dropdown-menu-right user-dropdown-menu">
@@ -952,5 +1039,26 @@
 </script>
 
 @stack('scripts')
+<script>
+  function toggleFiltros(event) {
+      event.preventDefault();
+      const dropdown = document.getElementById('unified-filtros-dropdown');
+      if (dropdown) {
+          dropdown.classList.toggle('show');
+      }
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('unified-filtros-dropdown');
+      const toggleBtn = document.querySelector('.btn-filtros-toggle');
+      if (dropdown && dropdown.classList.contains('show')) {
+          if (!dropdown.contains(event.target) && !toggleBtn.contains(event.target)) {
+              dropdown.classList.remove('show');
+          }
+      }
+  });
+</script>
+
 </body>
 </html>

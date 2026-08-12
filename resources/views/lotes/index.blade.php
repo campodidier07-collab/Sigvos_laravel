@@ -157,22 +157,39 @@
             <p>Gestión y registro de lotes de la finca.</p>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <form action="{{ route('lotes.index') }}" method="GET" class="mr-3" style="width: 250px;">
-                <div class="input-group">
-                    <input type="text" name="buscar" class="form-control" style="border-radius: 12px 0 0 12px; border: 1px solid #e2e8f0; background: rgba(255,255,255,0.8);" placeholder="Buscar lote..." value="{{ request('buscar') }}">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn" style="background: white; border: 1px solid #e2e8f0; border-left: none; border-radius: 0 12px 12px 0; color: #64748b;">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
             @if(auth()->user()->isAdmin())
             <a href="{{ route('lotes.create') }}" class="btn-add-lote shadow-sm">
                 <i class="fas fa-plus mr-1"></i> Nuevo Lote
             </a>
             @endif
         </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="unified-search-bar">
+        <form action="{{ route('lotes.index') }}" method="GET" id="form-filtro" class="unified-search-form">
+            <i class="fas fa-search unified-search-icon"></i>
+            <input type="text" name="buscar" class="unified-search-input" placeholder="Buscar lotes..." value="{{ request('buscar') }}">
+            
+            <div class="unified-search-filters-wrapper">
+                <button type="button" class="btn-filtros-toggle" onclick="toggleFiltros(event)">
+                    <i class="fas fa-sliders-h"></i> Filtros
+                </button>
+                <div class="filtros-dropdown-menu" id="unified-filtros-dropdown">
+                    <label class="custom-label mb-2 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Estado del Lote</label>
+                    <select name="estado" class="form-control w-100 mb-3" onchange="document.getElementById('form-filtro').submit();" style="border-radius:12px; font-size:0.875rem;">
+                        <option value="">Todos los estados</option>
+                        <option value="disponible" {{ request('estado') == 'disponible' ? 'selected' : '' }}>Disponible</option>
+                        <option value="preparacion" {{ request('estado') == 'preparacion' ? 'selected' : '' }}>En Preparación</option>
+                        <option value="ocupado" {{ request('estado') == 'ocupado' ? 'selected' : '' }}>Ocupado</option>
+                        <option value="descanso" {{ request('estado') == 'descanso' ? 'selected' : '' }}>En Descanso</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary w-100 py-2" style="border-radius:12px; font-size:0.875rem; background:#10b981; border:none;">
+                        Aplicar Filtros
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 
     <!-- KPIs Resumen de estados -->
@@ -195,7 +212,7 @@
             <table class="table table-agro">
                 <thead>
                     <tr>
-                        <th style="width: 60px;">Img</th>
+                        <th style="width: 60px;">IMG</th>
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Ubicación</th>

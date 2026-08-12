@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Lote;
 use App\Models\TipoCultivo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class LoteController extends Controller
 {
@@ -85,11 +86,16 @@ class LoteController extends Controller
             'area_ha'           => 'required|numeric|min:0.01',
             'id_tipo_preferido' => 'nullable|exists:tipos_cultivo,id',
             'es_alternativo'    => 'boolean',
+            'fotografia'        => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
         $datos['es_alternativo'] = $request->has('es_alternativo');
         $datos['estado'] = 'disponible';
         $datos['activo'] = true;
+
+        if ($request->hasFile('fotografia')) {
+            $datos['fotografia'] = $request->file('fotografia')->store('lotes', 'public');
+        }
 
         Lote::create($datos);
 
@@ -138,10 +144,19 @@ class LoteController extends Controller
             'id_tipo_preferido' => 'nullable|exists:tipos_cultivo,id',
             'es_alternativo'    => 'boolean',
             'activo'            => 'boolean',
+            'fotografia'        => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
         $datos['es_alternativo'] = $request->has('es_alternativo');
         $datos['activo'] = $request->has('activo');
+
+        if ($request->hasFile('fotografia')) {
+            // Delete old photo if it exists
+            if ($lote->fotografia && Storage::disk('public')->exists($lote->fotografia)) {
+                Storage::disk('public')->delete($lote->fotografia);
+            }
+            $datos['fotografia'] = $request->file('fotografia')->store('lotes', 'public');
+        }
 
         $lote->update($datos);
 

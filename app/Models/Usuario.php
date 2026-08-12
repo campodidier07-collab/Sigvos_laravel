@@ -98,6 +98,12 @@ class Usuario extends Authenticatable
         return $this->hasMany(Actividad::class, 'asignado_a');
     }
 
+    /** Historial de actividades completadas por este usuario. */
+    public function actividadesCompletadas(): HasMany
+    {
+        return $this->hasMany(Actividad::class, 'asignado_a')->where('estado', 'completada')->orderBy('fecha_programada', 'desc');
+    }
+
     /** Notificaciones del usuario. */
     public function notificaciones(): HasMany
     {

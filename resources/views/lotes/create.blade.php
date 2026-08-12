@@ -132,7 +132,7 @@
                 <a href="{{ route('lotes.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
             </div>
             
-            <form action="{{ route('lotes.store') }}" method="POST">
+            <form action="{{ route('lotes.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="row mb-3">
@@ -197,6 +197,16 @@
                             <span class="checkbox-label">Lote alternativo</span>
                         </label>
                     </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="custom-label" for="fotografia">Fotografía (Opcional)</label>
+                    <input type="file" class="custom-input @error('fotografia') is-invalid-custom @enderror" 
+                           id="fotografia" name="fotografia" accept="image/*">
+                    <small class="text-muted">Formatos: jpg, jpeg, png, gif. Máx 5MB.</small>
+                    @error('fotografia')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="row mt-5">

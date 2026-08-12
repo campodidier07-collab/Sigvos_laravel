@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cultivo;
+use App\Models\Lote;
 use App\Models\FotoCultivo;
+use App\Models\Actividad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,12 +16,19 @@ class FotoCultivoController extends Controller
      */
     public function index(Request $request)
     {
-        $query = FotoCultivo::with(['cultivo.lote', 'usuario'])
-            ->orderBy('fecha_captura', 'desc');
+        // 1. Portadas de Lotes (que tienen imagen)
+        $lotes = Lote::whereNotNull('fotografia')->orderBy('identificador')->get();
 
-        $fotos = $query->paginate(24); // 24 fotos por página para la galería
+        // 2. Portadas de Cultivos (que tienen imagen)
+        $cultivos = Cultivo::with(['lote', 'variedad'])->whereNotNull('fotografia')->orderBy('codigo')->get();
 
-        return view('fotografias.index', compact('fotos'));
+        // 3. Evidencias de Actividades
+        $actividades = Actividad::with(['cultivo.lote', 'tipoActividad', 'ejecutadoPor'])
+            ->whereNotNull('fotografia')
+            ->orderBy('fecha_programada', 'desc')
+            ->get();
+
+        return view('fotografias.index', compact('lotes', 'cultivos', 'actividades'));
     }
 
     /**

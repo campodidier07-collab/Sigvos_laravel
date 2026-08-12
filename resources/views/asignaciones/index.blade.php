@@ -104,6 +104,31 @@
     }
     .status-pending { background: #fef9c3; color: #a16207; }
     .status-progress { background: #dbeafe; color: #1d4ed8; }
+    .status-completed { background: #dcfce7; color: #166534; }
+    .history-section {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px dashed #cbd5e1;
+    }
+    .history-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .task-item.history-item {
+        background: #f8fafc;
+        border-color: #f1f5f9;
+        opacity: 0.85;
+    }
+    .task-item.history-item .task-details h5 {
+        color: #475569;
+    }
+    .task-item.history-item .task-details p {
+        color: #64748b;
+    }
     .empty-tasks {
         padding: 20px;
         text-align: center;
@@ -159,6 +184,26 @@
                             </div>
                         </div>
                         @endforeach
+                    @endif
+
+                    @if($trabajador->actividadesCompletadas->isNotEmpty())
+                        <div class="history-section">
+                            <div class="history-title"><i class="fas fa-history mr-1"></i> Historial Reciente (Completadas)</div>
+                            @foreach($trabajador->actividadesCompletadas as $actividad)
+                            <div class="task-item history-item">
+                                <div class="task-details">
+                                    <h5>{{ $actividad->tipoActividad->nombre ?? 'Actividad' }}</h5>
+                                    <p><i class="fas fa-map-marker-alt"></i> {{ $actividad->cultivo->lote->nombre ?? 'N/A' }} - {{ $actividad->cultivo->codigo ?? 'N/A' }}</p>
+                                    <p style="font-size: 0.75rem; margin-top: 4px; color: #94a3b8;"><i class="far fa-calendar-alt"></i> Completada el {{ $actividad->fecha_programada ? \Carbon\Carbon::parse($actividad->fecha_programada)->format('d/m/Y') : 'Sin fecha' }}</p>
+                                </div>
+                                <div>
+                                    <span class="task-status status-completed">
+                                        COMPLETADA
+                                    </span>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
                     @endif
                 </div>
             </div>

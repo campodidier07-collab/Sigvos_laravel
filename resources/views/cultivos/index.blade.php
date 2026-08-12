@@ -236,21 +236,28 @@
     </div>
 
     <!-- Filtros -->
-    <div class="filters-container">
-        <form action="{{ route('cultivos.index') }}" method="GET" id="form-filtro" style="display: flex; gap: 12px;">
-            <select name="estado" class="custom-select-filter" onchange="document.getElementById('form-filtro').submit();">
-                <option value="">Todos los estados</option>
-                <option value="sembrado" {{ request('estado') == 'sembrado' ? 'selected' : '' }}>Sembrado</option>
-                <option value="creciendo" {{ request('estado') == 'creciendo' ? 'selected' : '' }}>Creciendo</option>
-                <option value="cosechado" {{ request('estado') == 'cosechado' ? 'selected' : '' }}>Cosechado</option>
-                <option value="perdido" {{ request('estado') == 'perdido' ? 'selected' : '' }}>Perdido</option>
-            </select>
+    <div class="unified-search-bar">
+        <form action="{{ route('cultivos.index') }}" method="GET" id="form-filtro" class="unified-search-form">
+            <i class="fas fa-search unified-search-icon"></i>
+            <input type="text" name="buscar" class="unified-search-input" placeholder="Buscar cultivos..." value="{{ request('buscar') }}">
             
-            <div style="display: flex;">
-                <input type="text" name="buscar" class="custom-input-filter" placeholder="Buscar código..." value="{{ request('buscar') }}" style="border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none;">
-                <button type="submit" class="btn-search" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
-                    <i class="fas fa-search"></i>
+            <div class="unified-search-filters-wrapper">
+                <button type="button" class="btn-filtros-toggle" onclick="toggleFiltros(event)">
+                    <i class="fas fa-sliders-h"></i> Filtros
                 </button>
+                <div class="filtros-dropdown-menu" id="unified-filtros-dropdown">
+                    <label class="custom-label mb-2 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Estado del Cultivo</label>
+                    <select name="estado" class="custom-input w-100 mb-3" onchange="document.getElementById('form-filtro').submit();">
+                        <option value="">Todos los estados</option>
+                        <option value="sembrado" {{ request('estado') == 'sembrado' ? 'selected' : '' }}>Sembrado</option>
+                        <option value="creciendo" {{ request('estado') == 'creciendo' ? 'selected' : '' }}>Creciendo</option>
+                        <option value="cosechado" {{ request('estado') == 'cosechado' ? 'selected' : '' }}>Cosechado</option>
+                        <option value="perdido" {{ request('estado') == 'perdido' ? 'selected' : '' }}>Perdido</option>
+                    </select>
+                    <button type="submit" class="btn-primary-custom w-100 justify-content-center py-2" style="font-size:0.875rem;">
+                        Aplicar Filtros
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -266,6 +273,7 @@
                 <table class="custom-table">
                     <thead>
                         <tr>
+                            <th style="width: 60px;">IMG</th>
                             <th>Código</th>
                             <th>Variedad</th>
                             <th>Tipo</th>
@@ -278,6 +286,15 @@
                     <tbody>
                         @foreach($cultivos as $cultivo)
                         <tr>
+                            <td>
+                                @if($cultivo->fotografia)
+                                    <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Cultivo" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                @else
+                                    <div style="width: 40px; height: 40px; border-radius: 8px; background: #f1f5f9; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+                                        <i class="fas fa-seedling text-sm"></i>
+                                    </div>
+                                @endif
+                            </td>
                             <td>
                                 <span style="font-weight: 700; color: #065f46;">{{ $cultivo->codigo }}</span>
                             </td>

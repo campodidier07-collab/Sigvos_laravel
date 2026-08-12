@@ -229,20 +229,28 @@
     </div>
 
     <!-- Filtros -->
-    <div class="filters-container">
-        <form action="{{ route('actividades.index') }}" method="GET" id="form-filtro" style="display: flex; gap: 12px;">
-            <select name="estado" class="custom-select-filter" onchange="document.getElementById('form-filtro').submit();">
-                <option value="">Todos los estados</option>
-                <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendientes</option>
-                <option value="completada" {{ request('estado') == 'completada' ? 'selected' : '' }}>Completadas</option>
-                <option value="cancelada" {{ request('estado') == 'cancelada' ? 'selected' : '' }}>Canceladas</option>
-            </select>
+    <!-- Filtros -->
+    <div class="unified-search-bar">
+        <form action="{{ route('actividades.index') }}" method="GET" id="form-filtro" class="unified-search-form">
+            <i class="fas fa-search unified-search-icon"></i>
+            <input type="text" name="buscar" class="unified-search-input" placeholder="Buscar actividades..." value="{{ request('buscar') }}">
             
-            <div style="display: flex;">
-                <input type="text" name="buscar" class="custom-input-filter" placeholder="Buscar (ej. Riego)..." value="{{ request('buscar') }}" style="border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none;">
-                <button type="submit" class="btn-search" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
-                    <i class="fas fa-search"></i>
+            <div class="unified-search-filters-wrapper">
+                <button type="button" class="btn-filtros-toggle" onclick="toggleFiltros(event)">
+                    <i class="fas fa-sliders-h"></i> Filtros
                 </button>
+                <div class="filtros-dropdown-menu" id="unified-filtros-dropdown">
+                    <label class="custom-label mb-2 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Estado de Actividad</label>
+                    <select name="estado" class="custom-input w-100 mb-3" onchange="document.getElementById('form-filtro').submit();">
+                        <option value="">Todos los estados</option>
+                        <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendientes</option>
+                        <option value="completada" {{ request('estado') == 'completada' ? 'selected' : '' }}>Completadas</option>
+                        <option value="cancelada" {{ request('estado') == 'cancelada' ? 'selected' : '' }}>Canceladas</option>
+                    </select>
+                    <button type="submit" class="btn-primary-custom w-100 justify-content-center py-2" style="font-size:0.875rem;">
+                        Aplicar Filtros
+                    </button>
+                </div>
             </div>
         </form>
     </div>

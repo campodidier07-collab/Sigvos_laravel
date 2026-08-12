@@ -130,7 +130,7 @@
                 <a href="{{ route('cultivos.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
             </div>
             
-            <form action="{{ route('cultivos.store') }}" method="POST">
+            <form action="{{ route('cultivos.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
                 @if($lotes->isEmpty())
@@ -208,6 +208,16 @@
                                   id="observaciones" name="observaciones" 
                                   placeholder="Ej: Semilla tratada con fertilizante...">{{ old('observaciones') }}</textarea>
                         @error('observaciones')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="custom-label" for="fotografia">Imagen Principal (Opcional)</label>
+                        <input type="file" class="custom-input @error('fotografia') is-invalid-custom @enderror" 
+                               id="fotografia" name="fotografia" accept="image/*">
+                        <small class="text-muted">Formatos: jpg, jpeg, png, gif. Máx 5MB.</small>
+                        @error('fotografia')
                             <div class="error-text">{{ $message }}</div>
                         @enderror
                     </div>

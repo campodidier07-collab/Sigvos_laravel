@@ -7,6 +7,7 @@ use App\Models\Lote;
 use App\Models\Variedad;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class CultivoController extends Controller
 {
@@ -93,6 +94,7 @@ class CultivoController extends Controller
             'fecha_siembra'          => ['required', 'date', 'before_or_equal:today'],
             'fecha_cosecha_estimada' => ['required', 'date', 'after:fecha_siembra'],
             'observaciones'          => ['nullable', 'string', 'max:1000'],
+            'fotografia'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:10240'],
         ]);
         
         // Verificar que el lote no tenga ya un cultivo activo
@@ -109,6 +111,10 @@ class CultivoController extends Controller
         $datos['registrado_por'] = $usuario->id;
         $datos['estado']         = 'sembrado';
         $datos['activo_en_lote'] = $lote->id; // El cultivo está activo en este lote
+
+        if ($request->hasFile('fotografia')) {
+            $datos['fotografia'] = $request->file('fotografia')->store('cultivos_portadas', 'public');
+        }
 
         $cultivo = Cultivo::create($datos);
 
@@ -161,6 +167,7 @@ class CultivoController extends Controller
             'fecha_cosecha_real'     => ['nullable', 'date', 'after_or_equal:fecha_siembra'],
             'cantidad_cosechada_kg'  => ['nullable', 'numeric', 'min:0'],
             'observaciones'          => ['nullable', 'string', 'max:1000'],
+            'fotografia'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:10240'],
         ]);
 
         // Lógica de finalización (cosechado o perdido)
@@ -181,10 +188,18 @@ class CultivoController extends Controller
             $datos['activo_en_lote'] = $cultivo->id_lote;
         }
 
+        if ($request->hasFile('fotografia')) {
+            // Delete old photo if it exists
+            if ($cultivo->fotografia && Storage::disk('public')->exists($cultivo->fotografia)) {
+                Storage::disk('public')->delete($cultivo->fotografia);
+            }
+            $datos['fotografia'] = $request->file('fotografia')->store('cultivos_portadas', 'public');
+        }
+
         $cultivo->update($datos);
 
         // Si el lote se liberó, cambiar estado del lote a disponible
-        if ($datos['activo_en_lote'] === null) {
+        if (array_key_exists('activo_en_lote', $datos) && $datos['activo_en_lote'] === null) {
             $cultivo->lote->update(['estado' => 'disponible']);
         } elseif ($cultivo->lote->estado == 'disponible') {
             $cultivo->lote->update(['estado' => 'ocupado']);

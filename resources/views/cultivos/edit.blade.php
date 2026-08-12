@@ -148,7 +148,7 @@
                 <a href="{{ route('cultivos.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
             </div>
             
-            <form action="{{ route('cultivos.update', $cultivo) }}" method="POST">
+            <form action="{{ route('cultivos.update', $cultivo) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
@@ -260,16 +260,34 @@
                     <p class="mb-0 text-sm">Marcar este cultivo como perdido cerrará su ciclo y liberará el lote para nuevas siembras. Por favor, documenta las razones en las observaciones.</p>
                 </div>
 
-                <div class="mb-4 mt-4">
-                    <label class="custom-label" for="observaciones">Observaciones</label>
-                    <textarea class="custom-input @error('observaciones') is-invalid-custom @enderror" 
-                              id="observaciones" name="observaciones">{{ old('observaciones', $cultivo->observaciones) }}</textarea>
-                    @error('observaciones')
-                        <div class="error-text">{{ $message }}</div>
-                    @enderror
-                </div>
-                
-                <div class="row mt-5">
+                    <div class="mb-4 mt-4">
+                        <label class="custom-label" for="observaciones">Observaciones</label>
+                        <textarea class="custom-input @error('observaciones') is-invalid-custom @enderror" 
+                                  id="observaciones" name="observaciones">{{ old('observaciones', $cultivo->observaciones) }}</textarea>
+                        @error('observaciones')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="custom-label" for="fotografia">Imagen Principal (Opcional)</label>
+                        
+                        @if($cultivo->fotografia)
+                            <div class="mb-3">
+                                <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Fotografía del Cultivo" class="img-thumbnail" style="max-height: 150px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                <p class="text-muted text-sm mt-1">Imagen actual. Sube una nueva para reemplazarla.</p>
+                            </div>
+                        @endif
+                        
+                        <input type="file" class="custom-input @error('fotografia') is-invalid-custom @enderror" 
+                               id="fotografia" name="fotografia" accept="image/*">
+                        <small class="text-muted">Formatos: jpg, jpeg, png, gif. Máx 5MB.</small>
+                        @error('fotografia')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="row mt-5">
                     <div class="col-6">
                         <a href="{{ route('cultivos.index') }}" class="btn-cancel-custom">
                             Cancelar
@@ -289,7 +307,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script>
   function toggleCosechaFields() {
     var estado = document.getElementById('estado').value;

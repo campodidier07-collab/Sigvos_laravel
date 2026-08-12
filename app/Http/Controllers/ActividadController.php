@@ -141,6 +141,7 @@ class ActividadController extends Controller
             'estado'            => ['required', 'in:pendiente,completada,cancelada'],
             'descripcion'       => ['required', 'string', 'max:500'],
             'observaciones'     => ['nullable', 'string', 'max:1000'],
+            'fotografia'        => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:10240'],
         ];
 
         // Solo el admin puede cambiar asignación, fechas o el tipo una vez creada
@@ -165,6 +166,13 @@ class ActividadController extends Controller
         } elseif (in_array($datos['estado'], ['pendiente', 'cancelada'])) {
             $datos['ejecutado_por'] = null;
             $datos['fecha_ejecucion'] = null;
+        }
+
+        if ($request->hasFile('fotografia')) {
+            if ($actividad->fotografia && \Illuminate\Support\Facades\Storage::disk('public')->exists($actividad->fotografia)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($actividad->fotografia);
+            }
+            $datos['fotografia'] = $request->file('fotografia')->store('actividades_evidencia', 'public');
         }
 
         $actividad->update($datos);

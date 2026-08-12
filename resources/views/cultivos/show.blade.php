@@ -260,7 +260,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
 <!-- Ekko Lightbox -->
 <script src="{{ asset('AdminLTE-3.2.0/plugins/ekko-lightbox/ekko-lightbox.min.js') }}"></script>
 <!-- bs-custom-file-input -->
@@ -276,4 +276,4 @@
     bsCustomFileInput.init();
   })
 </script>
-@endsection
+@endpush

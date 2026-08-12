@@ -139,7 +139,7 @@
                 <a href="{{ route('actividades.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
             </div>
             
-            <form action="{{ route('actividades.update', $actividad) }}" method="POST">
+            <form action="{{ route('actividades.update', $actividad) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
@@ -243,6 +243,25 @@
                     </div>
                 </div>
 
+                <div id="div_evidencia_foto" style="display: {{ old('estado', $actividad->estado) == 'completada' ? 'block' : 'none' }};">
+                    <div class="mb-4">
+                        <label class="custom-label" for="fotografia">Evidencia Fotográfica (Opcional)</label>
+                        <input type="file" class="custom-input @error('fotografia') is-invalid-custom @enderror" 
+                               id="fotografia" name="fotografia" accept="image/jpeg,image/png,image/gif,image/webp">
+                        <small class="text-muted d-block mt-1">Formatos: jpg, jpeg, png, gif, webp. Máx 10MB.</small>
+                        @error('fotografia')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+
+                        @if($actividad->fotografia)
+                            <div class="mt-3">
+                                <p class="text-sm text-muted mb-2">Evidencia actual:</p>
+                                <img src="{{ asset('storage/' . $actividad->fotografia) }}" alt="Evidencia" class="img-thumbnail" style="max-height: 150px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
                 <div class="mb-4">
                     <label class="custom-label" for="observaciones">Observaciones de Ejecución</label>
                     <textarea class="custom-input @error('observaciones') is-invalid-custom @enderror" 
@@ -273,16 +292,19 @@
 </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script>
   function toggleEjecucion() {
     var estado = document.getElementById('estado').value;
     var divFecha = document.getElementById('div_fecha_ejecucion');
+    var divEvidencia = document.getElementById('div_evidencia_foto');
     
     if (estado === 'completada') {
       divFecha.style.display = 'block';
+      divEvidencia.style.display = 'block';
     } else {
       divFecha.style.display = 'none';
+      divEvidencia.style.display = 'none';
     }
   }
 </script>
