@@ -331,7 +331,7 @@
                                     </a>
 
                                     @if($user->id !== auth()->id())
-                                    <form action="{{ route('usuarios.destroy', $user) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar o desactivar este usuario?');" style="margin: 0;">
+                                    <form action="{{ route('usuarios.destroy', $user) }}" method="POST" onsubmit="confirmarEliminacion(event, this, '¿Eliminar usuario?', '¿Seguro que deseas eliminar o desactivar este usuario?');" style="margin: 0;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-action-danger" title="Eliminar / Desactivar">

@@ -193,7 +193,7 @@
                     </div>
                     @if(auth()->user()->isAdmin() || auth()->id() == $foto->id_usuario)
                     <div class="card-footer p-1 text-right bg-white">
-                      <form action="{{ route('fotos.destroy', $foto) }}" method="POST" onsubmit="return confirm('¿Borrar esta fotografía?');">
+                      <form action="{{ route('fotos.destroy', $foto) }}" method="POST" onsubmit="confirmarEliminacion(event, this, '¿Borrar fotografía?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-xs btn-outline-danger"><i class="fas fa-trash"></i> Borrar</button>

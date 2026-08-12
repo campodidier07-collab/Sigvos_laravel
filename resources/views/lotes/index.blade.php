@@ -239,7 +239,7 @@
                                 <a href="{{ route('lotes.edit', $l) }}" class="btn-action-primary" title="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
-                                <form action="{{ route('lotes.destroy', $l) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar el lote {{ addslashes($l->nombre) }}?');">
+                                <form action="{{ route('lotes.destroy', $l) }}" method="POST" class="d-inline" onsubmit="confirmarEliminacion(event, this, '¿Eliminar lote?', '¿Estás seguro de eliminar el lote {{ addslashes($l->nombre) }}?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-action-danger" title="Eliminar">

@@ -333,7 +333,7 @@
                                         <i class="fas fa-pen"></i>
                                     </a>
                                     @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('cultivos.destroy', $cultivo) }}" method="POST" onsubmit="return confirm('¿Eliminar cultivo {{ addslashes($cultivo->codigo) }}? Esta acción es irreversible.');" style="margin: 0;">
+                                    <form action="{{ route('cultivos.destroy', $cultivo) }}" method="POST" onsubmit="confirmarEliminacion(event, this, '¿Eliminar cultivo?', '¿Eliminar cultivo {{ addslashes($cultivo->codigo) }}? Esta acción es irreversible.');" style="margin: 0;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-action-danger" title="Eliminar">

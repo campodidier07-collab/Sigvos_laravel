@@ -327,7 +327,7 @@
                                     </a>
 
                                     @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('actividades.destroy', $act) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar esta tarea? Esta acción no se puede deshacer.');" style="margin: 0;">
+                                    <form action="{{ route('actividades.destroy', $act) }}" method="POST" onsubmit="confirmarEliminacion(event, this, '¿Eliminar tarea?', 'Esta acción no se puede deshacer.');" style="margin: 0;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-action-danger" title="Eliminar">

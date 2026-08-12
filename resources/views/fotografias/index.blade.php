@@ -153,7 +153,7 @@
                         </span>
                         
                         @if(auth()->user()->isAdmin() || auth()->id() === $foto->id_usuario)
-                        <form action="{{ route('fotos.destroy', $foto) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar esta foto?');" style="margin:0;">
+                        <form action="{{ route('fotos.destroy', $foto) }}" method="POST" onsubmit="confirmarEliminacion(event, this, '¿Eliminar foto?', '¿Seguro que deseas eliminar esta foto?');" style="margin:0;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-delete-photo" title="Eliminar Foto">

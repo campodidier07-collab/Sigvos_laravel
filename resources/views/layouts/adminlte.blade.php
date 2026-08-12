@@ -216,74 +216,495 @@
             </button>
         </li>
 
-        {{-- Campana de notificaciones --}}
-        <li class="nav-item dropdown">
-            <a class="btn-top-icon" data-toggle="dropdown" href="#" id="notif-toggle">
+        {{-- ══ Campana de Notificaciones ═══════════════════════════════════════ --}}
+        <style>
+            /* Bell button */
+            .notif-bell-btn {
+                position: relative !important;
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 10px !important;
+                background: #f8fafc !important;
+                border: 1px solid #e2e8f0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                color: #64748b !important;
+                font-size: 1rem !important;
+                transition: all 0.25s ease !important;
+                cursor: pointer !important;
+                text-decoration: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                line-height: 1 !important;
+            }
+            .notif-bell-btn:hover {
+                background: #f0fdf4 !important;
+                color: #059669 !important;
+                border-color: #bbf7d0 !important;
+            }
+            .notif-badge {
+                position: absolute;
+                top: -5px; right: -5px;
+                min-width: 18px; height: 18px;
+                border-radius: 9px;
+                background: linear-gradient(135deg, #ef4444, #dc2626);
+                color: white;
+                font-size: 0.65rem;
+                font-weight: 700;
+                display: flex; align-items: center; justify-content: center;
+                padding: 0 4px;
+                border: 2px solid #fff;
+                animation: pulse-badge 2s infinite;
+                z-index: 10;
+            }
+            @keyframes pulse-badge {
+                0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+                50%       { box-shadow: 0 0 0 5px rgba(239,68,68,0); }
+            }
+            /* Dropdown panel */
+            .notif-dropdown {
+                width: 360px !important;
+                min-width: 360px !important;
+                border: none !important;
+                border-radius: 20px !important;
+                padding: 0 !important;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.1) !important;
+                overflow: hidden;
+                animation: notifDrop 0.22s cubic-bezier(0.34,1.56,0.64,1);
+                background: #fff !important;
+            }
+            @keyframes notifDrop {
+                from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+                to   { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            /* Header */
+            .notif-header {
+                background: linear-gradient(135deg, #064e3b 0%, #065f46 60%, #047857 100%);
+                padding: 16px 20px;
+                display: flex; align-items: center; justify-content: space-between;
+                position: relative; overflow: hidden;
+            }
+            .notif-header::after {
+                content:''; position:absolute; top:-20px; right:-20px;
+                width:80px; height:80px; border-radius:50%;
+                background: rgba(255,255,255,0.05);
+            }
+            .notif-header-title {
+                color: #fff; font-weight: 700; font-size: 0.95rem; margin: 0;
+                display: flex; align-items: center; gap: 8px;
+            }
+            .notif-count-pill {
+                background: rgba(255,255,255,0.2);
+                border: 1px solid rgba(255,255,255,0.3);
+                color: #fff; font-size: 0.72rem; font-weight: 700;
+                padding: 2px 9px; border-radius: 12px;
+            }
+            .notif-mark-all-btn {
+                background: rgba(255,255,255,0.12);
+                border: 1px solid rgba(255,255,255,0.2);
+                color: rgba(255,255,255,0.9);
+                font-size: 0.72rem; font-weight: 600;
+                padding: 5px 12px; border-radius: 10px;
+                cursor: pointer; transition: all 0.2s ease;
+                white-space: nowrap;
+            }
+            .notif-mark-all-btn:hover { background: rgba(255,255,255,0.22); color: #fff; }
+            /* Items */
+            .notif-list { max-height: 320px; overflow-y: auto; }
+            .notif-list::-webkit-scrollbar { width: 4px; }
+            .notif-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+            .notif-item {
+                display: flex !important;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 13px 18px !important;
+                border-bottom: 1px solid #f8fafc;
+                transition: background 0.18s ease !important;
+                text-decoration: none !important;
+                position: relative;
+            }
+            .notif-item:hover { background: #f8fafc !important; }
+            .notif-item.unread { background: #f0fdf4 !important; }
+            .notif-item.unread:hover { background: #dcfce7 !important; }
+            .notif-item-icon {
+                width: 36px; height: 36px; flex-shrink: 0;
+                border-radius: 10px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 0.85rem;
+            }
+            .icon-info    { background:#eff6ff; color:#3b82f6; }
+            .icon-success { background:#f0fdf4; color:#22c55e; }
+            .icon-warning { background:#fffbeb; color:#f59e0b; }
+            .icon-danger  { background:#fef2f2; color:#ef4444; }
+            .icon-system  { background:#f5f3ff; color:#8b5cf6; }
+            .notif-item-body { flex: 1; min-width: 0; }
+            .notif-item-title {
+                font-size: 0.83rem; font-weight: 600; color: #1e293b;
+                margin: 0 0 3px;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            }
+            .notif-item-time {
+                font-size: 0.72rem; color: #94a3b8;
+                display: flex; align-items: center; gap: 4px;
+            }
+            .notif-unread-dot {
+                width: 8px; height: 8px; border-radius: 50%;
+                background: #10b981; flex-shrink: 0; margin-top: 4px;
+            }
+            /* Footer */
+            .notif-footer {
+                padding: 12px 18px;
+                border-top: 1px solid #f1f5f9;
+                text-align: center;
+            }
+            .notif-footer a {
+                color: #059669 !important; font-size: 0.83rem; font-weight: 600;
+                display: inline-flex; align-items: center; gap: 6px;
+                text-decoration: none !important;
+                transition: color 0.2s;
+            }
+            .notif-footer a:hover { color: #047857 !important; }
+            /* Empty state */
+            .notif-empty {
+                padding: 36px 20px; text-align: center;
+            }
+            .notif-empty-icon {
+                width: 60px; height: 60px; border-radius: 50%;
+                background: #f0fdf4; color: #10b981;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 1.4rem; margin: 0 auto 12px;
+            }
+        </style>
+
+        @php
+            $unreadCount   = auth()->user()->notificaciones()->where('leida', false)->count();
+            $recentNotifs  = auth()->user()->notificaciones()->latest('creado_en')->take(5)->get();
+        @endphp
+
+        <li class="nav-item dropdown" style="display:flex; align-items:center;">
+            <a class="nav-link notif-bell-btn" data-toggle="dropdown" href="#" id="notif-toggle" title="Notificaciones"
+               style="display:flex !important; align-items:center; justify-content:center; visibility:visible !important; opacity:1 !important;">
                 <i class="fas fa-bell"></i>
-                @php
-                $unreadCount = auth()->user()
-                    ->notificaciones()
-                    ->where('leida', false)
-                    ->count();
-                @endphp
                 @if($unreadCount > 0)
-                <span class="badge badge-danger navbar-badge" style="top: -2px; right: -2px;">{{ $unreadCount }}</span>
+                    <span class="notif-badge">{{ $unreadCount > 9 ? '9+' : $unreadCount }}</span>
                 @endif
             </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right mt-2" style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                <span class="dropdown-header font-weight-bold">
-                    {{ $unreadCount }} Notificaci{{ $unreadCount === 1 ? 'ón' : 'ones' }}
-                </span>
-                <div class="dropdown-divider"></div>
-                @if($unreadCount === 0)
-                <a href="{{ route('notificaciones.index') }}" class="dropdown-item text-muted text-center py-3">
-                    <i class="fas fa-check-circle text-success mr-1"></i> Todo al día
-                </a>
-                @else
-                @foreach(auth()->user()->notificaciones()->where('leida', false)->latest()->take(3)->get() as $noti)
-                    <div class="dropdown-divider"></div>
-                    <a href="{{ route('notificaciones.index') }}" class="dropdown-item py-2">
-                    <i class="fas fa-info-circle mr-2 text-primary"></i> 
-                    <span class="text-wrap" style="font-size: 0.85rem; display:inline-block; width: 220px;">
-                        {{ Str::limit($noti->titulo, 40) }}
-                    </span>
-                    <span class="float-right text-muted text-sm" style="font-size: 0.7rem;">{{ $noti->creado_en->diffForHumans() }}</span>
+
+            <div class="dropdown-menu dropdown-menu-right mt-2 notif-dropdown">
+                {{-- Header --}}
+                <div class="notif-header">
+                    <p class="notif-header-title">
+                        <i class="fas fa-bell"></i>
+                        Notificaciones
+                        @if($unreadCount > 0)
+                            <span class="notif-count-pill">{{ $unreadCount }} nuevas</span>
+                        @endif
+                    </p>
+                    @if($unreadCount > 0)
+                        <form method="POST" action="{{ route('notificaciones.marcar_todas') }}" style="margin:0">
+                            @csrf
+                            <button type="submit" class="notif-mark-all-btn">
+                                <i class="fas fa-check-double mr-1"></i> Leer todas
+                            </button>
+                        </form>
+                    @endif
+                </div>
+
+                {{-- Lista --}}
+                <div class="notif-list">
+                    @forelse($recentNotifs as $noti)
+                        @php
+                            $iconMap = [
+                                'actividad' => ['icon' => 'fa-tasks',        'class' => 'icon-info'],
+                                'cultivo'   => ['icon' => 'fa-seedling',     'class' => 'icon-success'],
+                                'alerta'    => ['icon' => 'fa-exclamation-triangle', 'class' => 'icon-warning'],
+                                'cosecha'   => ['icon' => 'fa-leaf',         'class' => 'icon-success'],
+                                'sistema'   => ['icon' => 'fa-cog',          'class' => 'icon-system'],
+                                'error'     => ['icon' => 'fa-times-circle', 'class' => 'icon-danger'],
+                            ];
+                            $icono = $iconMap[$noti->tipo] ?? ['icon' => 'fa-bell', 'class' => 'icon-info'];
+                        @endphp
+                        <a href="{{ route('notificaciones.index') }}"
+                           class="notif-item {{ !$noti->leida ? 'unread' : '' }}">
+                            <div class="notif-item-icon {{ $icono['class'] }}">
+                                <i class="fas {{ $icono['icon'] }}"></i>
+                            </div>
+                            <div class="notif-item-body">
+                                <p class="notif-item-title">{{ $noti->titulo }}</p>
+                                <div class="notif-item-time">
+                                    <i class="far fa-clock"></i>
+                                    {{ $noti->creado_en->diffForHumans() }}
+                                </div>
+                            </div>
+                            @if(!$noti->leida)
+                                <div class="notif-unread-dot"></div>
+                            @endif
+                        </a>
+                    @empty
+                        <div class="notif-empty">
+                            <div class="notif-empty-icon"><i class="fas fa-check"></i></div>
+                            <p style="color:#1e293b; font-weight:600; margin:0 0 4px;">¡Todo al día!</p>
+                            <p style="color:#94a3b8; font-size:0.8rem; margin:0;">No tienes notificaciones pendientes.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                {{-- Footer --}}
+                <div class="notif-footer">
+                    <a href="{{ route('notificaciones.index') }}">
+                        Ver todas las notificaciones <i class="fas fa-arrow-right"></i>
                     </a>
-                @endforeach
-                @endif
-                <div class="dropdown-divider"></div>
-                <a href="{{ route('notificaciones.index') }}" class="dropdown-item dropdown-footer text-primary font-weight-bold">Ver todas</a>
+                </div>
             </div>
         </li>
 
-        {{-- Dropdown de Salir --}}
+        {{-- Dropdown de Usuario --}}
+        <style>
+            .user-dropdown-toggle {
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 6px 12px 6px 6px !important;
+                border-radius: 50px;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(255,255,255,0.12);
+                transition: all 0.3s ease;
+                cursor: pointer;
+                text-decoration: none !important;
+            }
+            .user-dropdown-toggle:hover {
+                background: rgba(255,255,255,0.15);
+                border-color: rgba(255,255,255,0.25);
+                transform: translateY(-1px);
+            }
+            .user-avatar-btn {
+                width: 36px; height: 36px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: white;
+                display: flex; align-items: center; justify-content: center;
+                font-weight: 700; font-size: 0.9rem;
+                box-shadow: 0 2px 8px rgba(16,185,129,0.5);
+                flex-shrink: 0;
+                overflow: hidden;
+            }
+            .user-name-label {
+                color: rgba(255,255,255,0.9);
+                font-size: 0.82rem;
+                font-weight: 600;
+                max-width: 110px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: none;
+            }
+            @media(min-width: 768px) { .user-name-label { display: block; } }
+            .user-chevron {
+                color: rgba(255,255,255,0.6);
+                font-size: 0.65rem;
+                transition: transform 0.3s ease;
+            }
+            .nav-item.dropdown.show .user-chevron { transform: rotate(180deg); }
+
+            /* Dropdown panel */
+            .user-dropdown-menu {
+                border: none !important;
+                border-radius: 18px !important;
+                min-width: 260px !important;
+                padding: 0 !important;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.1) !important;
+                overflow: hidden;
+                animation: dropIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+                background: #fff !important;
+            }
+            @keyframes dropIn {
+                from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+                to   { opacity: 1; transform: translateY(0) scale(1); }
+            }
+
+            .user-dropdown-header {
+                background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+                padding: 24px 20px 20px;
+                position: relative;
+                overflow: hidden;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .user-dropdown-header::before {
+                content: '';
+                position: absolute; top: -30px; right: -30px;
+                width: 100px; height: 100px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.06);
+            }
+            .user-dropdown-header::after {
+                content: '';
+                position: absolute; bottom: -20px; left: 20px;
+                width: 70px; height: 70px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.04);
+            }
+            .user-header-avatar {
+                width: 60px; height: 60px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #10b981, #34d399);
+                color: white;
+                display: flex; align-items: center; justify-content: center;
+                font-weight: 800; font-size: 1.4rem;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                border: 3px solid rgba(255,255,255,0.25);
+                margin: 0 auto 12px auto;
+                overflow: hidden;
+                position: relative; z-index: 1;
+            }
+            .user-header-name {
+                color: #fff;
+                font-size: 0.97rem;
+                font-weight: 700;
+                margin: 0 0 3px;
+                position: relative; z-index: 1;
+                text-align: center;
+            }
+            .user-header-email {
+                color: rgba(255,255,255,0.65);
+                font-size: 0.75rem;
+                margin: 0 0 10px;
+                position: relative; z-index: 1;
+                text-align: center;
+            }
+            .user-role-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: rgba(255,255,255,0.12);
+                border: 1px solid rgba(255,255,255,0.2);
+                color: rgba(255,255,255,0.9);
+                font-size: 0.7rem;
+                font-weight: 600;
+                padding: 3px 10px;
+                border-radius: 20px;
+                position: relative; z-index: 1;
+            }
+            .user-status-dot {
+                width: 7px; height: 7px;
+                border-radius: 50%;
+                background: #4ade80;
+                box-shadow: 0 0 6px #4ade80;
+                display: inline-block;
+            }
+
+            /* Menu items */
+            .user-dropdown-body { padding: 8px; }
+            .user-menu-item {
+                display: flex !important;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 14px !important;
+                border-radius: 12px !important;
+                font-size: 0.85rem !important;
+                font-weight: 500 !important;
+                color: #374151 !important;
+                transition: all 0.2s ease !important;
+                border: none !important;
+                width: 100%;
+                background: transparent;
+                text-align: left;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            .user-menu-item:hover {
+                background: #f0fdf4 !important;
+                color: #059669 !important;
+                transform: translateX(3px);
+            }
+            .user-menu-icon {
+                width: 32px; height: 32px;
+                border-radius: 9px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 0.8rem;
+                flex-shrink: 0;
+                transition: all 0.2s ease;
+            }
+            .user-menu-item:hover .user-menu-icon { transform: scale(1.1); }
+            .icon-profile { background: #ecfdf5; color: #059669; }
+            .icon-logout  { background: #fef2f2; color: #ef4444; }
+
+            .user-menu-item.logout-btn { color: #dc2626 !important; }
+            .user-menu-item.logout-btn:hover { background: #fef2f2 !important; color: #dc2626 !important; }
+
+            .user-dropdown-divider {
+                height: 1px;
+                background: #f1f5f9;
+                margin: 4px 8px;
+            }
+        </style>
+
         <li class="nav-item dropdown ml-2">
-            <a class="nav-link p-0" data-toggle="dropdown" href="#">
-                @if(auth()->user()?->profile_photo)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
-                         class="img-circle" style="width: 40px; height: 40px; object-fit: cover;"
-                         alt="{{ auth()->user()->name }}">
-                @else
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+            <a class="nav-link user-dropdown-toggle p-0" data-toggle="dropdown" href="#" id="userDropdownBtn">
+                <div class="user-avatar-btn">
+                    @if(auth()->user()?->profile_photo)
+                        <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                             style="width:100%; height:100%; object-fit:cover;"
+                             alt="{{ auth()->user()->nombre ?? '' }}">
+                    @else
                         {{ strtoupper(substr(auth()->user()?->nombre ?? 'U', 0, 1)) }}
-                    </div>
-                @endif
-            </a>
-            <div class="dropdown-menu dropdown-menu-right mt-2" style="border-radius: 12px; border: 1px solid #e2e8f0; min-width: 200px;">
-                <div class="px-4 py-3 border-bottom">
-                    <p class="mb-0 font-weight-bold" style="color: #1e293b;">{{ auth()->user()->nombre }}</p>
-                    <p class="mb-0 text-muted" style="font-size: 0.8rem;">{{ auth()->user()->email }}</p>
+                    @endif
                 </div>
-                <a href="{{ route('profile.edit') }}" class="dropdown-item py-2">
-                    <i class="fas fa-user-cog mr-2 text-muted"></i> Mi Perfil
-                </a>
-                <div class="dropdown-divider"></div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="dropdown-item py-2 text-danger">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
-                    </button>
-                </form>
+                <span class="user-name-label">{{ auth()->user()?->nombre ?? 'Usuario' }}</span>
+                <i class="fas fa-chevron-down user-chevron"></i>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right user-dropdown-menu">
+                {{-- Header --}}
+                <div class="user-dropdown-header">
+                    <div class="user-header-avatar">
+                        @if(auth()->user()?->profile_photo)
+                            <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                                 style="width:100%; height:100%; object-fit:cover;"
+                                 alt="{{ auth()->user()->nombre ?? '' }}">
+                        @else
+                            {{ strtoupper(substr(auth()->user()?->nombre ?? 'U', 0, 1)) }}
+                        @endif
+                    </div>
+                    <p class="user-header-name">{{ auth()->user()?->nombre ?? 'Usuario' }}</p>
+                    <p class="user-header-email">{{ auth()->user()?->email ?? '' }}</p>
+                    <span class="user-role-badge">
+                        <span class="user-status-dot"></span>
+                        {{ auth()->user()?->rol?->nombre ?? 'Usuario' }}
+                    </span>
+                </div>
+
+                {{-- Items --}}
+                <div class="user-dropdown-body">
+                    <a href="{{ route('profile.edit') }}" class="user-menu-item">
+                        <div class="user-menu-icon icon-profile">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:600; font-size:0.83rem;">Mi Perfil</div>
+                            <div style="font-size:0.72rem; color:#94a3b8; margin-top:1px;">Ver y editar tu cuenta</div>
+                        </div>
+                    </a>
+
+                    <div class="user-dropdown-divider"></div>
+
+                    <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                        @csrf
+                        <button type="submit" class="user-menu-item logout-btn">
+                            <div class="user-menu-icon icon-logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight:600; font-size:0.83rem;">Cerrar sesión</div>
+                                <div style="font-size:0.72rem; color:#94a3b8; margin-top:1px;">Salir del sistema</div>
+                            </div>
+                        </button>
+                    </form>
+                </div>
             </div>
         </li>
 
@@ -439,39 +860,7 @@
     </div>
     @endif
 
-    {{-- Alertas flash --}}
-    <div class="container-fluid px-3">
-      @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-          <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
-          <button type="button" class="close" data-dismiss="alert">
-            <span>&times;</span>
-          </button>
-        </div>
-      @endif
-      @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show">
-          <i class="fas fa-exclamation-circle mr-1"></i> {{ session('error') }}
-          <button type="button" class="close" data-dismiss="alert">
-            <span>&times;</span>
-          </button>
-        </div>
-      @endif
-      @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show">
-          <i class="fas fa-exclamation-triangle mr-1"></i>
-          <strong>Por favor corrige los siguientes errores:</strong>
-          <ul class="mb-0 mt-1">
-            @foreach($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-          </ul>
-          <button type="button" class="close" data-dismiss="alert">
-            <span>&times;</span>
-          </button>
-        </div>
-      @endif
-    </div>
+    {{-- Las alertas flash ahora son manejadas por SweetAlert2 (ver final del archivo) --}}
 
     {{-- Contenido principal --}}
     <div class="content">
@@ -493,6 +882,75 @@
 <script src="{{ asset('AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('AdminLTE-3.2.0/dist/js/adminlte.min.js') }}"></script>
+
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    @if(session('success'))
+        Toast.fire({ icon: 'success', title: '{{ session('success') }}' });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: '¡Error!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#ef4444'
+        });
+    @endif
+    
+    @if(session('warning'))
+        Swal.fire({
+            icon: 'warning',
+            title: 'Atención',
+            text: '{{ session('warning') }}',
+            confirmButtonColor: '#f59e0b'
+        });
+    @endif
+
+    @if(session('status') === 'profile-updated' || session('status') === 'avatar-updated' || session('status') === 'password-updated')
+        Toast.fire({ icon: 'success', title: 'Actualización exitosa' });
+    @elseif(session('status'))
+        Toast.fire({ icon: 'info', title: '{{ session('status') }}' });
+    @endif
+
+    @if($errors->any())
+        Toast.fire({ icon: 'error', title: 'Por favor corrige los errores en el formulario.' });
+    @endif
+
+    // Función global para confirmaciones
+    function confirmarEliminacion(event, formElement, title = '¿Estás seguro?', text = 'Esta acción no se puede deshacer.') {
+        event.preventDefault();
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Sí, continuar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formElement.submit();
+            }
+        });
+    }
+</script>
+
 @stack('scripts')
 </body>
 </html>

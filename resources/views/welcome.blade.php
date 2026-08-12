@@ -363,11 +363,8 @@
                 </div>
             </div>
 
-            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+            <div class="border-t border-white/10 pt-8 flex justify-center items-center text-sm text-gray-500">
                 <p>&copy; 2026 SIGVOS. Todos los derechos reservados.</p>
-                <div class="flex gap-4">
-                    <a href="{{ route('desarrollador') }}" class="hover:text-white transition-colors">Desarrolladores</a>
-                </div>
             </div>
         </div>
     </footer>

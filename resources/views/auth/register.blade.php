@@ -158,15 +158,10 @@
                     @csrf
 
                     <!-- Nombres -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div class="input-group">
-                            <input type="text" name="nombre" id="nombre" required maxlength="80" autocomplete="given-name" placeholder=" " value="{{ old('nombre') }}"
-                                class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none transition-all text-sm text-gray-900 font-medium">
-                            <label for="nombre">Nombre (s)</label>
-                        </div>
-                         <!-- El proyecto original pedia 'apellidos' como campo, vamos a adaptarnos a eso, Laravel breeze pide name,
-                          pero la DB que usamos tiene nombre, así que enviaremos 'nombre' (ya se encarga el RegisteredUserController de mapearlo a DB).
-                          Espera, RegisteredUserController usa $request->nombre. Perfecto. -->
+                    <div class="input-group">
+                        <input type="text" name="nombre" id="nombre" required maxlength="80" autocomplete="given-name" placeholder=" " value="{{ old('nombre') }}"
+                            class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none transition-all text-sm text-gray-900 font-medium">
+                        <label for="nombre">Nombre (s)</label>
                     </div>
 
                     <!-- Correo y Teléfono -->
