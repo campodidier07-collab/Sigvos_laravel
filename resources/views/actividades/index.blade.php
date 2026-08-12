@@ -33,8 +33,8 @@
         margin: 4px 0 0 0;
     }
     
-    .btn-warning-custom {
-        background-color: #f59e0b;
+    .btn-primary-custom {
+        background-color: #10b981;
         color: white;
         font-size: 0.875rem;
         font-weight: 600;
@@ -47,10 +47,11 @@
         align-items: center;
         gap: 8px;
     }
-    .btn-warning-custom:hover {
-        background-color: #d97706;
+    .btn-primary-custom:hover {
+        background-color: #059669;
         color: white;
         text-decoration: none;
+        transform: translateY(-1px);
     }
     
     .filters-container {
@@ -221,8 +222,8 @@
             <p>Gestión de Tareas y Actividades Agrícolas.</p>
         </div>
         @if(auth()->user()->isAdmin())
-        <a href="{{ route('actividades.create') }}" class="btn-warning-custom">
-            <i class="fas fa-plus"></i> Programar Tarea
+        <a href="{{ route('actividades.create') }}" class="btn-primary-custom">
+            <i class="fas fa-plus"></i> Programar Actividad
         </a>
         @endif
     </div>
