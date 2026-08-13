@@ -4,23 +4,7 @@
 
 @push('styles')
 <style>
-    /* Estilos del Dashboard Premium (Screenshot style) */
-    .dashboard-header-title {
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-    .dashboard-header-title h2 {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 800;
-        color: #1e293b;
-        font-size: 1.75rem;
-        margin-bottom: 4px;
-    }
-    .dashboard-header-title p {
-        color: #64748b;
-        font-size: 0.875rem;
-        margin: 0;
-    }
+    /* Dashboard Premium CSS */
 
     .hero-panel-solid {
         background-color: #164e3b;
@@ -183,11 +167,11 @@
 
 <div class="container-fluid px-4">
     
-    {{-- Título Fuera del Panel --}}
-    <div class="dashboard-header-title">
-        <h2>Bienvenido, {{ explode(' ', auth()->user()->nombre)[0] }}</h2>
-        <p>Vista completa del sistema SIGVOS.</p>
-    </div>
+    <x-module-header 
+        title="Dashboard Administrador" 
+        subtitle="Vista completa del sistema SIGVOS y gestión de la finca." 
+        icon="fa-tachometer-alt" 
+    />
 
     {{-- Panel Verde Sólido (Hero) --}}
     <div class="hero-panel-solid">

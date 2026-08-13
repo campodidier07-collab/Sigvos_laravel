@@ -61,19 +61,15 @@
 @endphp
 <div class="container-fluid px-4 pt-3">
     
-    <div class="glass-card mb-4" style="padding: 20px; height: auto;">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="header-title">
-                <h2>Reportes y Estadísticas</h2>
-                <p>Visualiza el estado general de los cultivos, actividades recientes y rendimiento de las cosechas.</p>
-            </div>
-            <div>
-                <button id="exportPdfBtn" class="btn btn-primary" style="background: #10b981; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(16,185,129,0.2);">
-                    <i class="fas fa-file-pdf mr-2"></i> Exportar a PDF
-                </button>
-            </div>
-        </div>
-    </div>
+    <x-module-header 
+        title="Reportes y Estadísticas" 
+        subtitle="Visualiza el estado general de los cultivos, actividades recientes y rendimiento de las cosechas." 
+        icon="fa-chart-bar"
+    >
+        <button id="exportPdfBtn" class="btn btn-primary" style="background: #10b981; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(16,185,129,0.2);">
+            <i class="fas fa-file-pdf mr-2"></i> Exportar a PDF
+        </button>
+    </x-module-header>
 
     <div class="row" id="reportes-container" style="padding: 10px; background: #f4f6f9; border-radius: 20px;">
       <!-- Gráfico 1: Cultivos por Estado -->

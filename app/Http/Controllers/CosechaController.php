@@ -26,7 +26,34 @@ class CosechaController extends Controller
         }
 
         $cultivos = $query->paginate(15);
+        
+        // Cultivos listos para cosechar (para el modal/formulario)
+        $cultivosParaCosechar = Cultivo::with('lote', 'variedad')
+            ->whereIn('estado', ['sembrado', 'creciendo', 'maduro'])
+            ->get();
 
-        return view('cosecha.index', compact('cultivos'));
+        return view('cosecha.index', compact('cultivos', 'cultivosParaCosechar'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'id_cultivo' => 'required|exists:cultivos,id',
+            'fecha_cosecha_real' => 'required|date',
+            'cantidad_cosechada_kg' => 'required|numeric|min:0.1',
+            'observaciones' => 'nullable|string'
+        ]);
+
+        $cultivo = Cultivo::findOrFail($request->id_cultivo);
+        
+        $cultivo->update([
+            'estado' => 'cosechado',
+            'fecha_cosecha_real' => $request->fecha_cosecha_real,
+            'cantidad_cosechada_kg' => $request->cantidad_cosechada_kg,
+            'observaciones' => $request->observaciones,
+            'activo_en_lote' => false
+        ]);
+
+        return redirect()->route('cosecha.index')->with('success', '¡Cosecha registrada exitosamente! El cultivo se ha cerrado.');
     }
 }

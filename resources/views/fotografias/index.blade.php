@@ -190,12 +190,11 @@
 @section('content')
 <div class="container-fluid px-4 pt-3">
     
-    <div class="glass-card mb-4" style="padding: 20px;">
-        <div class="header-title">
-            <h2>Galería de Fotografías</h2>
-            <p>Visualiza y organiza las imágenes de lotes, cultivos y el progreso de siembras.</p>
-        </div>
-    </div>
+    <x-module-header 
+        title="Galería de Fotografías" 
+        subtitle="Visualiza y organiza las imágenes de lotes, cultivos y el progreso de siembras." 
+        icon="fa-images"
+    />
 
     <!-- Pestañas -->
     <div class="custom-tabs">

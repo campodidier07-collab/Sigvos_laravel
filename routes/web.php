@@ -60,6 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Cosecha
     Route::get('/cosecha', [\App\Http\Controllers\CosechaController::class, 'index'])->name('cosecha.index');
+    Route::post('/cosecha', [\App\Http\Controllers\CosechaController::class, 'store'])->name('cosecha.store');
 
     // Calendario
     Route::get('/calendario', [\App\Http\Controllers\CalendarioController::class, 'index'])->name('calendario.index');

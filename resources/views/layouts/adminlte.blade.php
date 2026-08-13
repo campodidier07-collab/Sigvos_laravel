@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>SIGVOS | @yield('title', 'Panel')</title>
+  
+  {{-- Favicon --}}
+  <link href="{{ asset('img/icono.png') }}" rel="icon" type="image/png">
 
   {{-- Google Font --}}
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -211,6 +214,61 @@
     .unified-search-filters-wrapper {
         position: relative;
     }
+
+    /* Estilos Globales del Dashboard y Módulos Premium */
+    .module-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 0;
+    }
+    .module-icon-box {
+        width: 52px;
+        height: 52px;
+        background-color: #10b981; /* agro-500 */
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+    }
+    .module-header-info h2 {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        color: #1e293b;
+        font-size: 1.5rem;
+        margin: 0 0 2px 0;
+        line-height: 1.2;
+    }
+    .module-header-info p {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        margin: 0;
+        font-weight: 500;
+    }
+    .module-banner {
+        background-color: #f1fcf5;
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 20px 24px;
+        margin-left: -24px;
+        margin-right: -24px;
+        margin-bottom: 30px;
+    }
+    .module-banner h3 {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        color: #0f3d2d;
+        font-size: 1.75rem;
+        margin: 0 0 4px 0;
+    }
+    .module-banner p {
+        color: #475569;
+        font-size: 0.95rem;
+        margin: 0;
+    }
     .btn-filtros-toggle {
         background: transparent;
         border: none;
@@ -264,23 +322,9 @@
           <i class="fas fa-bars"></i>
         </a>
       </li>
-      @if (Route::is('dashboard'))
-      <li class="nav-item d-none d-sm-inline-block">
-        <div class="navbar-title-section">
-            <div class="navbar-icon-box">
-                <i class="fas fa-home"></i>
-            </div>
-            <div class="navbar-title">
-                <h1>Panel</h1>
-                @php
-                    \Carbon\Carbon::setLocale('es');
-                    $fecha = ucfirst(\Carbon\Carbon::now()->translatedFormat('l, d \d\e F \d\e Y'));
-                @endphp
-                <p>{{ $fecha }}</p>
-            </div>
-        </div>
+      <li class="nav-item d-none d-sm-inline-block ml-3">
+        @yield('navbar-title')
       </li>
-      @endif
     </ul>
 
     {{-- Right: Search, Filters, Notifications --}}
@@ -735,8 +779,8 @@
         <li class="nav-item dropdown ml-3" style="display:flex; align-items:center;">
             <a class="nav-link user-dropdown-toggle p-0" data-toggle="dropdown" href="#" id="userDropdownBtn">
                 <div class="user-avatar-btn">
-                    @if(auth()->user()?->profile_photo)
-                        <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                    @if(auth()->user()?->foto_perfil)
+                        <img src="{{ asset('storage/' . auth()->user()->foto_perfil) }}"
                              style="width:100%; height:100%; object-fit:cover;"
                              alt="{{ auth()->user()->nombre ?? '' }}">
                     @else
@@ -749,8 +793,8 @@
                 {{-- Header --}}
                 <div class="user-dropdown-header">
                     <div class="user-header-avatar">
-                        @if(auth()->user()?->profile_photo)
-                            <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                        @if(auth()->user()?->foto_perfil)
+                            <img src="{{ asset('storage/' . auth()->user()->foto_perfil) }}"
                                  style="width:100%; height:100%; object-fit:cover;"
                                  alt="{{ auth()->user()->nombre ?? '' }}">
                         @else
@@ -810,7 +854,7 @@
           </div>
           <div style="display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
             <h1 style="margin: 0 0 2px 0; font-size: 1.4rem; font-weight: 800; color: #ffffff; line-height: 1.1; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px;">SIGVOS</h1>
-            <p style="margin: 0; font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); font-weight: 500; white-space: nowrap;">Panel Administrador</p>
+            <p style="margin: 0; font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); font-weight: 500; white-space: nowrap;">Panel {{ auth()->user()?->rol?->nombre ?? 'Gestión' }}</p>
           </div>
         </div>
       </a>
@@ -824,95 +868,97 @@
         <ul class="nav nav-pills nav-sidebar flex-column"
             data-widget="treeview" role="menu" data-accordion="false">
 
-          {{-- Dashboard --}}
-          <li class="nav-item">
-            <a href="{{ route('dashboard') }}"
-               class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-
-          {{-- ─── MÓDULOS AGRÍCOLAS ───────────────────────────── --}}
-          <li class="nav-header">AGRÍCOLA</li>
-
-          <li class="nav-item">
-            <a href="{{ route('lotes.index') }}"
-               class="nav-link {{ request()->routeIs('lotes.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-map-marked-alt"></i>
-              <p>Lotes</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('cultivos.index') }}"
-               class="nav-link {{ request()->routeIs('cultivos.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-seedling"></i>
-              <p>Cultivos</p>
-            </a>
-          </li>
-          
-          <li class="nav-item">
-            <a href="{{ route('asignaciones.index') }}"
-               class="nav-link {{ request()->routeIs('asignaciones.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-user-check"></i>
-              <p>Asignaciones</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('actividades.index') }}"
-               class="nav-link {{ request()->routeIs('actividades.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-tasks"></i>
-              <p>Actividades</p>
-            </a>
-          </li>
-          
-          <li class="nav-item">
-            <a href="{{ route('cosecha.index') }}"
-               class="nav-link {{ request()->routeIs('cosecha.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-shopping-basket"></i>
-              <p>Cosecha</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('fotografias.index') }}"
-               class="nav-link {{ request()->routeIs('fotografias.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-camera"></i>
-              <p>Fotografías</p>
-            </a>
-          </li>
-          
-          <li class="nav-header">PLANIFICACIÓN</li>
-          
-          <li class="nav-item">
-            <a href="{{ route('calendario.index') }}"
-               class="nav-link {{ request()->routeIs('calendario.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-calendar-alt"></i>
-              <p>Calendario</p>
-            </a>
-          </li>
-
-          {{-- ─── ADMINISTRACIÓN ──────────────────────────────── --}}
           @if(auth()->user()?->isAdmin())
-          <li class="nav-header">ADMINISTRACIÓN</li>
+              {{-- Menú para Administradores --}}
+              <li class="nav-item">
+                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a href="{{ route('usuarios.index') }}"
-               class="nav-link {{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-users"></i>
-              <p>Usuarios</p>
-            </a>
-          </li>
+              <li class="nav-header">AGRÍCOLA</li>
+              <li class="nav-item">
+                <a href="{{ route('lotes.index') }}" class="nav-link {{ request()->routeIs('lotes.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-map-marked-alt"></i><p>Lotes</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('cultivos.index') }}" class="nav-link {{ request()->routeIs('cultivos.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-seedling"></i><p>Cultivos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('asignaciones.index') }}" class="nav-link {{ request()->routeIs('asignaciones.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-user-check"></i><p>Asignaciones</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('actividades.index') }}" class="nav-link {{ request()->routeIs('actividades.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-tasks"></i><p>Actividades</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('cosecha.index') }}" class="nav-link {{ request()->routeIs('cosecha.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-shopping-basket"></i><p>Cosecha</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('fotografias.index') }}" class="nav-link {{ request()->routeIs('fotografias.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-camera"></i><p>Fotografías</p>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a href="{{ route('reportes.index') }}"
-               class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-chart-bar"></i>
-              <p>Reportes</p>
-            </a>
-          </li>
+              <li class="nav-header">PLANIFICACIÓN</li>
+              <li class="nav-item">
+                <a href="{{ route('calendario.index') }}" class="nav-link {{ request()->routeIs('calendario.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-calendar-alt"></i><p>Calendario</p>
+                </a>
+              </li>
+
+              <li class="nav-header">ADMINISTRACIÓN</li>
+              <li class="nav-item">
+                <a href="{{ route('usuarios.index') }}" class="nav-link {{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-users"></i><p>Usuarios</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-chart-bar"></i><p>Reportes</p>
+                </a>
+              </li>
+          @else
+              {{-- Menú para Trabajadores --}}
+              <li class="nav-header">PRINCIPAL</li>
+              <li class="nav-item">
+                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-home"></i>
+                  <p>Mi Panel</p>
+                </a>
+              </li>
+
+              <li class="nav-header">OPERACIONES</li>
+              <li class="nav-item">
+                <a href="{{ route('lotes.index') }}" class="nav-link {{ request()->routeIs('lotes.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-map"></i><p>Mis Lotes</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('cultivos.index') }}" class="nav-link {{ request()->routeIs('cultivos.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-seedling"></i><p>Cultivos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('actividades.index') }}" class="nav-link {{ request()->routeIs('actividades.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-calendar-check"></i><p>Actividades</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('fotografias.index') }}" class="nav-link {{ request()->routeIs('fotografias.*') ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-camera"></i><p>Fotografías</p>
+                </a>
+              </li>
+
           @endif
 
 

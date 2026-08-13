@@ -151,19 +151,17 @@
 <div class="container-fluid px-4">
 
     <!-- Cabecera y acciones -->
-    <div class="header-actions">
-        <div>
-            <h2>Lotes</h2>
-            <p>Gestión y registro de lotes de la finca.</p>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-            @if(auth()->user()->isAdmin())
-            <a href="{{ route('lotes.create') }}" class="btn-add-lote shadow-sm">
-                <i class="fas fa-plus mr-1"></i> Nuevo Lote
-            </a>
-            @endif
-        </div>
-    </div>
+    <x-module-header 
+        title="Lotes" 
+        subtitle="Gestión y registro de lotes de la finca." 
+        icon="fa-map-marked-alt"
+    >
+        @if(auth()->user()->isAdmin())
+        <a href="{{ route('lotes.create') }}" class="btn-add-lote shadow-sm">
+            <i class="fas fa-plus mr-1"></i> Nuevo Lote
+        </a>
+        @endif
+    </x-module-header>
 
     <!-- Filtros -->
     <div class="unified-search-bar">

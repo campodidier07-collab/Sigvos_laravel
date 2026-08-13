@@ -91,7 +91,35 @@ class ActividadController extends Controller
         $datos['creado_por'] = $usuario->id;
         $datos['estado'] = 'pendiente';
 
-        Actividad::create($datos);
+        $actividad = Actividad::create($datos);
+
+        // Notificaciones
+        if ($usuario->esTrabajador()) {
+            // Notificar a todos los administradores
+            $admins = \App\Models\Usuario::where('id_rol', 1)->where('activo', true)->get();
+            foreach ($admins as $admin) {
+                \App\Models\Notificacion::create([
+                    'id_usuario' => $admin->id,
+                    'id_actividad' => $actividad->id,
+                    'tipo' => 'actividad',
+                    'prioridad' => 'normal',
+                    'titulo' => 'Nueva actividad registrada',
+                    'mensaje' => "El trabajador {$usuario->nombre} ha registrado una nueva actividad: {$actividad->descripcion}",
+                ]);
+            }
+        } elseif ($usuario->isAdmin()) {
+            // Notificar al trabajador asignado
+            if ($actividad->asignado_a !== $usuario->id) {
+                \App\Models\Notificacion::create([
+                    'id_usuario' => $actividad->asignado_a,
+                    'id_actividad' => $actividad->id,
+                    'tipo' => 'actividad',
+                    'prioridad' => 'alta',
+                    'titulo' => 'Nueva actividad asignada',
+                    'mensaje' => "Se te ha asignado una nueva actividad: {$actividad->descripcion}",
+                ]);
+            }
+        }
 
         return redirect()->route('actividades.index')->with('success', 'Actividad programada correctamente.');
     }

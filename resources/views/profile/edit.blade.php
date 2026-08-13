@@ -189,14 +189,7 @@
     }
 </style>
 
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="d-flex align-items-center gap-2 mb-0">
-            <i class="fas fa-user-circle text-muted"></i>
-            <span class="text-muted small">Mi Cuenta &rsaquo; Perfil</span>
-        </div>
-    </div>
-</div>
+
 
 <section class="content">
 <div class="container-fluid">

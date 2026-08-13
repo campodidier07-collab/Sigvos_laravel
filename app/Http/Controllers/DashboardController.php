@@ -20,11 +20,17 @@ class DashboardController extends Controller
         $usuario = $request->user();
 
         // ── KPIs generales ────────────────────────────────────────────────
+        $actividadesQuery = Actividad::query();
+        
+        if ($usuario->esTrabajador()) {
+            $actividadesQuery->where('asignado_a', $usuario->id);
+        }
+
         $estadisticas = [
             'total_lotes'              => Lote::where('activo', true)->count(),
             'cultivos_activos'         => Cultivo::whereNotNull('activo_en_lote')->count(),
-            'actividades_pendientes'   => Actividad::where('estado', 'pendiente')->count(),
-            'actividades_completadas'  => Actividad::where('estado', 'completada')->count(),
+            'actividades_pendientes'   => (clone $actividadesQuery)->where('estado', 'pendiente')->count(),
+            'actividades_completadas'  => (clone $actividadesQuery)->where('estado', 'completada')->count(),
         ];
 
         // ── Solo admin ve stats de usuarios ──────────────────────────────
@@ -62,6 +68,15 @@ class DashboardController extends Controller
             ->orderByDesc('creado_en')
             ->limit(5)
             ->get();
+
+        if ($usuario->esTrabajador()) {
+            return view('dashboard_worker', compact(
+                'estadisticas',
+                'actividadesProximas',
+                'cosechasProximas',
+                'notificaciones',
+            ));
+        }
 
         return view('dashboard', compact(
             'estadisticas',

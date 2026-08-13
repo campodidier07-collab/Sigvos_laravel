@@ -121,6 +121,20 @@ class CultivoController extends Controller
         // Actualizar el estado del lote a "ocupado"
         $lote->update(['estado' => 'ocupado']);
 
+        // Notificar a los trabajadores asignados al lote si quien registra es un administrador
+        if ($usuario->isAdmin()) {
+            foreach ($lote->trabajadores as $trabajador) {
+                \App\Models\Notificacion::create([
+                    'id_usuario' => $trabajador->id,
+                    'id_cultivo' => $cultivo->id,
+                    'tipo' => 'cultivo',
+                    'prioridad' => 'normal',
+                    'titulo' => 'Nuevo cultivo asignado a tu lote',
+                    'mensaje' => "Se ha registrado el cultivo {$cultivo->codigo} en el lote {$lote->nombre}, al cual estás asignado.",
+                ]);
+            }
+        }
+
         return redirect()->route('cultivos.index')->with('success', 'Cultivo registrado exitosamente.');
     }
 

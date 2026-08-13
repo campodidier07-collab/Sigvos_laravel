@@ -216,17 +216,15 @@
 @section('content')
 <div class="container-fluid px-4 pt-3">
     
-    <div class="header-actions">
-        <div class="header-title">
-            <h2>Actividades</h2>
-            <p>Gestión de Tareas y Actividades Agrícolas.</p>
-        </div>
-        @if(auth()->user()->isAdmin())
+    <x-module-header 
+        title="Actividades" 
+        subtitle="Gestión de Tareas y Actividades Agrícolas." 
+        icon="fa-tasks"
+    >
         <a href="{{ route('actividades.create') }}" class="btn-primary-custom">
             <i class="fas fa-plus"></i> Programar Actividad
         </a>
-        @endif
-    </div>
+    </x-module-header>
 
     <!-- Filtros -->
     <!-- Filtros -->

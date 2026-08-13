@@ -143,12 +143,11 @@
 @section('content')
 <div class="container-fluid px-4 pt-3">
     
-    <div class="glass-card mb-4" style="padding: 20px;">
-        <div class="header-title">
-            <h2>Asignaciones de Trabajadores</h2>
-            <p>Supervisa las actividades pendientes o en progreso asignadas a cada trabajador.</p>
-        </div>
-    </div>
+    <x-module-header 
+        title="Asignaciones de Trabajadores" 
+        subtitle="Supervisa las actividades pendientes o en progreso asignadas a cada trabajador." 
+        icon="fa-user-check"
+    />
 
     <div class="row">
         @forelse($trabajadores as $trabajador)

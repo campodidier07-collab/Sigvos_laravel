@@ -228,15 +228,15 @@
 @section('content')
 <div class="container-fluid px-4 pt-3">
     
-    <div class="header-actions">
-        <div class="header-title">
-            <h2>Usuarios</h2>
-            <p>Gestión de Administradores y Trabajadores del Sistema.</p>
-        </div>
+    <x-module-header 
+        title="Usuarios" 
+        subtitle="Gestión de Administradores y Trabajadores del Sistema." 
+        icon="fa-users"
+    >
         <a href="{{ route('usuarios.create') }}" class="btn-primary-custom">
             <i class="fas fa-user-plus"></i> Nuevo Usuario
         </a>
-    </div>
+    </x-module-header>
 
     <!-- Filtros -->
     <div class="unified-search-bar">

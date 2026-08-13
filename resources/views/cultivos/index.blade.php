@@ -223,17 +223,17 @@
 @section('content')
 <div class="container-fluid px-4 pt-3">
     
-    <div class="header-actions">
-        <div class="header-title">
-            <h2>Cultivos</h2>
-            <p>Registro y seguimiento de cultivos por lote.</p>
-        </div>
+    <x-module-header 
+        title="Cultivos" 
+        subtitle="Registro y seguimiento de cultivos por lote." 
+        icon="fa-seedling"
+    >
         @if(auth()->user()->isAdmin())
         <a href="{{ route('cultivos.create') }}" class="btn-primary-custom">
             <i class="fas fa-plus"></i> Nuevo Cultivo
         </a>
         @endif
-    </div>
+    </x-module-header>
 
     <!-- Filtros -->
     <div class="unified-search-bar">

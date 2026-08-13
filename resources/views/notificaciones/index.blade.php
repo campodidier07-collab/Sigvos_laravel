@@ -232,19 +232,12 @@
 <section class="content">
 <div class="container-fluid">
 
-    {{-- Hero --}}
-    <div class="notif-page-hero">
-        <div>
-            <h1 class="notif-page-hero-title"><i class="fas fa-bell mr-2"></i>Centro de Notificaciones</h1>
-            <p class="notif-page-hero-sub">
-                @php $totalUnread = auth()->user()->notificaciones()->where('leida', false)->count(); @endphp
-                @if($totalUnread > 0)
-                    Tienes <strong style="color:#4ade80;">{{ $totalUnread }}</strong> notificación{{ $totalUnread > 1 ? 'es' : '' }} sin leer
-                @else
-                    Estás al día con todas tus notificaciones ✓
-                @endif
-            </p>
-        </div>
+    <x-module-header 
+        title="Centro de Notificaciones" 
+        subtitle="Estás al día con todas tus notificaciones" 
+        icon="fa-bell"
+    >
+        @php $totalUnread = auth()->user()->notificaciones()->where('leida', false)->count(); @endphp
         @if($totalUnread > 0)
             <form method="POST" action="{{ route('notificaciones.marcar_todas') }}" style="margin:0">
                 @csrf
@@ -253,7 +246,7 @@
                 </button>
             </form>
         @endif
-    </div>
+    </x-module-header>
 
 
 

@@ -110,12 +110,13 @@
 @section('content')
 <div class="container-fluid px-4 pt-3">
     
-    <div class="glass-card mb-4" style="padding: 20px;">
-        <div class="header-title">
-            <h2>Calendario de Planificación</h2>
-            <p>Vista global de las actividades programadas y proyecciones de cosecha.</p>
-        </div>
-        
+    <x-module-header 
+        title="Calendario de Planificación" 
+        subtitle="Vista global de las actividades programadas y proyecciones de cosecha." 
+        icon="fa-calendar-alt"
+    />
+    
+    <div class="glass-card mb-4" style="padding: 15px 20px;">
         <div class="legend-container">
             <div class="legend-item"><div class="legend-color" style="background: #3b82f6;"></div> Actividad Pendiente / En Progreso</div>
             <div class="legend-item"><div class="legend-color" style="background: #10b981;"></div> Actividad Completada</div>
