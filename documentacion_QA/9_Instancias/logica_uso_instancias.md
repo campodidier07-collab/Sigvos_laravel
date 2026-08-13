@@ -1,0 +1,13 @@
+La logica de esta funcionalidad se maneja de manera transversal en todo el sistema.
+
+Para interactuar con la base de datos o con las peticiones del formulario, el sistema utiliza el concepto de Instancias orientado a objetos, donde las clases se moldean con informacion temporal.
+
+Al momento de recibir peticiones en los controladores, como por ejemplo en una funcion store o update, el sistema recibe la variable $request. Esta variable es estrictamente una instancia de la clase Request proveida por el marco de trabajo, lo que habilita internamente el acceso a metodos de validacion antes de guardar cualquier informacion.
+
+A nivel de base de datos, los controladores se apoyan en las clases alojadas en la carpeta de modelos. Cada vez que el sistema invoca metodos como create() o find(), el ORM genera y devuelve instancias especificas correspondientes a las tablas vinculadas. Esto es fundamental porque permite manipular informacion relacional y llamar metodos personalizados directamente desde el objeto capturado (por ejemplo, si el cultivo actual tiene un id vinculado a un lote especifico).
+
+Al finalizar los procesos correspondientes, el controlador desecha estas instancias de la memoria o las empaqueta (con compact) para ser devueltas hacia las diferentes vistas, donde los archivos HTML (o Blade) iteran sobre ellas para imprimir los datos finales en las tablas correspondientes del usuario.
+
+Posibles fallos y solucion de errores (Evaluacion):
+- Si el compilador expulsa un pantallazo sentenciando "Call to undefined method" o "Trying to get property of non-object": Señala que el framework esta intentando sobreescribir o leer atributos sobre algo que no ha sido inicializado o buscado, usualmente al no haberse generado una instancia. Se soluciona evaluando los controladores pertinentes al modulo alterado y confirmando que la base de datos este siendo consultada adecuadamente (como por ejemplo, invocando metodos de hallazgo como Model::findOrFail($id)) de forma anticipada, en lugar de interactuar directamente sobre enteros vacios o variables no establecidas provenientes del input.
+- Si variables dependientes de request (como inputs o informacion de la sesion autenticada $request->user()) colapsan desatando un error "Undefined variable $request": El desperfecto reposa en la definicion inyectiva sobre la clase del controlador. Se soluciona yendo al archivo especifico afectado y determinando que en los limites parentesis de la respectiva funcion receptora este explicitamente declarado "Request $request", posibilitando con ello al nucleo del framework proveer e inicializar la correcta instancia de peticion para el objeto y obviar problemas de nulos.

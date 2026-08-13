@@ -1,0 +1,11 @@
+La logica de esta funcionalidad se maneja principalmente desde la vista de la galeria de imagenes, cuando el usuario presiona el boton de borrar debajo de la previsualizacion.
+
+Al momento de enviar los datos, la peticion viaja hacia el controlador FotoCultivoController.php (o equivalentes) mediante una peticion de tipo DELETE. Dentro de este controlador, el sistema pasa por la funcion destroy.
+
+Este controlador se apoya en el modelo de fotografias para identificar el registro. La logica de esta funcion es critica y se divide en dos fases. En la primera, se hace una barrera de seguridad (usando abort 403) para que un trabajador no pueda borrar la foto subida por otro trabajador. En la segunda fase, antes de borrar la fila de la base de datos, el controlador utiliza la funcion delete de la clase Storage. Esta accion va directamente al disco duro del servidor y elimina fisicamente el archivo .jpg o .png para no dejar imagenes huerfanas ocupando espacio. Posteriormente, se procede a eliminar el registro del modelo con delete().
+
+Al finalizar el proceso con exito, el mismo controlador se encarga de hacer el redireccionamiento para devolver al usuario a la vista de la galeria limpia, mostrando un mensaje flotante de archivo eliminado.
+
+Posibles fallos y solucion de errores (Evaluacion):
+- Si el registro se elimina con normalidad de la base de datos MySQL, pero la carpeta storage sigue saturada alojando imagenes residuales acumuladas en el servidor: Este defecto pernicioso acontece si se ha suprimido la vinculacion a la clase Storage. Se soluciona evaluando el archivo FotoCultivoController.php metodo destroy, cerciorandose de que, de forma inminente anterior al metodo delete() correspondiente al ORM, figure expresamente la llamada Storage::disk('public')->delete($foto->ruta) con la finalidad de asegurar tambien la destruccion fisica.
+- Si trabajadores son expuestos a la manipulacion inescrupulosa o el borrado indiscriminado del registro fotografico perteneciente a dependientes de otros lotes: Advierte de la nulificacion de la comprobacion de propiedad del recurso. Se soluciona validando la insercion de un bloque if con condicionante de acceso para frenar el flujo. Si el trabajador difiere con el de la variable alojada, el flujo se frena.
