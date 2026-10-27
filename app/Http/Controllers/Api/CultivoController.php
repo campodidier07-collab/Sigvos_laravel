@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class CultivoController extends Controller
 {
@@ -103,13 +104,15 @@ class CultivoController extends Controller
 
         // Generar código único si no se envió
         if (empty($validated['codigo'])) {
-            $prefijo = strtoupper(substr($variedad->nombre, 0, 3));
-            $validated['codigo'] = sprintf('%s-%s-%s', $prefijo, $lote->identificador, date('Ymd-His'));
+            $prefijo = strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', Str::ascii($variedad->nombre)), 0, 3));
+            $prefijo = str_pad($prefijo, 3, 'X');
+            $loteIdent = preg_replace('/[^A-Za-z0-9]/', '', Str::ascii($lote->identificador));
+            $validated['codigo'] = sprintf('%s-%s-%s', $prefijo, substr($loteIdent, 0, 5), date('Ymd-His'));
         }
 
         $validated['registrado_por'] = $usuario->id;
         $validated['estado']         = 'sembrado';
-        $validated['activo_en_lote'] = 1;
+        $validated['activo_en_lote'] = $lote->id;
 
         if ($request->hasFile('fotografia')) {
             $validated['fotografia'] = $request->file('fotografia')->store('cultivos', 'public');

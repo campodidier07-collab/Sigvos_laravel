@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CultivoController extends Controller
 {
@@ -89,7 +90,7 @@ class CultivoController extends Controller
         $datos = $request->validate([
             'id_lote'                => ['required', 'exists:lotes,id'],
             'id_variedad'            => ['required', 'exists:variedades,id'],
-            'codigo'                 => ['nullable', 'string', 'max:50', 'unique:cultivos,codigo'],
+            'codigo'                 => ['nullable', 'string', 'max:30', 'unique:cultivos,codigo'],
             'fecha_siembra'          => ['required', 'date', 'before_or_equal:today'],
             'fecha_cosecha_estimada' => ['nullable', 'date', 'after:fecha_siembra'],
             'observaciones'          => ['nullable', 'string', 'max:1000'],
@@ -126,8 +127,10 @@ class CultivoController extends Controller
 
         // Generar código único si no se envió
         if (empty($datos['codigo'])) {
-            $prefijo = strtoupper(substr($variedad->nombre, 0, 3));
-            $datos['codigo'] = sprintf('CULT-%s-%s-%s', $prefijo, $lote->identificador, date('ymd-Hi'));
+            $prefijo = strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', Str::ascii($variedad->nombre)), 0, 3));
+            $prefijo = str_pad($prefijo, 3, 'X');
+            $loteIdent = preg_replace('/[^A-Za-z0-9]/', '', Str::ascii($lote->identificador));
+            $datos['codigo'] = sprintf('CULT-%s-%s-%s', $prefijo, substr($loteIdent, 0, 5), date('ymd-Hi'));
         }
 
         $datos['registrado_por'] = $usuario->id;
