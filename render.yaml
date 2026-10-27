@@ -13,7 +13,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        generateValue: true
+        value: base64:tjcM/EynilkZ0LE/rCdLH7pTEHm39hHM+XBTfykGn/I=
       - key: LOG_CHANNEL
         value: stderr
       - key: RUN_MIGRATIONS
@@ -21,13 +21,13 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        sync: false
+        value: gateway01.us-east-1.prod.aws.tidbcloud.com
       - key: DB_PORT
         value: "4000"
       - key: DB_DATABASE
-        sync: false
+        value: sigvos_laravel
       - key: DB_USERNAME
-        sync: false
+        value: 3SWBiEj4La6zoq5.root
       - key: DB_PASSWORD
         sync: false
       - key: MYSQL_ATTR_SSL_CA
