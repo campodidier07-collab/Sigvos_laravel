@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Cultivo;
 use App\Models\Lote;
+use App\Models\TipoCultivo;
 use App\Models\Variedad;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -17,9 +19,9 @@ class CultivoController extends Controller
     public function index(Request $request)
     {
         $usuario = $request->user();
-        
+
         $query = Cultivo::with(['lote', 'variedad.tipoCultivo', 'registradoPor']);
-        
+
         // Trabajadores solo ven los cultivos de sus lotes asignados
         if ($usuario->esTrabajador()) {
             $query->whereHas('lote.trabajadores', function ($q) use ($usuario) {
@@ -35,16 +37,16 @@ class CultivoController extends Controller
         // Búsqueda por código o variedad
         if ($request->filled('buscar')) {
             $busqueda = $request->buscar;
-            $query->where(function($q) use ($busqueda) {
+            $query->where(function ($q) use ($busqueda) {
                 $q->where('codigo', 'like', "%{$busqueda}%")
-                  ->orWhereHas('variedad', function($v) use ($busqueda) {
-                      $v->where('nombre', 'like', "%{$busqueda}%");
-                  });
+                    ->orWhereHas('variedad', function ($v) use ($busqueda) {
+                        $v->where('nombre', 'like', "%{$busqueda}%");
+                    });
             });
         }
 
         $cultivos = $query->orderByDesc('fecha_siembra')->paginate(10);
-        
+
         return view('cultivos.index', compact('cultivos'));
     }
 
@@ -53,31 +55,28 @@ class CultivoController extends Controller
      */
     public function create(Request $request)
     {
-        // Administradores y Trabajadores pueden registrar cultivos (según los permisos o lógica de negocio).
-        // Si quieres que solo admin, usa: if (!$request->user()->isAdmin()) abort(403);
-        // Para SIGVOS, asumimos que ambos pueden (o se valida según el rol).
-        
         $usuario = $request->user();
-        
-        // Obtener lotes disponibles (sin cultivo activo)
-        // Para admin, todos. Para trabajador, solo sus asignados.
+
+        // Criterio 4: Obtener únicamente lotes disponibles (activo = true, estado = 'disponible' y sin cultivo activo)
         $lotesQuery = Lote::where('activo', true)
-                          ->whereDoesntHave('cultivos', function($q) {
-                              $q->whereNotNull('activo_en_lote');
-                          });
-                          
+            ->where('estado', 'disponible')
+            ->whereDoesntHave('cultivos', function ($q) {
+                $q->whereNotNull('activo_en_lote');
+            });
+
         if ($usuario->esTrabajador()) {
             $lotesQuery->whereHas('trabajadores', function ($q) use ($usuario) {
                 $q->where('id_usuario', $usuario->id);
             });
         }
-        
-        $lotes = $lotesQuery->get();
+
+        $lotes = $lotesQuery->orderBy('identificador')->get();
+        $tiposCultivo = TipoCultivo::with(['variedades' => fn($q) => $q->where('activo', true)])->where('activo', true)->get();
         $variedades = Variedad::with('tipoCultivo')->where('activo', true)->get();
-        
+
         $lotePreseleccionado = $request->query('lote');
 
-        return view('cultivos.create', compact('lotes', 'variedades', 'lotePreseleccionado'));
+        return view('cultivos.create', compact('lotes', 'tiposCultivo', 'variedades', 'lotePreseleccionado'));
     }
 
     /**
@@ -86,31 +85,54 @@ class CultivoController extends Controller
     public function store(Request $request)
     {
         $usuario = $request->user();
-        
+
         $datos = $request->validate([
             'id_lote'                => ['required', 'exists:lotes,id'],
             'id_variedad'            => ['required', 'exists:variedades,id'],
-            'codigo'                 => ['required', 'string', 'max:30', 'unique:cultivos,codigo'],
+            'codigo'                 => ['nullable', 'string', 'max:50', 'unique:cultivos,codigo'],
             'fecha_siembra'          => ['required', 'date', 'before_or_equal:today'],
-            'fecha_cosecha_estimada' => ['required', 'date', 'after:fecha_siembra'],
+            'fecha_cosecha_estimada' => ['nullable', 'date', 'after:fecha_siembra'],
             'observaciones'          => ['nullable', 'string', 'max:1000'],
             'fotografia'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:10240'],
         ]);
-        
-        // Verificar que el lote no tenga ya un cultivo activo
+
+        // Criterio 4: Validación de lote disponible (validar que no esté ocupado ni en descanso)
         $lote = Lote::findOrFail($datos['id_lote']);
-        if ($lote->cultivoActivo()->exists()) {
-            return back()->withInput()->withErrors(['id_lote' => 'Este lote ya tiene un cultivo activo.']);
+        if ($lote->estado !== 'disponible' || $lote->cultivoActivo()->exists()) {
+            $estadoTxt = match ($lote->estado) {
+                'ocupado'       => 'ocupado',
+                'en_descanso'   => 'en descanso',
+                'mantenimiento' => 'en mantenimiento',
+                default         => $lote->estado,
+            };
+            return back()->withInput()->withErrors([
+                'id_lote' => "El lote seleccionado no está disponible (se encuentra {$estadoTxt}). Solo se pueden registrar siembras en lotes disponibles.",
+            ]);
         }
-        
+
         // Si es trabajador, verificar que esté asignado a ese lote
-        if ($usuario->esTrabajador() && !$lote->trabajadores()->where('id_usuario', $usuario->id)->exists()) {
+        if ($usuario->esTrabajador() && ! $lote->trabajadores()->where('id_usuario', $usuario->id)->exists()) {
             abort(403, 'No estás asignado a este lote.');
+        }
+
+        $variedad = Variedad::findOrFail($datos['id_variedad']);
+
+        // Criterios 2 y 3: Cálculo automático de fecha estimada de cosecha
+        if (empty($datos['fecha_cosecha_estimada'])) {
+            $fechaSiembra = Carbon::parse($datos['fecha_siembra']);
+            $diasPromedio = $variedad->dias_cosecha_promedio ?: 90;
+            $datos['fecha_cosecha_estimada'] = $fechaSiembra->copy()->addDays($diasPromedio)->toDateString();
+        }
+
+        // Generar código único si no se envió
+        if (empty($datos['codigo'])) {
+            $prefijo = strtoupper(substr($variedad->nombre, 0, 3));
+            $datos['codigo'] = sprintf('CULT-%s-%s-%s', $prefijo, $lote->identificador, date('ymd-Hi'));
         }
 
         $datos['registrado_por'] = $usuario->id;
         $datos['estado']         = 'sembrado';
-        $datos['activo_en_lote'] = $lote->id; // El cultivo está activo en este lote
+        $datos['activo_en_lote'] = $lote->id; // Criterio 1: Asignación exitosa del cultivo al lote
 
         if ($request->hasFile('fotografia')) {
             $datos['fotografia'] = $request->file('fotografia')->store('cultivos_portadas', 'public');
@@ -118,7 +140,7 @@ class CultivoController extends Controller
 
         $cultivo = Cultivo::create($datos);
 
-        // Actualizar el estado del lote a "ocupado"
+        // Criterio 1: Actualizar el estado del lote a "ocupado"
         $lote->update(['estado' => 'ocupado']);
 
         // Notificar a los trabajadores asignados al lote si quien registra es un administrador
@@ -127,24 +149,32 @@ class CultivoController extends Controller
                 \App\Models\Notificacion::create([
                     'id_usuario' => $trabajador->id,
                     'id_cultivo' => $cultivo->id,
-                    'tipo' => 'cultivo',
-                    'prioridad' => 'normal',
-                    'titulo' => 'Nuevo cultivo asignado a tu lote',
-                    'mensaje' => "Se ha registrado el cultivo {$cultivo->codigo} en el lote {$lote->nombre}, al cual estás asignado.",
+                    'tipo'       => 'cultivo',
+                    'prioridad'  => 'normal',
+                    'titulo'     => 'Nuevo cultivo asignado a tu lote',
+                    'mensaje'    => "Se ha registrado el cultivo {$cultivo->codigo} en el lote {$lote->nombre}, al cual estás asignado.",
                 ]);
             }
         }
 
-        return redirect()->route('cultivos.index')->with('success', 'Cultivo registrado exitosamente.');
+        return redirect()->route('cultivos.show', $cultivo)->with('success', 'Cultivo registrado exitosamente.');
     }
 
     /**
      * Mostrar detalles del cultivo.
      */
-    public function show(Cultivo $cultivo)
+    public function show(Request $request, Cultivo $cultivo)
     {
+        $usuario = $request->user();
+
+        // Criterio 4 (HU DP-8): Bloqueo de acceso si el lote no está asignado al trabajador
+        if ($usuario && $usuario->esTrabajador() && ! $cultivo->lote->trabajadores()->where('id_usuario', $usuario->id)->exists()) {
+            abort(403, 'No tienes permisos para consultar la información de este cultivo.');
+        }
+
         $cultivo->load(['lote', 'variedad.tipoCultivo', 'registradoPor', 'actividades.tipoActividad', 'actividades.asignadoA', 'fotos.usuario']);
-        return view('cultivos.show', compact('cultivo'));
+        $tiposActividad = \App\Models\TipoActividad::where('activo', true)->orderBy('nombre')->get();
+        return view('cultivos.show', compact('cultivo', 'tiposActividad'));
     }
 
     /**
@@ -187,7 +217,7 @@ class CultivoController extends Controller
         // Lógica de finalización (cosechado o perdido)
         if (in_array($datos['estado'], ['cosechado', 'perdido'])) {
             $datos['activo_en_lote'] = null; // Liberar el lote
-            
+
             // Validar que si es cosechado, tenga fecha y cantidad
             if ($datos['estado'] == 'cosechado') {
                 if (empty($datos['fecha_cosecha_real']) || empty($datos['cantidad_cosechada_kg'])) {

@@ -18,6 +18,7 @@ class Cultivo extends Model
         'estado',
         'fecha_siembra',
         'fecha_cosecha_estimada',
+        'cantidad_estimada_kg',
         'fecha_cosecha_real',
         'cantidad_cosechada_kg',
         'observaciones',
@@ -30,6 +31,7 @@ class Cultivo extends Model
         return [
             'fecha_siembra'            => 'date',
             'fecha_cosecha_estimada'   => 'date',
+            'cantidad_estimada_kg'     => 'decimal:2',
             'fecha_cosecha_real'       => 'date',
             'cantidad_cosechada_kg'    => 'decimal:2',
         ];

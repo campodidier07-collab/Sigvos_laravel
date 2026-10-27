@@ -59,7 +59,7 @@
           <li class="list-group-item">
             <b>Asignado a</b> 
             <a class="float-right text-dark">
-              <i class="fas fa-user-circle text-info"></i> {{ $actividad->asignadoA->nombre ?? 'N/A' }}
+              <i class="fa-solid fa-circle-user text-info"></i> {{ $actividad->asignadoA->nombre ?? 'N/A' }}
             </a>
           </li>
         </ul>
@@ -84,7 +84,7 @@
           <div class="active tab-pane" id="info">
             
             <div class="callout callout-info mb-4">
-              <h5><i class="fas fa-seedling text-success mr-2"></i> Cultivo Objetivo</h5>
+              <h5><i class="fa-solid fa-seedling text-success mr-2"></i> Cultivo Objetivo</h5>
               <p class="mb-0">
                 Esta actividad está programada para el cultivo 
                 <strong><a href="{{ route('cultivos.show', $actividad->cultivo) }}" class="text-success">{{ $actividad->cultivo->codigo }}</a></strong>, 
@@ -92,14 +92,14 @@
               </p>
             </div>
 
-            <h5 class="text-primary"><i class="fas fa-align-left mr-1"></i> Descripción de la Tarea</h5>
+            <h5 class="text-primary"><i class="fa-solid fa-align-left mr-1"></i> Descripción de la Tarea</h5>
             <p class="text-muted bg-light p-3 rounded border">
               {{ $actividad->descripcion }}
             </p>
 
             <hr>
 
-            <h5 class="text-success"><i class="fas fa-clipboard-check mr-1"></i> Reporte de Ejecución</h5>
+            <h5 class="text-success"><i class="fa-solid fa-clipboard-check mr-1"></i> Reporte de Ejecución</h5>
             @if($actividad->estado == 'completada')
               <div class="row">
                 <div class="col-sm-6">
@@ -124,7 +124,7 @@
               </div>
             @else
               <div class="text-center py-4 text-muted">
-                <i class="far fa-clock fa-2x mb-2 text-warning"></i>
+                <i class="fa-regular fa-clock fa-2x mb-2 text-warning"></i>
                 <p>La actividad aún está pendiente de ejecución.</p>
               </div>
             @endif

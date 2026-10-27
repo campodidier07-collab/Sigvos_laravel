@@ -8,11 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
+
+    /** Atributos computados que se incluyen en la serialización JSON */
+    protected $appends = ['name', 'role', 'foto_perfil_url'];
 
     /** Nombre de la tabla en la base de datos. */
     protected $table = 'usuarios';
@@ -72,12 +76,18 @@ class Usuario extends Authenticatable
         return $this->belongsTo(Rol::class, 'id_rol');
     }
 
-    /** Lotes asignados a este usuario (como trabajador). */
+    /** Lotes asignados activamente a este usuario (como trabajador). */
     public function lotes(): BelongsToMany
     {
         return $this->belongsToMany(Lote::class, 'asignaciones_lote', 'id_usuario', 'id_lote')
-                    ->withPivot(['activo', 'clave_activa', 'asignado_por', 'creado_en'])
+                    ->withPivot(['id', 'activo', 'clave_activa', 'asignado_por', 'creado_en'])
                     ->wherePivot('activo', true);
+    }
+
+    /** Historial de asignaciones de lotes para este usuario. */
+    public function asignacionesLote(): HasMany
+    {
+        return $this->hasMany(AsignacionLote::class, 'id_usuario')->orderByDesc('creado_en');
     }
 
     /** Cultivos registrados por este usuario. */
@@ -151,5 +161,23 @@ class Usuario extends Authenticatable
         }
 
         return $cache[$key];
+    }
+
+    /** Accessor para compatibilidad con API / Flutter: name */
+    public function getNameAttribute(): string
+    {
+        return $this->nombre ?? '';
+    }
+
+    /** Accessor para compatibilidad con API / Flutter: role */
+    public function getRoleAttribute(): string
+    {
+        return strtolower($this->rol?->nombre ?? ($this->id_rol === 1 ? 'administrador' : 'trabajador'));
+    }
+
+    /** Accessor URL de foto de perfil */
+    public function getFotoPerfilUrlAttribute(): ?string
+    {
+        return $this->foto_perfil ? asset('storage/' . $this->foto_perfil) : null;
     }
 }

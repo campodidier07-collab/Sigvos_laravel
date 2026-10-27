@@ -7,7 +7,7 @@
     <link rel="icon" href="{{ asset('img/icono-pagina.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/output.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f2fbf5; }
         h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Outfit', sans-serif; }
@@ -92,19 +92,19 @@
                     <div class="space-y-5">
                         <div class="flex items-center gap-4 text-sm font-medium text-agro-50">
                             <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
-                                <i class="fas fa-check text-agro-400"></i>
+                                <i class="fa-solid fa-check text-agro-400"></i>
                             </div>
                             Registro rápido y seguro
                         </div>
                         <div class="flex items-center gap-4 text-sm font-medium text-agro-50">
                             <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
-                                <i class="fas fa-shield-alt text-agro-400"></i>
+                                <i class="fa-solid fa-shield-halved text-agro-400"></i>
                             </div>
                             Protección de datos garantizada
                         </div>
                         <div class="flex items-center gap-4 text-sm font-medium text-agro-50">
                             <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
-                                <i class="fas fa-mobile-alt text-agro-400"></i>
+                                <i class="fa-solid fa-mobile-screen text-agro-400"></i>
                             </div>
                             Acceso desde cualquier dispositivo
                         </div>
@@ -114,7 +114,7 @@
                 <div class="mt-8 border-t border-white/10 pt-6">
                     <p class="text-sm text-agro-200 mb-2">¿Ya formas parte de SIGVOS?</p>
                     <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-white font-bold hover:text-agro-300 transition-colors group">
-                        Inicia sesión aquí <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                        Inicia sesión aquí <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
             </div>
@@ -144,7 +144,7 @@
                 @if ($errors->any())
                 <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
                     <div class="flex items-center gap-2 mb-1 font-bold">
-                        <i class="fas fa-exclamation-circle"></i> Error en el registro
+                        <i class="fa-solid fa-circle-exclamation"></i> Error en el registro
                     </div>
                     <ul class="list-disc pl-5">
                         @foreach ($errors->all() as $error)
@@ -186,7 +186,7 @@
                             <label for="password">Contraseña</label>
                             <button type="button" onclick="togglePass('password','eye1')" aria-label="Mostrar contraseña"
                                 class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-agro-600 transition-colors z-10 focus:outline-none">
-                                <i class="fas fa-eye text-sm" id="eye1"></i>
+                                <i class="fa-solid fa-eye text-sm" id="eye1"></i>
                             </button>
                         </div>
                         <div class="input-group relative">
@@ -195,7 +195,7 @@
                             <label for="password_confirmation">Confirmar Contraseña</label>
                             <button type="button" onclick="togglePass('password_confirmation','eye2')" aria-label="Mostrar contraseña"
                                 class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-agro-600 transition-colors z-10 focus:outline-none">
-                                <i class="fas fa-eye text-sm" id="eye2"></i>
+                                <i class="fa-solid fa-eye text-sm" id="eye2"></i>
                             </button>
                         </div>
                     </div>
@@ -205,7 +205,7 @@
                         <label class="flex items-start gap-3 cursor-pointer select-none group">
                             <div class="relative flex items-center justify-center mt-0.5">
                                 <input type="checkbox" name="terms" required class="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-md checked:bg-agro-500 checked:border-agro-500 transition-all cursor-pointer focus:ring-2 focus:ring-agro-500/30 outline-none">
-                                <i class="fas fa-check absolute text-white text-xs opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></i>
+                                <i class="fa-solid fa-check absolute text-white text-xs opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></i>
                             </div>
                             <span class="text-sm text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
                                 He leído y acepto los <a href="#" class="text-agro-600 font-semibold hover:underline hover:text-agro-700">Términos de Servicio</a> y la <a href="#" class="text-agro-600 font-semibold hover:underline hover:text-agro-700">Política de Privacidad</a> de SIGVOS.
@@ -217,7 +217,7 @@
                     <button type="submit" id="submitBtn"
                         class="w-full bg-agro-600 hover:bg-agro-500 text-white font-bold py-4 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(43,132,90,0.3)] hover:shadow-[0_0_25px_rgba(43,132,90,0.5)] flex items-center justify-center gap-2 mt-2 hover:-translate-y-1">
                         <span id="btnText" class="tracking-wide">Crear mi cuenta</span>
-                        <i class="fas fa-arrow-right text-sm" id="btnIcon"></i>
+                        <i class="fa-solid fa-arrow-right text-sm" id="btnIcon"></i>
                         <svg id="btnSpinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
@@ -234,7 +234,7 @@
                     <div class="mt-8 flex justify-center">
                         <a href="{{ url('/') }}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-agro-600 transition-colors group">
                             <span class="w-8 h-8 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center mr-3 group-hover:bg-agro-50 group-hover:border-agro-200 transition-colors">
-                                <i class="fas fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i>
+                                <i class="fa-solid fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i>
                             </span>
                             Volver al inicio
                         </a>
@@ -251,7 +251,7 @@
             const icon  = document.getElementById(iconId);
             const show  = input.type === 'password';
             input.type  = show ? 'text' : 'password';
-            icon.className = show ? 'fas fa-eye-slash text-sm' : 'fas fa-eye text-sm';
+            icon.className = show ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm';
         }
 
         // Loading state al hacer submit

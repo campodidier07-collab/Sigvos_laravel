@@ -25,10 +25,11 @@ Route::get('/desarrollador', function () {
 })->name('desarrollador');
 
 // ── Rutas autenticadas (admin y trabajador) ───────────────────────────────
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin,worker'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/data', [DashboardController::class, 'data'])->name('dashboard.data');
 
     // Perfil (Breeze)
     Route::get('/profile',          [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,8 +47,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Cultivos
     Route::resource('cultivos', \App\Http\Controllers\CultivoController::class);
-
+    Route::get('/cultivo/{cultivo}', [\App\Http\Controllers\CultivoController::class, 'detalles'])->name('cultivo.show'); 
     // Actividades
+    Route::post('actividades/realizada', [\App\Http\Controllers\ActividadController::class, 'registrarRealizada'])->name('actividades.registrar-realizada');
+    Route::post('actividades/{actividade}/completar', [\App\Http\Controllers\ActividadController::class, 'completar'])->name('actividades.completar');
+    Route::post('actividades/{actividade}/cancelar', [\App\Http\Controllers\ActividadController::class, 'cancelar'])->name('actividades.cancelar');
     Route::resource('actividades', \App\Http\Controllers\ActividadController::class);
 
     // Fotos de Cultivo
@@ -55,20 +59,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('cultivos/{cultivo}/fotos', [\App\Http\Controllers\FotoCultivoController::class, 'store'])->name('fotos.store');
     Route::delete('fotos/{foto}', [\App\Http\Controllers\FotoCultivoController::class, 'destroy'])->name('fotos.destroy');
 
-    // Asignaciones
-    Route::get('/asignaciones', [\App\Http\Controllers\AsignacionController::class, 'index'])->name('asignaciones.index');
-
-    // Cosecha
-    Route::get('/cosecha', [\App\Http\Controllers\CosechaController::class, 'index'])->name('cosecha.index');
-    Route::post('/cosecha', [\App\Http\Controllers\CosechaController::class, 'store'])->name('cosecha.store');
-
-    // Calendario
-    Route::get('/calendario', [\App\Http\Controllers\CalendarioController::class, 'index'])->name('calendario.index');
-    Route::get('/calendario/eventos', [\App\Http\Controllers\CalendarioController::class, 'eventos'])->name('calendario.eventos');
-
-
     // ── Solo Administradores ──────────────────────────────────────────────
     Route::middleware('role:admin')->group(function () {
+
+        // Asignaciones
+        Route::get('/asignaciones', [\App\Http\Controllers\AsignacionController::class, 'index'])->name('asignaciones.index');
+        Route::post('/asignaciones/lotes', [\App\Http\Controllers\AsignacionController::class, 'asignarLote'])->name('asignaciones.lotes.store');
+        Route::post('/asignaciones/lotes/desactivar', [\App\Http\Controllers\AsignacionController::class, 'desactivarLote'])->name('asignaciones.lotes.desactivar');
+        Route::post('/asignaciones/lotes/reasignar', [\App\Http\Controllers\AsignacionController::class, 'reasignarLote'])->name('asignaciones.lotes.reasignar');
+
+        // Cosecha
+        Route::get('/cosecha', [\App\Http\Controllers\CosechaController::class, 'index'])->name('cosecha.index');
+        Route::post('/cosecha', [\App\Http\Controllers\CosechaController::class, 'store'])->name('cosecha.store');
+
+        // Calendario
+        Route::get('/calendario', [\App\Http\Controllers\CalendarioController::class, 'index'])->name('calendario.index');
+        Route::get('/calendario/eventos', [\App\Http\Controllers\CalendarioController::class, 'eventos'])->name('calendario.eventos');
 
         // Usuarios
         Route::resource('usuarios', \App\Http\Controllers\UsuarioController::class);
@@ -76,6 +82,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Reportes
         Route::get('/reportes', [\App\Http\Controllers\ReporteController::class, 'index'])
              ->name('reportes.index');
+
+        // Búsqueda Global y Filtros Avanzados (HU DP-9)
+        Route::get('/busqueda', [\App\Http\Controllers\BusquedaController::class, 'index'])->name('busqueda.index');
+        Route::get('/busqueda/rapida', [\App\Http\Controllers\BusquedaController::class, 'rapida'])->name('busqueda.rapida');
     });
 });
 

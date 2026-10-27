@@ -226,11 +226,11 @@
     <x-module-header 
         title="Cultivos" 
         subtitle="Registro y seguimiento de cultivos por lote." 
-        icon="fa-seedling"
+        icon="fa-solid fa-seedling"
     >
         @if(auth()->user()->isAdmin())
         <a href="{{ route('cultivos.create') }}" class="btn-primary-custom">
-            <i class="fas fa-plus"></i> Nuevo Cultivo
+            <i class="fa-solid fa-plus"></i> Nuevo cultivo
         </a>
         @endif
     </x-module-header>
@@ -238,12 +238,12 @@
     <!-- Filtros -->
     <div class="unified-search-bar">
         <form action="{{ route('cultivos.index') }}" method="GET" id="form-filtro" class="unified-search-form">
-            <i class="fas fa-search unified-search-icon"></i>
+            <i class="fa-solid fa-magnifying-glass unified-search-icon"></i>
             <input type="text" name="buscar" class="unified-search-input" placeholder="Buscar cultivos..." value="{{ request('buscar') }}">
             
             <div class="unified-search-filters-wrapper">
                 <button type="button" class="btn-filtros-toggle" onclick="toggleFiltros(event)">
-                    <i class="fas fa-sliders-h"></i> Filtros
+                    <i class="fa-solid fa-sliders"></i> Filtros
                 </button>
                 <div class="filtros-dropdown-menu" id="unified-filtros-dropdown">
                     <label class="custom-label mb-2 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Estado del Cultivo</label>
@@ -265,7 +265,7 @@
     <div class="glass-card p-0 overflow-hidden">
         @if($cultivos->isEmpty())
             <div class="empty-state">
-                <i class="fas fa-seedling block"></i>
+                <i class="fa-solid fa-seedling block"></i>
                 <p>No hay cultivos registrados actualmente.</p>
             </div>
         @else
@@ -291,7 +291,7 @@
                                     <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Cultivo" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
                                 @else
                                     <div style="width: 40px; height: 40px; border-radius: 8px; background: #f1f5f9; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                                        <i class="fas fa-seedling text-sm"></i>
+                                        <i class="fa-solid fa-seedling text-sm"></i>
                                     </div>
                                 @endif
                             </td>
@@ -344,17 +344,17 @@
                             <td>
                                 <div class="actions-flex">
                                     <a href="{{ route('cultivos.show', $cultivo) }}" class="btn-action-info" title="Ver Detalles">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="fa-solid fa-eye"></i>
                                     </a>
                                     <a href="{{ route('cultivos.edit', $cultivo) }}" class="btn-action-primary" title="Editar">
-                                        <i class="fas fa-pen"></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
                                     @if(auth()->user()->isAdmin())
                                     <form action="{{ route('cultivos.destroy', $cultivo) }}" method="POST" onsubmit="confirmarEliminacion(event, this, '¿Eliminar cultivo?', '¿Eliminar cultivo {{ addslashes($cultivo->codigo) }}? Esta acción es irreversible.');" style="margin: 0;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-action-danger" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </form>
                                     @endif

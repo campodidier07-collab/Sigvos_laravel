@@ -6,8 +6,7 @@
     <title>SIGVOS | Gestión de Cultivos Agrícolas</title>
     <link href="{{ asset('img/icono-pagina.png') }}?v=2" rel="icon" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/output.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -55,12 +54,12 @@
                     <a href="#roles" class="hover:text-agro-300 transition-colors duration-200 text-sm tracking-wide uppercase">Roles</a>
                     <a href="#objetivos" class="hover:text-agro-300 transition-colors duration-200 text-sm tracking-wide uppercase">Beneficios</a>
                     <a href="{{ route('login') }}" class="bg-agro-500 hover:bg-agro-400 text-white px-6 py-2.5 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(58,165,116,0.5)] hover:shadow-[0_0_25px_rgba(58,165,116,0.7)] text-sm font-bold tracking-wide uppercase border border-agro-400/50">
-                        Acceder <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                        Acceder <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                     </a>
                 </div>
                 <!-- Botón móvil -->
                 <button id="menu-toggle" class="md:hidden text-white focus:outline-none p-2" aria-label="Menú">
-                    <i class="fas fa-bars text-2xl" id="menu-icon"></i>
+                    <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
                 </button>
             </div>
         </div>
@@ -176,7 +175,7 @@
                         <div class="absolute bottom-10 -left-10 glass-card p-6 rounded-2xl animate-float hidden md:block">
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 rounded-full bg-agro-100 flex items-center justify-center text-agro-600 text-xl">
-                                    <i class="fas fa-chart-line"></i>
+                                    <i class="fa-solid fa-chart-line"></i>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-500 font-medium">Rendimiento</p>
@@ -199,7 +198,7 @@
                     <div class="space-y-6">
                         <div class="flex gap-4">
                             <div class="w-12 h-12 shrink-0 rounded-xl bg-agro-100 flex items-center justify-center text-agro-600 text-xl">
-                                <i class="fas fa-leaf"></i>
+                                <i class="fa-solid fa-leaf"></i>
                             </div>
                             <div>
                                 <h4 class="text-xl font-bold text-gray-900 mb-1">Gestión Centralizada</h4>
@@ -208,7 +207,7 @@
                         </div>
                         <div class="flex gap-4">
                             <div class="w-12 h-12 shrink-0 rounded-xl bg-agro-100 flex items-center justify-center text-agro-600 text-xl">
-                                <i class="fas fa-cloud-arrow-up"></i>
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
                             </div>
                             <div>
                                 <h4 class="text-xl font-bold text-gray-900 mb-1">Datos en Tiempo Real</h4>
@@ -236,16 +235,16 @@
                     <div class="absolute top-0 right-0 w-32 h-32 bg-agro-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500 z-0 pointer-events-none"></div>
                     <div class="relative z-10">
                         <div class="w-16 h-16 rounded-2xl bg-agro-500 text-white flex items-center justify-center text-2xl mb-6 shadow-lg shadow-agro-200">
-                            <i class="fas fa-user-tie"></i>
+                            <i class="fa-solid fa-user-tie"></i>
                         </div>
                         <h4 class="text-2xl font-bold text-gray-900 mb-4 font-heading">Administrador de Finca</h4>
                         <p class="text-gray-600 leading-relaxed mb-6">
                             Posee la visión estratégica. Configura la finca, gestiona el personal, define los ciclos de cultivo y analiza los reportes financieros y productivos para tomar decisiones informadas.
                         </p>
                         <ul class="space-y-2 text-sm text-gray-600 font-medium">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-agro-500"></i> Planificación de lotes y cultivos</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-agro-500"></i> Análisis de costos y rentabilidad</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-agro-500"></i> Generación de reportes gerenciales</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-agro-500"></i> Planificación de lotes y cultivos</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-agro-500"></i> Análisis de costos y rentabilidad</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-agro-500"></i> Generación de reportes gerenciales</li>
                         </ul>
                     </div>
                 </div>
@@ -255,16 +254,16 @@
                     <div class="absolute top-0 right-0 w-32 h-32 bg-agro-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500 z-0 pointer-events-none"></div>
                     <div class="relative z-10">
                         <div class="w-16 h-16 rounded-2xl bg-agro-400 text-white flex items-center justify-center text-2xl mb-6 shadow-lg shadow-agro-200">
-                            <i class="fas fa-tractor"></i>
+                            <i class="fa-solid fa-tractor"></i>
                         </div>
                         <h4 class="text-2xl font-bold text-gray-900 mb-4 font-heading">Trabajador de Campo</h4>
                         <p class="text-gray-600 leading-relaxed mb-6">
                             El motor operativo. Registra las labores diarias directamente desde el terreno, reporta novedades fitosanitarias y mantiene actualizada la bitácora de actividades del cultivo.
                         </p>
                         <ul class="space-y-2 text-sm text-gray-600 font-medium">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-agro-500"></i> Registro rápido de labores</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-agro-500"></i> Reporte de plagas o enfermedades</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-agro-500"></i> Interfaz simplificada y directa</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-agro-500"></i> Registro rápido de labores</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-agro-500"></i> Reporte de plagas o enfermedades</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-agro-500"></i> Interfaz simplificada y directa</li>
                         </ul>
                     </div>
                 </div>
@@ -286,7 +285,7 @@
             <div class="grid md:grid-cols-3 gap-6">
                 <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors">
                     <div class="w-14 h-14 rounded-full bg-agro-500/20 text-agro-400 flex items-center justify-center text-2xl mb-6">
-                        <i class="fas fa-layer-group"></i>
+                        <i class="fa-solid fa-layer-group"></i>
                     </div>
                     <h4 class="text-xl font-bold mb-3 font-heading">Organización Total</h4>
                     <p class="text-gray-400 text-sm leading-relaxed">Estructuración detallada de fincas, lotes y ciclos de cultivo para una gestión ordenada y sin confusiones.</p>
@@ -294,7 +293,7 @@
 
                 <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors">
                     <div class="w-14 h-14 rounded-full bg-agro-500/20 text-agro-400 flex items-center justify-center text-2xl mb-6">
-                        <i class="fas fa-chart-pie"></i>
+                        <i class="fa-solid fa-chart-pie"></i>
                     </div>
                     <h4 class="text-xl font-bold mb-3 font-heading">Decisiones Basadas en Datos</h4>
                     <p class="text-gray-400 text-sm leading-relaxed">Métricas, gráficos y reportes exportables que revelan el verdadero rendimiento y rentabilidad de cada lote.</p>
@@ -302,7 +301,7 @@
 
                 <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors">
                     <div class="w-14 h-14 rounded-full bg-agro-500/20 text-agro-400 flex items-center justify-center text-2xl mb-6">
-                        <i class="fas fa-shield-check"></i>
+                        <i class="fa-solid fa-shield-halved"></i>
                     </div>
                     <h4 class="text-xl font-bold mb-3 font-heading">Trazabilidad Segura</h4>
                     <p class="text-gray-400 text-sm leading-relaxed">Registro inmutable de todas las acciones, insumos aplicados y cosechas, vital para certificaciones agrícolas.</p>
@@ -327,13 +326,13 @@
                     </p>
                     <div class="flex space-x-4">
                         <a href="https://www.facebook.com/" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all text-gray-400">
-                            <i class="fab fa-facebook-f"></i>
+                            <i class="fa-brands fa-facebook-f"></i>
                         </a>
                         <a href="https://www.instagram.com/" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#E4405F] hover:text-white transition-all text-gray-400">
-                            <i class="fab fa-instagram"></i>
+                            <i class="fa-brands fa-instagram"></i>
                         </a>
                         <a href="https://web.whatsapp.com/" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all text-gray-400">
-                            <i class="fab fa-whatsapp"></i>
+                            <i class="fa-brands fa-whatsapp"></i>
                         </a>
                     </div>
                 </div>
@@ -352,11 +351,11 @@
                     <h4 class="text-white font-bold mb-6 uppercase text-sm tracking-wider">Contacto</h4>
                     <ul class="space-y-4 text-sm text-gray-400">
                         <li class="flex items-start gap-3">
-                            <i class="fas fa-envelope mt-1 text-agro-400"></i>
+                            <i class="fa-solid fa-envelope mt-1 text-agro-400"></i>
                             <span>sigvos.app@gmail.com</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <i class="fas fa-map-marker-alt mt-1 text-agro-400"></i>
+                            <i class="fa-solid fa-location-dot mt-1 text-agro-400"></i>
                             <span>Vereda Palomas<br>Colombia</span>
                         </li>
                     </ul>
@@ -421,13 +420,13 @@
         menuToggle.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
             menuIcon.className = mobileMenu.classList.contains('hidden')
-                ? 'fas fa-bars text-2xl'
-                : 'fas fa-times text-2xl';
+                ? 'fa-solid fa-bars text-2xl'
+                : 'fa-solid fa-xmark text-2xl';
         });
 
         function closeMobileMenu() {
             mobileMenu.classList.add('hidden');
-            menuIcon.className = 'fas fa-bars text-2xl';
+            menuIcon.className = 'fa-solid fa-bars text-2xl';
         }
     </script>
 </body>

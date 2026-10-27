@@ -127,7 +127,7 @@
             
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="form-header-title m-0">Registrar Nuevo Cultivo</h3>
-                <a href="{{ route('cultivos.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
+                <a href="{{ route('cultivos.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fa-solid fa-xmark"></i></a>
             </div>
             
             <form action="{{ route('cultivos.store') }}" method="POST" enctype="multipart/form-data">
@@ -135,7 +135,7 @@
                 
                 @if($lotes->isEmpty())
                     <div class="alert-custom">
-                        <h5><i class="fas fa-exclamation-triangle mr-2"></i> No hay lotes disponibles</h5>
+                        <h5><i class="fa-solid fa-triangle-exclamation mr-2"></i> No hay lotes disponibles</h5>
                         <p class="mb-0 text-sm">Todos los lotes están ocupados actualmente o no tienes ninguno asignado.
                         Debes liberar un lote (marcando su cultivo actual como cosechado/perdido) o registrar uno nuevo.</p>
                     </div>
@@ -158,14 +158,38 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="custom-label" for="id_variedad">Variedad a sembrar *</label>
+                            <label class="custom-label" for="id_variedad">Tipo y Variedad de Cultivo *</label>
                             <select class="custom-input @error('id_variedad') is-invalid-custom @enderror" id="id_variedad" name="id_variedad" required>
                                 <option value="">Seleccionar Variedad</option>
-                                @foreach($variedades as $variedad)
-                                    <option value="{{ $variedad->id }}" {{ old('id_variedad') == $variedad->id ? 'selected' : '' }}>
-                                        {{ $variedad->tipoCultivo->nombre }} - {{ $variedad->nombre }}
-                                    </option>
-                                @endforeach
+                                @if(isset($tiposCultivo) && $tiposCultivo->isNotEmpty())
+                                    @foreach($tiposCultivo as $tipo)
+                                        <optgroup label="Cultivo de {{ $tipo->nombre }}">
+                                            @foreach($tipo->variedades as $variedad)
+                                                <option value="{{ $variedad->id }}" 
+                                                        data-dias="{{ $variedad->dias_cosecha_promedio }}"
+                                                        data-min="{{ $variedad->dias_cosecha_min }}"
+                                                        data-max="{{ $variedad->dias_cosecha_max }}"
+                                                        data-tipo="{{ $tipo->nombre }}"
+                                                        data-nombre="{{ $variedad->nombre }}"
+                                                        {{ old('id_variedad') == $variedad->id ? 'selected' : '' }}>
+                                                    {{ $tipo->nombre }} - {{ $variedad->nombre }} (Ciclo aprox: {{ $variedad->dias_cosecha_promedio }} días)
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
+                                    @endforeach
+                                @else
+                                    @foreach($variedades as $variedad)
+                                        <option value="{{ $variedad->id }}" 
+                                                data-dias="{{ $variedad->dias_cosecha_promedio }}"
+                                                data-min="{{ $variedad->dias_cosecha_min }}"
+                                                data-max="{{ $variedad->dias_cosecha_max }}"
+                                                data-tipo="{{ $variedad->tipoCultivo->nombre ?? '' }}"
+                                                data-nombre="{{ $variedad->nombre }}"
+                                                {{ old('id_variedad') == $variedad->id ? 'selected' : '' }}>
+                                            {{ $variedad->tipoCultivo->nombre ?? '' }} - {{ $variedad->nombre }}
+                                        </option>
+                                    @endforeach
+                                @endif
                             </select>
                             @error('id_variedad')
                                 <div class="error-text">{{ $message }}</div>
@@ -193,9 +217,17 @@
                         </div>
                         
                         <div class="col-md-6">
-                            <label class="custom-label" for="fecha_cosecha_estimada">Cosecha Estimada *</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="custom-label mb-0" for="fecha_cosecha_estimada">Cosecha Estimada *</label>
+                                <span id="badge-auto-calc" class="badge badge-success" style="font-size: 0.7rem; background-color: #10b981; display: none;">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Calculada autom.
+                                </span>
+                            </div>
                             <input type="date" class="custom-input @error('fecha_cosecha_estimada') is-invalid-custom @enderror" 
                                    id="fecha_cosecha_estimada" name="fecha_cosecha_estimada" value="{{ old('fecha_cosecha_estimada') }}" required>
+                            <small id="info-calculo" class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                                <i class="fa-solid fa-circle-info mr-1"></i> Se calcula automáticamente según el ciclo promedio de la variedad.
+                            </small>
                             @error('fecha_cosecha_estimada')
                                 <div class="error-text">{{ $message }}</div>
                             @enderror
@@ -206,7 +238,7 @@
                         <label class="custom-label" for="observaciones">Observaciones (Opcional)</label>
                         <textarea class="custom-input @error('observaciones') is-invalid-custom @enderror" 
                                   id="observaciones" name="observaciones" 
-                                  placeholder="Ej: Semilla tratada con fertilizante...">{{ old('observaciones') }}</textarea>
+                                  placeholder="Ej: Semilla certificada, tratada con fertilizante...">{{ old('observaciones') }}</textarea>
                         @error('observaciones')
                             <div class="error-text">{{ $message }}</div>
                         @enderror
@@ -243,3 +275,63 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const variedadSelect = document.getElementById('id_variedad');
+    const siembraInput = document.getElementById('fecha_siembra');
+    const cosechaInput = document.getElementById('fecha_cosecha_estimada');
+    const badgeAuto = document.getElementById('badge-auto-calc');
+    const infoCalculo = document.getElementById('info-calculo');
+
+    function calcularFechaCosecha() {
+        if (!variedadSelect || !siembraInput || !cosechaInput) return;
+
+        const selectedOpt = variedadSelect.options[variedadSelect.selectedIndex];
+        if (!selectedOpt || !selectedOpt.value) return;
+
+        const diasPromedio = parseInt(selectedOpt.getAttribute('data-dias'), 10);
+        const diasMin = selectedOpt.getAttribute('data-min');
+        const diasMax = selectedOpt.getAttribute('data-max');
+        const variedadNombre = selectedOpt.getAttribute('data-nombre') || 'la variedad';
+        const tipoNombre = selectedOpt.getAttribute('data-tipo') || '';
+        const fechaSiembraVal = siembraInput.value;
+
+        if (!fechaSiembraVal || isNaN(diasPromedio)) return;
+
+        // Parse YYYY-MM-DD
+        const partes = fechaSiembraVal.split('-');
+        if (partes.length === 3) {
+            const fecha = new Date(parseInt(partes[0], 10), parseInt(partes[1], 10) - 1, parseInt(partes[2], 10));
+            fecha.setDate(fecha.getDate() + diasPromedio);
+
+            const anio = fecha.getFullYear();
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const fechaEstimadaStr = `${anio}-${mes}-${dia}`;
+
+            cosechaInput.value = fechaEstimadaStr;
+
+            if (badgeAuto) badgeAuto.style.display = 'inline-block';
+            if (infoCalculo) {
+                infoCalculo.className = 'text-success font-weight-bold d-block mt-1';
+                infoCalculo.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Cálculo automático para ${tipoNombre} (${variedadNombre}): +${diasPromedio} días (rango estimado: ${diasMin} - ${diasMax} días).`;
+            }
+        }
+    }
+
+    if (variedadSelect) {
+        variedadSelect.addEventListener('change', calcularFechaCosecha);
+    }
+    if (siembraInput) {
+        siembraInput.addEventListener('change', calcularFechaCosecha);
+    }
+
+    // Ejecutar inmediatamente si ya hay valores presentes
+    if (variedadSelect && variedadSelect.value && siembraInput && siembraInput.value) {
+        calcularFechaCosecha();
+    }
+});
+</script>
+@endpush

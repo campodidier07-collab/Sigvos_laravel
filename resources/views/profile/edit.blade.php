@@ -209,7 +209,7 @@
                                 {{ strtoupper(substr(auth()->user()->nombre ?? 'U', 0, 1)) }}
                             </div>
                         @endif
-                        <div class="avatar-overlay"><i class="fas fa-camera"></i></div>
+                        <div class="avatar-overlay"><i class="fa-solid fa-camera"></i></div>
                     </div>
                 </form>
             </div>
@@ -234,7 +234,7 @@
 
     {{-- Tip de foto --}}
     <p style="font-size:0.8rem; color:#64748b; margin-bottom:20px; margin-top:-10px;">
-        <i class="fas fa-info-circle text-success mr-1"></i>
+        <i class="fa-solid fa-circle-info text-success mr-1"></i>
         Haz clic sobre tu foto o inicial para cambiar tu imagen de perfil.
     </p>
 
@@ -244,7 +244,7 @@
             <div class="profile-card">
                 <div class="profile-card-header">
                     <div class="profile-card-icon icon-green">
-                        <i class="fas fa-user-edit"></i>
+                        <i class="fa-solid fa-user-pen"></i>
                     </div>
                     <div>
                         <h3 style="margin:0; font-size:1rem; font-weight:700; color:#1e293b;">Información Personal</h3>
@@ -264,7 +264,7 @@
                                    class="form-control-custom {{ $errors->has('nombre') ? 'is-invalid' : '' }}"
                                    value="{{ old('nombre', auth()->user()->nombre) }}"
                                    placeholder="Ej: Sergio Rodríguez" required>
-                            @error('nombre') <p class="error-msg"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror
+                            @error('nombre') <p class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>{{ $message }}</p> @enderror
                         </div>
 
                         {{-- Email --}}
@@ -274,7 +274,7 @@
                                    class="form-control-custom {{ $errors->has('email') ? 'is-invalid' : '' }}"
                                    value="{{ old('email', auth()->user()->email) }}"
                                    placeholder="correo@ejemplo.com" required>
-                            @error('email') <p class="error-msg"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror
+                            @error('email') <p class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>{{ $message }}</p> @enderror
                         </div>
 
                         {{-- Teléfono --}}
@@ -284,12 +284,12 @@
                                    class="form-control-custom {{ $errors->has('telefono') ? 'is-invalid' : '' }}"
                                    value="{{ old('telefono', auth()->user()->telefono) }}"
                                    placeholder="Ej: 3001234567">
-                            @error('telefono') <p class="error-msg"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror
+                            @error('telefono') <p class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>{{ $message }}</p> @enderror
                         </div>
 
                         <div class="d-flex align-items-center gap-3 mt-2">
                             <button type="submit" class="btn-save">
-                                <i class="fas fa-save"></i> Guardar cambios
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
                             </button>
                         </div>
                     </form>
@@ -302,7 +302,7 @@
             <div class="profile-card">
                 <div class="profile-card-header">
                     <div class="profile-card-icon icon-blue">
-                        <i class="fas fa-lock"></i>
+                        <i class="fa-solid fa-lock"></i>
                     </div>
                     <div>
                         <h3 style="margin:0; font-size:1rem; font-weight:700; color:#1e293b;">Seguridad</h3>
@@ -323,11 +323,11 @@
                                        class="form-control-custom {{ $errors->updatePassword->has('current_password') ? 'is-invalid' : '' }}"
                                        placeholder="••••••••" autocomplete="current-password">
                                 <span class="toggle-pw" data-target="current_password" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#94a3b8;">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fa-solid fa-eye"></i>
                                 </span>
                             </div>
                             @if($errors->updatePassword->has('current_password'))
-                                <p class="error-msg"><i class="fas fa-exclamation-circle mr-1"></i>{{ $errors->updatePassword->first('current_password') }}</p>
+                                <p class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>{{ $errors->updatePassword->first('current_password') }}</p>
                             @endif
                         </div>
 
@@ -340,13 +340,13 @@
                                        placeholder="Mínimo 8 caracteres" autocomplete="new-password"
                                        oninput="checkStrength(this.value)">
                                 <span class="toggle-pw" data-target="password" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#94a3b8;">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fa-solid fa-eye"></i>
                                 </span>
                             </div>
                             <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
                             <p class="strength-text" id="strengthText"></p>
                             @if($errors->updatePassword->has('password'))
-                                <p class="error-msg"><i class="fas fa-exclamation-circle mr-1"></i>{{ $errors->updatePassword->first('password') }}</p>
+                                <p class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>{{ $errors->updatePassword->first('password') }}</p>
                             @endif
                         </div>
 
@@ -358,13 +358,13 @@
                                        class="form-control-custom"
                                        placeholder="Repite la contraseña" autocomplete="new-password">
                                 <span class="toggle-pw" data-target="password_confirmation" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#94a3b8;">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fa-solid fa-eye"></i>
                                 </span>
                             </div>
                         </div>
 
                         <button type="submit" class="btn-save" style="background:linear-gradient(135deg,#2563eb,#3b82f6);">
-                            <i class="fas fa-shield-alt"></i> Actualizar contraseña
+                            <i class="fa-solid fa-shield-halved"></i> Actualizar contraseña
                         </button>
                     </form>
                 </div>
@@ -431,10 +431,10 @@ function checkStrength(val) {
 
     const levels = [
         { pct: '0%',   color: '#e2e8f0', label: '' },
-        { pct: '25%',  color: '#ef4444', label: '🔴 Muy débil' },
-        { pct: '50%',  color: '#f97316', label: '🟠 Débil' },
-        { pct: '75%',  color: '#eab308', label: '🟡 Aceptable' },
-        { pct: '100%', color: '#10b981', label: '🟢 Segura' },
+        { pct: '25%',  color: '#ef4444', label: 'Muy débil' },
+        { pct: '50%',  color: '#f97316', label: 'Débil' },
+        { pct: '75%',  color: '#eab308', label: 'Aceptable' },
+        { pct: '100%', color: '#10b981', label: 'Segura' },
     ];
     const lvl = levels[score] || levels[0];
     fill.style.width = lvl.pct;

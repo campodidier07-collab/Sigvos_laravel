@@ -7,7 +7,7 @@
     <link href="{{ asset('img/icono-pagina.png') }}" rel="icon" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/output.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <style>
         body { font-family: 'Outfit', sans-serif; background-color: #f6fbf8; margin: 0; overflow-x: hidden; }
         
@@ -407,7 +407,7 @@
     <section class="hero-section">
         <nav class="navbar" style="justify-content: flex-end;">
             <a href="{{ url('/') }}" class="btn-back">
-                <i class="fas fa-arrow-left"></i> Volver al inicio
+                <i class="fa-solid fa-arrow-left"></i> Volver al inicio
             </a>
         </nav>
 
@@ -452,47 +452,47 @@
     <div class="content-section">
         <div class="main-card">
             <div class="skills-section">
-                <h3 class="section-title"><i class="fas fa-id-card text-success"></i> MIS HABILIDADES</h3>
+                <h3 class="section-title"><i class="fa-solid fa-id-card text-success"></i> MIS HABILIDADES</h3>
                 <div class="skills-grid">
                     <div class="skill-item">
-                        <i class="fas fa-layer-group skill-icon" style="color: #3b82f6;"></i> Frontend & Backend
+                        <i class="fa-solid fa-layer-group skill-icon" style="color: #3b82f6;"></i> Frontend & Backend
                     </div>
                     <div class="skill-item">
-                        <i class="fas fa-paint-brush skill-icon" style="color: #ec4899;"></i> Diseño UI/UX
+                        <i class="fa-solid fa-paintbrush skill-icon" style="color: #ec4899;"></i> Diseño UI/UX
                     </div>
                     <div class="skill-item">
-                        <i class="fas fa-clipboard-list skill-icon" style="color: #f59e0b;"></i> Análisis de Requisitos
+                        <i class="fa-solid fa-clipboard-list skill-icon" style="color: #f59e0b;"></i> Análisis de Requisitos
                     </div>
                     <div class="skill-item">
-                        <i class="fas fa-bug skill-icon" style="color: #10b981;"></i> Tester QA
+                        <i class="fa-solid fa-bug skill-icon" style="color: #10b981;"></i> Tester QA
                     </div>
                     <div class="skill-item">
-                        <i class="fas fa-database skill-icon" style="color: #8b5cf6;"></i> Base de Datos
+                        <i class="fa-solid fa-database skill-icon" style="color: #8b5cf6;"></i> Base de Datos
                     </div>
                     <div class="skill-item">
-                        <i class="fas fa-file-alt skill-icon" style="color: #64748b;"></i> Documentación
+                        <i class="fa-solid fa-file-lines skill-icon" style="color: #64748b;"></i> Documentación
                     </div>
                 </div>
             </div>
             
             <div class="connect-section">
-                <h3 class="section-title"><i class="fas fa-envelope-open-text text-success"></i> CONECTA CONMIGO</h3>
+                <h3 class="section-title"><i class="fa-solid fa-envelope-open-text text-success"></i> CONECTA CONMIGO</h3>
                 <div class="social-icons">
                     <a href="https://wa.me/573156320923" target="_blank" class="social-icon social-wa">
-                        <i class="fab fa-whatsapp"></i>
+                        <i class="fa-brands fa-whatsapp"></i>
                     </a>
                     <a href="https://www.facebook.com/didier.campo" target="_blank" class="social-icon social-fb">
-                        <i class="fab fa-facebook-f"></i>
+                        <i class="fa-brands fa-facebook-f"></i>
                     </a>
                     <a href="https://www.instagram.com/didierpuentes2" target="_blank" class="social-icon social-ig">
-                        <i class="fab fa-instagram"></i>
+                        <i class="fa-brands fa-instagram"></i>
                     </a>
                 </div>
             </div>
         </div>
 
         <div class="tech-header">
-            <div class="tech-badge"><i class="fas fa-cog"></i> STACK TÉCNICO</div>
+            <div class="tech-badge"><i class="fa-solid fa-gear"></i> STACK TÉCNICO</div>
             <h2 class="tech-title">Tecnologías & Herramientas</h2>
             <p class="tech-subtitle">Todo lo que fue utilizado para construir SIGVOS</p>
         </div>
@@ -502,42 +502,42 @@
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg" alt="Laravel" class="tech-logo">
                 <h4 class="tech-name">Laravel</h4>
                 <div class="tech-ver">v10+</div>
-                <div class="tech-link">Ver más <i class="fas fa-external-link-alt"></i></div>
+                <div class="tech-link">Ver más <i class="fa-solid fa-arrow-up-right-from-square"></i></div>
             </a>
             
             <a href="https://www.php.net/" target="_blank" class="tech-card">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" alt="PHP" class="tech-logo">
                 <h4 class="tech-name">PHP</h4>
                 <div class="tech-ver">v8+</div>
-                <div class="tech-link">Ver más <i class="fas fa-external-link-alt"></i></div>
+                <div class="tech-link">Ver más <i class="fa-solid fa-arrow-up-right-from-square"></i></div>
             </a>
             
             <a href="https://www.mysql.com/" target="_blank" class="tech-card">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" alt="MySQL" class="tech-logo">
                 <h4 class="tech-name">MySQL</h4>
                 <div class="tech-ver">v8+</div>
-                <div class="tech-link">Ver más <i class="fas fa-external-link-alt"></i></div>
+                <div class="tech-link">Ver más <i class="fa-solid fa-arrow-up-right-from-square"></i></div>
             </a>
 
             <a href="https://getbootstrap.com/" target="_blank" class="tech-card">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" alt="Bootstrap" class="tech-logo">
                 <h4 class="tech-name">Bootstrap</h4>
                 <div class="tech-ver">v4/v5</div>
-                <div class="tech-link">Ver más <i class="fas fa-external-link-alt"></i></div>
+                <div class="tech-link">Ver más <i class="fa-solid fa-arrow-up-right-from-square"></i></div>
             </a>
 
             <a href="https://developer.mozilla.org/es/docs/Web/JavaScript" target="_blank" class="tech-card">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript" class="tech-logo">
                 <h4 class="tech-name">JavaScript</h4>
                 <div class="tech-ver">ES6+</div>
-                <div class="tech-link">Ver más <i class="fas fa-external-link-alt"></i></div>
+                <div class="tech-link">Ver más <i class="fa-solid fa-arrow-up-right-from-square"></i></div>
             </a>
 
             <a href="https://github.com/" target="_blank" class="tech-card">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" alt="GitHub" class="tech-logo">
                 <h4 class="tech-name">GitHub</h4>
                 <div class="tech-ver">VCS</div>
-                <div class="tech-link">Ver más <i class="fas fa-external-link-alt"></i></div>
+                <div class="tech-link">Ver más <i class="fa-solid fa-arrow-up-right-from-square"></i></div>
             </a>
         </div>
     </div>

@@ -11,8 +11,8 @@
 
   {{-- Google Font --}}
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  {{-- Font Awesome --}}
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
+  {{-- Font Awesome v6.5.1 CDN Oficial --}}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   {{-- AdminLTE --}}
   <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
   {{-- Estilos personalizados SIGVOS --}}
@@ -23,6 +23,81 @@
       --sigvos-dark:   #164e3b;
       --sigvos-bg:     #f8fafc;
     }
+
+    /* Clases de utilidad Tailwind Pastel e Iconos estandarizados */
+    .bg-emerald-100 { background-color: #d1fae5 !important; }
+    .text-emerald-600 { color: #059669 !important; }
+    .bg-blue-100    { background-color: #dbeafe !important; }
+    .text-blue-600    { color: #2563eb !important; }
+    .bg-amber-100   { background-color: #fef3c7 !important; }
+    .text-amber-600   { color: #d97706 !important; }
+    .bg-red-100     { background-color: #fee2e2 !important; }
+    .text-red-600     { color: #dc2626 !important; }
+    .bg-purple-100  { background-color: #f3e8ff !important; }
+    .text-purple-600  { color: #9333ea !important; }
+    .bg-slate-100   { background-color: #f1f5f9 !important; }
+    .text-slate-600   { color: #475569 !important; }
+
+    .rounded-xl { border-radius: 12px !important; }
+    .rounded-lg { border-radius: 8px !important; }
+
+    /* Flex y Layout utilities para AdminLTE */
+    .flex { display: flex !important; }
+    .inline-flex { display: inline-flex !important; }
+    .items-center { align-items: center !important; }
+    .justify-center { justify-content: center !important; }
+    .justify-between { justify-content: space-between !important; }
+    .flex-shrink-0, .shrink-0 { flex-shrink: 0 !important; }
+    .flex-col { flex-direction: column !important; }
+    .flex-wrap { flex-wrap: wrap !important; }
+
+    /* Contenedor estándar para iconos de métricas y estadísticas */
+    .stat-icon-pastel {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.15rem !important;
+        flex-shrink: 0 !important;
+        line-height: 1 !important;
+        overflow: hidden;
+    }
+    .stat-icon-pastel i {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: inherit !important;
+    }
+
+    /* Botones de acción compactos, estéticos y uniformes para tablas */
+    .btn-action-info, .btn-action-primary, .btn-action-danger, .btn-action-warning {
+        height: 32px !important;
+        min-width: 32px !important;
+        padding: 0 8px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 8px !important;
+        font-size: 0.85rem !important;
+        transition: all 0.2s ease !important;
+        border: none !important;
+        text-decoration: none !important;
+        flex-shrink: 0 !important;
+        cursor: pointer;
+    }
+    .btn-action-info { background-color: #f0fdf4 !important; color: #059669 !important; }
+    .btn-action-info:hover { background-color: #dcfce7 !important; color: #047857 !important; }
+    .btn-action-primary { background-color: #eff6ff !important; color: #2563eb !important; }
+    .btn-action-primary:hover { background-color: #dbeafe !important; color: #1d4ed8 !important; }
+    .btn-action-danger { background-color: #fef2f2 !important; color: #dc2626 !important; }
+    .btn-action-danger:hover { background-color: #fee2e2 !important; color: #b91c1c !important; }
+    .btn-action-warning { background-color: #fffbeb !important; color: #d97706 !important; }
+    .btn-action-warning:hover { background-color: #fef3c7 !important; color: #b45309 !important; }
     
     /* Layout Base */
     body, .content-wrapper { background-color: var(--sigvos-bg) !important; }
@@ -121,31 +196,38 @@
         align-items: center;
         gap: 12px;
     }
-    .top-search-input {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 8px 16px 8px 36px;
-        font-size: 0.875rem;
-        width: 280px;
-        outline: none;
-        color: #475569;
-    }
     .top-search-wrapper {
         position: relative;
     }
-    .top-search-wrapper i.fa-search {
+    .top-search-wrapper i {
         position: absolute;
         left: 12px;
         top: 50%;
         transform: translateY(-50%);
         color: #94a3b8;
+        font-size: 0.85rem;
+        pointer-events: none;
+    }
+    .top-search-input {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 8px 16px 8px 36px;
+        font-size: 0.875rem;
+        width: 270px;
+        outline: none;
+        color: #334155;
+        transition: all 0.2s ease;
+    }
+    .top-search-input:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
     }
     .btn-top-action {
-        background: #f8fafc;
+        background: #ffffff;
         border: 1px solid #e2e8f0;
-        color: #10b981;
-        border-radius: 10px;
+        color: #059669;
+        border-radius: 12px;
         padding: 8px 16px;
         font-size: 0.875rem;
         font-weight: 600;
@@ -153,8 +235,13 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        transition: all 0.2s ease;
     }
-    .btn-top-action:hover { background: #f1f5f9; }
+    .btn-top-action:hover {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+        color: #047857;
+    }
     .btn-top-icon {
         width: 40px;
         height: 40px;
@@ -249,25 +336,27 @@
         font-weight: 500;
     }
     .module-banner {
-        background-color: #f1fcf5;
-        border-top: 1px solid #e2e8f0;
-        border-bottom: 1px solid #e2e8f0;
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border: 1px solid #d1fae5;
+        border-radius: 16px;
         padding: 20px 24px;
-        margin-left: -24px;
-        margin-right: -24px;
-        margin-bottom: 30px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.04);
+        width: 100%;
     }
     .module-banner h3 {
         font-family: 'Outfit', sans-serif;
         font-weight: 800;
-        color: #0f3d2d;
-        font-size: 1.75rem;
+        color: #064e3b;
+        font-size: 1.5rem;
         margin: 0 0 4px 0;
+        line-height: 1.2;
     }
     .module-banner p {
         color: #475569;
-        font-size: 0.95rem;
+        font-size: 0.88rem;
         margin: 0;
+        font-weight: 500;
     }
     .btn-filtros-toggle {
         background: transparent;
@@ -319,7 +408,7 @@
     <ul class="navbar-nav align-items-center">
       <li class="nav-item">
         <a class="nav-link text-slate-400 mr-2" data-widget="pushmenu" href="#" role="button" style="color: #94a3b8;">
-          <i class="fas fa-bars"></i>
+          <i class="fa-solid fa-bars"></i>
         </a>
       </li>
       <li class="nav-item d-none d-sm-inline-block ml-3">
@@ -330,18 +419,20 @@
     {{-- Right: Search, Filters, Notifications --}}
     <ul class="navbar-nav ml-auto top-actions">
         
-        @if (Route::is('dashboard'))
+        @if(auth()->user()?->isAdmin())
         <li class="nav-item d-none d-md-block">
-            <div class="top-search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" class="top-search-input" placeholder="Buscar cultivos, actividades...">
-            </div>
+            <form action="{{ route('busqueda.index') }}" method="GET" class="m-0">
+                <div class="top-search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="q" class="top-search-input" placeholder="Buscar cultivos, actividades..." value="{{ request('q') }}">
+                </div>
+            </form>
         </li>
 
         <li class="nav-item d-none d-md-block">
-            <button class="btn-top-action">
-                <i class="fas fa-sliders-h"></i> Filtros
-            </button>
+            <a href="{{ route('busqueda.index') }}" class="btn-top-action text-decoration-none">
+                <i class="fa-solid fa-sliders"></i> Filtros
+            </a>
         </li>
         @endif
 
@@ -514,7 +605,7 @@
         <li class="nav-item dropdown" style="display:flex; align-items:center;">
             <a class="nav-link notif-bell-btn" data-toggle="dropdown" href="#" id="notif-toggle" title="Notificaciones"
                style="display:flex !important; align-items:center; justify-content:center; visibility:visible !important; opacity:1 !important;">
-                <i class="fas fa-bell"></i>
+                <i class="fa-regular fa-bell"></i>
                 @if($unreadCount > 0)
                     <span class="notif-badge">{{ $unreadCount > 9 ? '9+' : $unreadCount }}</span>
                 @endif
@@ -524,7 +615,7 @@
                 {{-- Header --}}
                 <div class="notif-header">
                     <p class="notif-header-title">
-                        <i class="fas fa-bell"></i>
+                        <i class="fa-solid fa-bell"></i>
                         Notificaciones
                         @if($unreadCount > 0)
                             <span class="notif-count-pill">{{ $unreadCount }} nuevas</span>
@@ -534,7 +625,7 @@
                         <form method="POST" action="{{ route('notificaciones.marcar_todas') }}" style="margin:0">
                             @csrf
                             <button type="submit" class="notif-mark-all-btn">
-                                <i class="fas fa-check-double mr-1"></i> Leer todas
+                                <i class="fa-solid fa-check-double mr-1"></i> Leer todas
                             </button>
                         </form>
                     @endif
@@ -545,24 +636,24 @@
                     @forelse($recentNotifs as $noti)
                         @php
                             $iconMap = [
-                                'actividad' => ['icon' => 'fa-tasks',        'class' => 'icon-info'],
-                                'cultivo'   => ['icon' => 'fa-seedling',     'class' => 'icon-success'],
-                                'alerta'    => ['icon' => 'fa-exclamation-triangle', 'class' => 'icon-warning'],
-                                'cosecha'   => ['icon' => 'fa-leaf',         'class' => 'icon-success'],
-                                'sistema'   => ['icon' => 'fa-cog',          'class' => 'icon-system'],
-                                'error'     => ['icon' => 'fa-times-circle', 'class' => 'icon-danger'],
+                                'actividad' => ['icon' => 'fa-list-check',           'class' => 'icon-info'],
+                                'cultivo'   => ['icon' => 'fa-seedling',             'class' => 'icon-success'],
+                                'alerta'    => ['icon' => 'fa-triangle-exclamation', 'class' => 'icon-warning'],
+                                'cosecha'   => ['icon' => 'fa-leaf',                 'class' => 'icon-success'],
+                                'sistema'   => ['icon' => 'fa-gear',                 'class' => 'icon-system'],
+                                'error'     => ['icon' => 'fa-circle-xmark',         'class' => 'icon-danger'],
                             ];
                             $icono = $iconMap[$noti->tipo] ?? ['icon' => 'fa-bell', 'class' => 'icon-info'];
                         @endphp
                         <a href="{{ route('notificaciones.index') }}"
                            class="notif-item {{ !$noti->leida ? 'unread' : '' }}">
                             <div class="notif-item-icon {{ $icono['class'] }}">
-                                <i class="fas {{ $icono['icon'] }}"></i>
+                                <i class="fa-solid {{ $icono['icon'] }}"></i>
                             </div>
                             <div class="notif-item-body">
                                 <p class="notif-item-title">{{ $noti->titulo }}</p>
                                 <div class="notif-item-time">
-                                    <i class="far fa-clock"></i>
+                                    <i class="fa-regular fa-clock"></i>
                                     {{ $noti->creado_en->diffForHumans() }}
                                 </div>
                             </div>
@@ -572,7 +663,7 @@
                         </a>
                     @empty
                         <div class="notif-empty">
-                            <div class="notif-empty-icon"><i class="fas fa-check"></i></div>
+                            <div class="notif-empty-icon"><i class="fa-solid fa-check"></i></div>
                             <p style="color:#1e293b; font-weight:600; margin:0 0 4px;">¡Todo al día!</p>
                             <p style="color:#94a3b8; font-size:0.8rem; margin:0;">No tienes notificaciones pendientes.</p>
                         </div>
@@ -582,7 +673,7 @@
                 {{-- Footer --}}
                 <div class="notif-footer">
                     <a href="{{ route('notificaciones.index') }}">
-                        Ver todas las notificaciones <i class="fas fa-arrow-right"></i>
+                        Ver todas las notificaciones <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -813,7 +904,7 @@
                 <div class="user-dropdown-body">
                     <a href="{{ route('profile.edit') }}" class="user-menu-item">
                         <div class="user-menu-icon icon-profile">
-                            <i class="fas fa-user-edit"></i>
+                            <i class="fa-solid fa-user-pen"></i>
                         </div>
                         <div>
                             <div style="font-weight:600; font-size:0.83rem;">Mi Perfil</div>
@@ -827,7 +918,7 @@
                         @csrf
                         <button type="submit" class="user-menu-item logout-btn">
                             <div class="user-menu-icon icon-logout">
-                                <i class="fas fa-sign-out-alt"></i>
+                                <i class="fa-solid fa-right-from-bracket"></i>
                             </div>
                             <div>
                                 <div style="font-weight:600; font-size:0.83rem;">Cerrar sesión</div>
@@ -872,7 +963,7 @@
               {{-- Menú para Administradores --}}
               <li class="nav-item">
                 <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <i class="nav-icon fa-solid fa-gauge-high"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
@@ -880,51 +971,56 @@
               <li class="nav-header">AGRÍCOLA</li>
               <li class="nav-item">
                 <a href="{{ route('lotes.index') }}" class="nav-link {{ request()->routeIs('lotes.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-map-marked-alt"></i><p>Lotes</p>
+                  <i class="nav-icon fa-solid fa-map-location-dot"></i><p>Lotes</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('cultivos.index') }}" class="nav-link {{ request()->routeIs('cultivos.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-seedling"></i><p>Cultivos</p>
+                  <i class="nav-icon fa-solid fa-seedling"></i><p>Cultivos</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('asignaciones.index') }}" class="nav-link {{ request()->routeIs('asignaciones.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-user-check"></i><p>Asignaciones</p>
+                  <i class="nav-icon fa-solid fa-user-check"></i><p>Asignaciones</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('actividades.index') }}" class="nav-link {{ request()->routeIs('actividades.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-tasks"></i><p>Actividades</p>
+                  <i class="nav-icon fa-solid fa-list-check"></i><p>Actividades</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('cosecha.index') }}" class="nav-link {{ request()->routeIs('cosecha.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-shopping-basket"></i><p>Cosecha</p>
+                  <i class="nav-icon fa-solid fa-basket-shopping"></i><p>Cosecha</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('fotografias.index') }}" class="nav-link {{ request()->routeIs('fotografias.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-camera"></i><p>Fotografías</p>
+                  <i class="nav-icon fa-solid fa-camera"></i><p>Fotografías</p>
                 </a>
               </li>
 
               <li class="nav-header">PLANIFICACIÓN</li>
               <li class="nav-item">
+                <a href="{{ route('busqueda.index') }}" class="nav-link {{ request()->routeIs('busqueda.*') ? 'active' : '' }}">
+                  <i class="nav-icon fa-solid fa-magnifying-glass"></i><p>Buscador Global</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('calendario.index') }}" class="nav-link {{ request()->routeIs('calendario.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-calendar-alt"></i><p>Calendario</p>
+                  <i class="nav-icon fa-solid fa-calendar-days"></i><p>Calendario</p>
                 </a>
               </li>
 
               <li class="nav-header">ADMINISTRACIÓN</li>
               <li class="nav-item">
                 <a href="{{ route('usuarios.index') }}" class="nav-link {{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-users"></i><p>Usuarios</p>
+                  <i class="nav-icon fa-solid fa-users"></i><p>Usuarios</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-chart-bar"></i><p>Reportes</p>
+                  <i class="nav-icon fa-solid fa-chart-column"></i><p>Reportes</p>
                 </a>
               </li>
           @else
@@ -932,7 +1028,7 @@
               <li class="nav-header">PRINCIPAL</li>
               <li class="nav-item">
                 <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-home"></i>
+                  <i class="nav-icon fa-solid fa-house"></i>
                   <p>Mi Panel</p>
                 </a>
               </li>
@@ -940,22 +1036,22 @@
               <li class="nav-header">OPERACIONES</li>
               <li class="nav-item">
                 <a href="{{ route('lotes.index') }}" class="nav-link {{ request()->routeIs('lotes.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-map"></i><p>Mis Lotes</p>
+                  <i class="nav-icon fa-solid fa-map"></i><p>Mis Lotes</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('cultivos.index') }}" class="nav-link {{ request()->routeIs('cultivos.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-seedling"></i><p>Cultivos</p>
+                  <i class="nav-icon fa-solid fa-seedling"></i><p>Cultivos</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('actividades.index') }}" class="nav-link {{ request()->routeIs('actividades.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-calendar-check"></i><p>Actividades</p>
+                  <i class="nav-icon fa-solid fa-calendar-check"></i><p>Actividades</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('fotografias.index') }}" class="nav-link {{ request()->routeIs('fotografias.*') ? 'active' : '' }}">
-                  <i class="nav-icon fas fa-camera"></i><p>Fotografías</p>
+                  <i class="nav-icon fa-solid fa-camera"></i><p>Fotografías</p>
                 </a>
               </li>
 
@@ -983,7 +1079,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
+                <a href="{{ route('dashboard') }}"><i class="fa-solid fa-house"></i></a>
               </li>
               @yield('breadcrumb')
             </ol>

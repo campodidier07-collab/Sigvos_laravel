@@ -129,7 +129,7 @@
             
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="form-header-title m-0">Registrar Nuevo Lote</h3>
-                <a href="{{ route('lotes.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
+                <a href="{{ route('lotes.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fa-solid fa-xmark"></i></a>
             </div>
             
             <form action="{{ route('lotes.store') }}" method="POST" enctype="multipart/form-data">

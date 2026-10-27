@@ -219,10 +219,10 @@
     <x-module-header 
         title="Actividades" 
         subtitle="Gestión de Tareas y Actividades Agrícolas." 
-        icon="fa-tasks"
+        icon="fa-solid fa-list-check"
     >
         <a href="{{ route('actividades.create') }}" class="btn-primary-custom">
-            <i class="fas fa-plus"></i> Programar Actividad
+            <i class="fa-solid fa-plus"></i> Programar Actividad
         </a>
     </x-module-header>
 
@@ -230,24 +230,50 @@
     <!-- Filtros -->
     <div class="unified-search-bar">
         <form action="{{ route('actividades.index') }}" method="GET" id="form-filtro" class="unified-search-form">
-            <i class="fas fa-search unified-search-icon"></i>
+            <i class="fa-solid fa-magnifying-glass unified-search-icon"></i>
             <input type="text" name="buscar" class="unified-search-input" placeholder="Buscar actividades..." value="{{ request('buscar') }}">
             
             <div class="unified-search-filters-wrapper">
                 <button type="button" class="btn-filtros-toggle" onclick="toggleFiltros(event)">
-                    <i class="fas fa-sliders-h"></i> Filtros
+                    <i class="fa-solid fa-sliders"></i> Filtros
                 </button>
-                <div class="filtros-dropdown-menu" id="unified-filtros-dropdown">
-                    <label class="custom-label mb-2 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Estado de Actividad</label>
-                    <select name="estado" class="custom-input w-100 mb-3" onchange="document.getElementById('form-filtro').submit();">
+                <div class="filtros-dropdown-menu" id="unified-filtros-dropdown" style="min-width: 280px;">
+                    <label class="custom-label mb-1 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Estado de Actividad</label>
+                    <select name="estado" class="custom-input w-100 mb-2">
                         <option value="">Todos los estados</option>
                         <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendientes</option>
                         <option value="completada" {{ request('estado') == 'completada' ? 'selected' : '' }}>Completadas</option>
                         <option value="cancelada" {{ request('estado') == 'cancelada' ? 'selected' : '' }}>Canceladas</option>
                     </select>
+
+                    <label class="custom-label mb-1 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Cultivo Específico</label>
+                    <select name="id_cultivo" class="custom-input w-100 mb-2">
+                        <option value="">Todos los cultivos</option>
+                        @foreach($cultivos as $c)
+                            <option value="{{ $c->id }}" {{ request('id_cultivo') == $c->id ? 'selected' : '' }}>
+                                {{ $c->codigo }} ({{ $c->lote->identificador ?? $c->lote->nombre }})
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <label class="custom-label mb-1 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Tipo de Actividad</label>
+                    <select name="id_tipo_actividad" class="custom-input w-100 mb-3">
+                        <option value="">Todos los tipos</option>
+                        @foreach($tiposActividad as $tipo)
+                            <option value="{{ $tipo->id }}" {{ request('id_tipo_actividad') == $tipo->id ? 'selected' : '' }}>
+                                {{ $tipo->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+
                     <button type="submit" class="btn-primary-custom w-100 justify-content-center py-2" style="font-size:0.875rem;">
                         Aplicar Filtros
                     </button>
+                    @if(request()->anyFilled(['estado', 'id_cultivo', 'id_tipo_actividad', 'buscar']))
+                    <a href="{{ route('actividades.index') }}" class="btn btn-sm btn-link text-danger w-100 text-center mt-2 font-weight-bold" style="font-size: 0.75rem;">
+                        <i class="fa-solid fa-circle-xmark mr-1"></i> Limpiar Filtros
+                    </a>
+                    @endif
                 </div>
             </div>
         </form>
@@ -256,7 +282,7 @@
     <div class="glass-card p-0 overflow-hidden">
         @if($actividades->isEmpty())
             <div class="empty-state">
-                <i class="fas fa-tasks block"></i>
+                <i class="fa-solid fa-list-check block"></i>
                 <p>No hay tareas registradas actualmente.</p>
             </div>
         @else
@@ -290,7 +316,7 @@
                                     {{ $act->cultivo->codigo }}
                                 </a>
                                 <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">
-                                    <i class="fas fa-map-marker-alt text-danger" style="font-size: 0.7rem; margin-right: 2px;"></i> Lote {{ $act->cultivo->lote->identificador }}
+                                    <i class="fa-solid fa-location-dot text-danger" style="font-size: 0.7rem; margin-right: 2px;"></i> Lote {{ $act->cultivo->lote->identificador }}
                                 </div>
                             </td>
                             <td>
@@ -307,9 +333,9 @@
                                 @endphp
                                 <span class="date-badge {{ $isDanger ? 'danger' : '' }}">
                                     @if($isDanger)
-                                        <i class="fas fa-exclamation-circle mr-1"></i>
+                                        <i class="fa-solid fa-circle-exclamation mr-1"></i>
                                     @else
-                                        <i class="far fa-calendar-alt mr-1"></i>
+                                        <i class="fa-regular fa-calendar-days mr-1"></i>
                                     @endif
                                     {{ $act->fecha_programada->format('d/m/Y') }}
                                 </span>
@@ -326,11 +352,11 @@
                             <td>
                                 <div class="actions-flex">
                                     <a href="{{ route('actividades.show', $act) }}" class="btn-action-info" title="Ver Detalles">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="fa-solid fa-eye"></i>
                                     </a>
                                     
                                     <a href="{{ route('actividades.edit', $act) }}" class="btn-action-primary" title="Editar / Reportar">
-                                        <i class="fas fa-pen"></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
 
                                     @if(auth()->user()->isAdmin())
@@ -338,7 +364,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-action-danger" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </form>
                                     @endif

@@ -136,17 +136,29 @@
                         Reportar Tarea #{{ $actividad->id }}
                     @endif
                 </h3>
-                <a href="{{ route('actividades.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
+                <a href="{{ route('actividades.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fa-solid fa-xmark"></i></a>
             </div>
             
             <form action="{{ route('actividades.update', $actividad) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
-                <div class="row mb-4">
                     <div class="col-md-6 mb-3 mb-md-0">
-                        <label class="custom-label">Cultivo Asignado (Lectura)</label>
-                        <input type="text" class="custom-input" value="{{ $actividad->cultivo->codigo }} (Lote {{ $actividad->cultivo->lote->identificador }})" disabled>
+                        <label class="custom-label" for="id_cultivo">Cultivo Objetivo @if(auth()->user()->isAdmin())*@endif</label>
+                        @if(auth()->user()->isAdmin())
+                            <select class="custom-input @error('id_cultivo') is-invalid-custom @enderror" id="id_cultivo" name="id_cultivo" required>
+                                @foreach($cultivos as $c)
+                                    <option value="{{ $c->id }}" {{ old('id_cultivo', $actividad->id_cultivo) == $c->id ? 'selected' : '' }}>
+                                        {{ $c->codigo }} (Lote {{ $c->lote->identificador ?? $c->lote->nombre }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('id_cultivo')
+                                <div class="error-text">{{ $message }}</div>
+                            @enderror
+                        @else
+                            <input type="text" class="custom-input" value="{{ $actividad->cultivo->codigo }} (Lote {{ $actividad->cultivo->lote->identificador }})" disabled>
+                        @endif
                     </div>
 
                     <div class="col-md-6">
@@ -191,7 +203,8 @@
                         <label class="custom-label" for="fecha_programada">Fecha Programada @if(auth()->user()->isAdmin())*@endif</label>
                         @if(auth()->user()->isAdmin())
                             <input type="date" class="custom-input @error('fecha_programada') is-invalid-custom @enderror" 
-                                   id="fecha_programada" name="fecha_programada" value="{{ old('fecha_programada', $actividad->fecha_programada->format('Y-m-d')) }}" required>
+                                   id="fecha_programada" name="fecha_programada" min="{{ date('Y-m-d') }}"
+                                   value="{{ old('fecha_programada', $actividad->fecha_programada->format('Y-m-d')) }}" required>
                             @error('fecha_programada')
                                 <div class="error-text">{{ $message }}</div>
                             @enderror
@@ -200,6 +213,29 @@
                         @endif
                     </div>
                 </div>
+
+                @if(!empty($esRecurrente) && $totalRecurrentes > 1)
+                <!-- Criterio 7: Modificación masiva de actividades recurrentes -->
+                <div class="mb-4 p-3 rounded-lg" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
+                    <label class="custom-label text-success mb-2">
+                        <i class="fa-solid fa-arrows-rotate mr-1"></i> Alcance de la Modificación (Actividad Recurrente)
+                    </label>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="alcance_solo_esta" name="alcance_recurrencia" value="solo_esta" class="custom-control-input" checked>
+                            <label class="custom-control-label font-weight-bold text-dark small" for="alcance_solo_esta">
+                                Aplicar cambios únicamente a esta actividad ({{ $actividad->fecha_programada->format('d/m/Y') }})
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="alcance_todas" name="alcance_recurrencia" value="todas_pendientes" class="custom-control-input">
+                            <label class="custom-control-label font-weight-bold text-dark small" for="alcance_todas">
+                                Aplicar cambios a todas las {{ $totalRecurrentes }} actividades pendientes de esta serie recurrente
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 <div class="mb-4">
                     <label class="custom-label" for="descripcion">Descripción de la Tarea *</label>
@@ -216,7 +252,7 @@
 
                 <!-- Reporte de Ejecución -->
                 <div class="section-divider"></div>
-                <h5 class="section-title"><i class="fas fa-clipboard-check mr-2"></i> Reporte de Ejecución</h5>
+                <h5 class="section-title"><i class="fa-solid fa-clipboard-check mr-2"></i> Reporte de Ejecución</h5>
                 <p class="text-sm text-muted mb-4">Actualiza el estado de la tarea y reporta detalles.</p>
                 
                 <div class="row" style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 24px;">

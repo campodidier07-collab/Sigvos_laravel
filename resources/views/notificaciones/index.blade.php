@@ -223,7 +223,7 @@
 <div class="content-header">
     <div class="container-fluid">
         <div class="d-flex align-items-center gap-2 mb-0">
-            <i class="fas fa-bell text-muted"></i>
+            <i class="fa-solid fa-bell text-muted"></i>
             <span class="text-muted small">Panel &rsaquo; Notificaciones</span>
         </div>
     </div>
@@ -235,14 +235,14 @@
     <x-module-header 
         title="Centro de Notificaciones" 
         subtitle="Estás al día con todas tus notificaciones" 
-        icon="fa-bell"
+        icon="fa-solid fa-bell"
     >
         @php $totalUnread = auth()->user()->notificaciones()->where('leida', false)->count(); @endphp
         @if($totalUnread > 0)
             <form method="POST" action="{{ route('notificaciones.marcar_todas') }}" style="margin:0">
                 @csrf
                 <button type="submit" class="notif-page-mark-btn">
-                    <i class="fas fa-check-double"></i> Marcar todas como leídas
+                    <i class="fa-solid fa-check-double"></i> Marcar todas como leídas
                 </button>
             </form>
         @endif
@@ -253,22 +253,22 @@
     {{-- Filters --}}
     <div class="notif-filters" id="notifFilters">
         <button class="notif-filter-btn active" data-filter="all" onclick="filterNotifs('all', this)">
-            <i class="fas fa-th-large mr-1"></i> Todas
+            <i class="fa-solid fa-table-cells-large mr-1"></i> Todas
         </button>
         <button class="notif-filter-btn" data-filter="unread" onclick="filterNotifs('unread', this)">
-            <i class="fas fa-circle mr-1" style="font-size:0.5rem;vertical-align:middle;color:#10b981;"></i> Sin leer
+            <i class="fa-solid fa-circle mr-1" style="font-size:0.5rem;vertical-align:middle;color:#10b981;"></i> Sin leer
         </button>
         <button class="notif-filter-btn" data-filter="actividad" onclick="filterNotifs('actividad', this)">
-            <i class="fas fa-tasks mr-1"></i> Actividades
+            <i class="fa-solid fa-list-check mr-1"></i> Actividades
         </button>
         <button class="notif-filter-btn" data-filter="cultivo" onclick="filterNotifs('cultivo', this)">
-            <i class="fas fa-seedling mr-1"></i> Cultivos
+            <i class="fa-solid fa-seedling mr-1"></i> Cultivos
         </button>
         <button class="notif-filter-btn" data-filter="alerta" onclick="filterNotifs('alerta', this)">
-            <i class="fas fa-exclamation-triangle mr-1"></i> Alertas
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i> Alertas
         </button>
         <button class="notif-filter-btn" data-filter="cosecha" onclick="filterNotifs('cosecha', this)">
-            <i class="fas fa-leaf mr-1"></i> Cosecha
+            <i class="fa-solid fa-leaf mr-1"></i> Cosecha
         </button>
     </div>
 
@@ -308,7 +308,7 @@
                     @endif
                     <div class="notif-card-meta">
                         <span class="notif-card-time">
-                            <i class="far fa-clock"></i>
+                            <i class="fa-regular fa-clock"></i>
                             {{ $noti->creado_en->diffForHumans() }}
                         </span>
                         @if($noti->tipo)
@@ -327,16 +327,16 @@
                         <form action="{{ route('notificaciones.leida', $noti) }}" method="POST" style="margin:0">
                             @csrf
                             <button type="submit" class="btn-mark-read" title="Marcar como leída">
-                                <i class="fas fa-check mr-1"></i> Leída
+                                <i class="fa-solid fa-check mr-1"></i> Leída
                             </button>
                         </form>
                     @elseif($noti->url)
                         <a href="{{ $noti->url }}" class="btn-go-link">
-                            <i class="fas fa-external-link-alt mr-1"></i> Ver
+                            <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Ver
                         </a>
                     @else
                         <span style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">
-                            <i class="fas fa-check-circle text-success mr-1"></i> Leída
+                            <i class="fa-solid fa-check-circle text-success mr-1"></i> Leída
                         </span>
                     @endif
                 </div>
@@ -344,12 +344,12 @@
         @empty
             <div class="notif-empty-page">
                 <div class="notif-empty-page-icon">
-                    <i class="fas fa-bell-slash"></i>
+                    <i class="fa-solid fa-bell-slash"></i>
                 </div>
                 <h4 style="color:#1e293b; font-weight:700; margin-bottom:8px;">Sin notificaciones</h4>
                 <p style="color:#94a3b8; font-size:0.9rem;">No tienes notificaciones registradas todavía.</p>
                 <a href="{{ route('dashboard') }}" style="color:#059669; font-weight:600; font-size:0.88rem;">
-                    <i class="fas fa-arrow-left mr-1"></i> Volver al panel
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Volver al panel
                 </a>
             </div>
         @endforelse

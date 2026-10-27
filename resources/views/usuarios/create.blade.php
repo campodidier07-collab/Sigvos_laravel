@@ -121,7 +121,7 @@
             
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="form-header-title m-0">Registrar Nuevo Usuario</h3>
-                <a href="{{ route('usuarios.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
+                <a href="{{ route('usuarios.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fa-solid fa-xmark"></i></a>
             </div>
             
             <form action="{{ route('usuarios.store') }}" method="POST">
@@ -174,7 +174,7 @@
                 </div>
 
                 <div class="section-divider"></div>
-                <h5 class="section-title"><i class="fas fa-lock mr-2 text-muted"></i> Credenciales de Acceso</h5>
+                <h5 class="section-title"><i class="fa-solid fa-lock mr-2 text-muted"></i> Credenciales de Acceso</h5>
                 <p class="text-sm text-muted mb-4">Establece la contraseña inicial para este usuario.</p>
 
                 <div class="row">

@@ -43,7 +43,7 @@ class FotoCultivoController extends Controller
         }
 
         $request->validate([
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // Max 5MB
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // Max 5MB
             'descripcion' => 'nullable|string|max:500'
         ]);
 
@@ -53,10 +53,11 @@ class FotoCultivoController extends Controller
             $ruta = $file->store('cultivos', 'public');
 
             FotoCultivo::create([
-                'id_cultivo' => $cultivo->id,
-                'id_usuario' => $usuario->id,
-                'ruta'       => $ruta,
-                'descripcion'=> $request->descripcion,
+                'id_cultivo'    => $cultivo->id,
+                'id_usuario'    => $usuario->id,
+                'ruta'          => $ruta,
+                'descripcion'   => $request->descripcion,
+                'fecha_captura' => $request->filled('fecha_captura') ? $request->fecha_captura : now(),
             ]);
 
             return back()->with('success', 'Fotografía subida correctamente.');

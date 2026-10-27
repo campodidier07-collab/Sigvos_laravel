@@ -145,7 +145,7 @@
             
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="form-header-title m-0">Editar Cultivo</h3>
-                <a href="{{ route('cultivos.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
+                <a href="{{ route('cultivos.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fa-solid fa-xmark"></i></a>
             </div>
             
             <form action="{{ route('cultivos.update', $cultivo) }}" method="POST" enctype="multipart/form-data">
@@ -222,7 +222,7 @@
                 <!-- Campos adicionales si el estado es 'cosechado' -->
                 <div id="div_cosecha" style="display: {{ in_array(old('estado', $cultivo->estado), ['cosechado']) ? 'block' : 'none' }};">
                     <div class="section-divider"></div>
-                    <h5 class="section-title"><i class="fas fa-check-circle mr-2"></i> Datos de la Cosecha</h5>
+                    <h5 class="section-title"><i class="fa-solid fa-circle-check mr-2"></i> Datos de la Cosecha</h5>
                     <p class="text-sm text-muted mb-4">Registrar esta información cerrará el ciclo del cultivo y liberará el lote.</p>
                     
                     <div class="row" style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0;">
@@ -256,7 +256,7 @@
 
                 <!-- Alerta para perdido -->
                 <div id="div_perdido" class="alert-custom-danger" style="display: {{ in_array(old('estado', $cultivo->estado), ['perdido']) ? 'block' : 'none' }};">
-                    <h5><i class="fas fa-ban mr-2"></i> Atención</h5>
+                    <h5><i class="fa-solid fa-ban mr-2"></i> Atención</h5>
                     <p class="mb-0 text-sm">Marcar este cultivo como perdido cerrará su ciclo y liberará el lote para nuevas siembras. Por favor, documenta las razones en las observaciones.</p>
                 </div>
 

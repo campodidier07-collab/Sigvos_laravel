@@ -38,7 +38,7 @@ class Lote extends Model
         return $this->belongsTo(TipoCultivo::class, 'id_tipo_preferido');
     }
 
-    /** Trabajadores asignados a este lote. */
+    /** Trabajadores asignados activamente a este lote. */
     public function trabajadores(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -46,8 +46,14 @@ class Lote extends Model
             'asignaciones_lote',
             'id_lote',
             'id_usuario'
-        )->withPivot(['activo', 'clave_activa', 'asignado_por', 'creado_en'])
+        )->withPivot(['id', 'activo', 'clave_activa', 'asignado_por', 'creado_en'])
          ->wherePivot('activo', true);
+    }
+
+    /** Historial completo de asignaciones de este lote. */
+    public function asignaciones(): HasMany
+    {
+        return $this->hasMany(AsignacionLote::class, 'id_lote')->orderByDesc('creado_en');
     }
 
     /** Historial de cultivos de este lote. */

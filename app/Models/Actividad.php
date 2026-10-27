@@ -22,6 +22,7 @@ class Actividad extends Model
         'descripcion',
         'observaciones',
         'fotografia',
+        'grupo_recurrencia',
     ];
 
     protected function casts(): array

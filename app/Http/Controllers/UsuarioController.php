@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Rol;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -96,7 +99,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * Actualizar usuario.
+     * Actualizar usuario y revocar credenciales si se desactiva.
      */
     public function update(Request $request, Usuario $usuario)
     {
@@ -119,20 +122,40 @@ class UsuarioController extends Controller
             $datos['password'] = Hash::make($datos['password']);
         }
 
-        $datos['activo'] = $request->has('activo');
+        $nuevoEstadoActivo = $request->has('activo');
+        $datos['activo'] = $nuevoEstadoActivo;
 
-        // Evitar que el admin se desactive a sí mismo si es el único
-        if ($usuario->id === auth()->id() && !$datos['activo']) {
-            return back()->withInput()->withErrors(['activo' => 'No puedes desactivar tu propia cuenta activa.']);
+        // Manejo de foto de perfil
+        if ($request->hasFile('foto_perfil')) {
+            $request->validate([
+                'foto_perfil' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            ], [
+                'foto_perfil.image' => 'El archivo debe ser una imagen válida.',
+                'foto_perfil.max'   => 'La foto no debe superar los 2 MB.',
+            ]);
+
+            if ($usuario->foto_perfil && Storage::disk('public')->exists($usuario->foto_perfil)) {
+                Storage::disk('public')->delete($usuario->foto_perfil);
+            }
+
+            $datos['foto_perfil'] = $request->file('foto_perfil')->store('fotos_perfil', 'public');
         }
 
         $usuario->update($datos);
+
+        // Hardening / Seguridad (DP-06 + DP-08): Si el usuario fue desactivado, revocar tokens y sesiones
+        if (!$nuevoEstadoActivo) {
+            $usuario->tokens()->delete();
+            if (Schema::hasTable('sessions')) {
+                DB::table('sessions')->where('user_id', $usuario->id)->delete();
+            }
+        }
 
         return redirect()->route('usuarios.index')->with('success', 'Datos de usuario actualizados.');
     }
 
     /**
-     * Eliminar usuario.
+     * Eliminar usuario o desactivar lógicamente con revocación de accesos.
      */
     public function destroy(Request $request, Usuario $usuario)
     {
@@ -141,10 +164,23 @@ class UsuarioController extends Controller
             return redirect()->route('usuarios.index')->with('error', 'No puedes eliminar tu propia cuenta.');
         }
 
-        // Si el usuario tiene lotes o actividades, mejor hacer soft delete o evitar borrado
+        // Si el usuario tiene lotes o actividades, desactivar lógicamente
         if ($usuario->actividadesCreadas()->count() > 0 || $usuario->actividadesAsignadas()->count() > 0) {
             $usuario->update(['activo' => false]);
+            
+            // Revocar tokens API y sesiones de inmediato
+            $usuario->tokens()->delete();
+            if (Schema::hasTable('sessions')) {
+                DB::table('sessions')->where('user_id', $usuario->id)->delete();
+            }
+
             return redirect()->route('usuarios.index')->with('success', 'El usuario se ha desactivado porque tiene historial en el sistema.');
+        }
+
+        // Revocar tokens y eliminar definitivamente
+        $usuario->tokens()->delete();
+        if (Schema::hasTable('sessions')) {
+            DB::table('sessions')->where('user_id', $usuario->id)->delete();
         }
 
         $usuario->delete();

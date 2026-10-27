@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\Usuario;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -42,11 +43,49 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $email = strtolower($this->string('email'));
+        $usuario = Usuario::where('email', $email)->first();
+
+        // Verificar si la cuenta está bloqueada temporalmente en base de datos
+        if ($usuario && $usuario->bloqueado_hasta && $usuario->bloqueado_hasta->isFuture()) {
+            $minutos = now()->diffInMinutes($usuario->bloqueado_hasta) + 1;
+            throw ValidationException::withMessages([
+                'email' => "Cuenta temporalmente bloqueada por múltiples intentos fallidos. Intenta nuevamente en {$minutos} minuto(s).",
+            ]);
+        }
+
+        // Verificar si la cuenta ha sido desactivada
+        if ($usuario && ! $usuario->activo) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
+                'email' => 'Tu cuenta ha sido desactivada. Comunícate con el administrador.',
+            ]);
+        }
+
+        $credentials = array_merge($this->only('email', 'password'), ['activo' => true]);
+
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey());
+
+            if ($usuario) {
+                $usuario->increment('intentos_fallidos');
+                if ($usuario->intentos_fallidos >= 5) {
+                    $usuario->update(['bloqueado_hasta' => now()->addMinutes(15)]);
+                }
+            }
+
+            throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        // Restablecer contadores y registrar último acceso en caso de éxito
+        if ($usuario) {
+            $usuario->update([
+                'intentos_fallidos' => 0,
+                'bloqueado_hasta'   => null,
+                'ultimo_acceso'     => now(),
             ]);
         }
 

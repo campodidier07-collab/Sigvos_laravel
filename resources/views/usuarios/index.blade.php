@@ -160,6 +160,15 @@
         font-weight: 700;
         font-size: 1rem;
         color: white;
+        overflow: hidden;
+        flex-shrink: 0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
     .avatar-admin { background: #3b82f6; }
     .avatar-worker { background: #10b981; }
@@ -231,22 +240,22 @@
     <x-module-header 
         title="Usuarios" 
         subtitle="Gestión de Administradores y Trabajadores del Sistema." 
-        icon="fa-users"
+        icon="fa-solid fa-users"
     >
         <a href="{{ route('usuarios.create') }}" class="btn-primary-custom">
-            <i class="fas fa-user-plus"></i> Nuevo Usuario
+            <i class="fa-solid fa-user-plus"></i> Nuevo Usuario
         </a>
     </x-module-header>
 
     <!-- Filtros -->
     <div class="unified-search-bar">
         <form action="{{ route('usuarios.index') }}" method="GET" id="form-filtro" class="unified-search-form">
-            <i class="fas fa-search unified-search-icon"></i>
+            <i class="fa-solid fa-magnifying-glass unified-search-icon"></i>
             <input type="text" name="buscar" class="unified-search-input" placeholder="Buscar nombre o correo..." value="{{ request('buscar') }}">
             
             <div class="unified-search-filters-wrapper">
                 <button type="button" class="btn-filtros-toggle" onclick="toggleFiltros(event)">
-                    <i class="fas fa-sliders-h"></i> Filtros
+                    <i class="fa-solid fa-sliders"></i> Filtros
                 </button>
                 <div class="filtros-dropdown-menu" id="unified-filtros-dropdown">
                     <label class="custom-label mb-2 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Rol del Usuario</label>
@@ -267,7 +276,7 @@
     <div class="glass-card p-0 overflow-hidden">
         @if($usuarios->isEmpty())
             <div class="empty-state">
-                <i class="fas fa-users block"></i>
+                <i class="fa-solid fa-users block"></i>
                 <p>No se encontraron usuarios registrados.</p>
             </div>
         @else
@@ -289,7 +298,16 @@
                             <td>
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <div class="user-avatar {{ $user->isAdmin() ? 'avatar-admin' : 'avatar-worker' }}">
-                                        {{ strtoupper(substr($user->nombre, 0, 1)) }}
+                                        @if($user->foto_perfil)
+                                            <img src="{{ asset('storage/' . $user->foto_perfil) }}" 
+                                                 alt="{{ $user->nombre }}" 
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <span style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center;">
+                                                {{ strtoupper(substr($user->nombre, 0, 1)) }}
+                                            </span>
+                                        @else
+                                            {{ strtoupper(substr($user->nombre, 0, 1)) }}
+                                        @endif
                                     </div>
                                     <div>
                                         <div style="font-weight: 700; color: #16332b;">
@@ -306,12 +324,12 @@
                                     {{ $user->email }}
                                 </a>
                                 <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">
-                                    <i class="fas fa-phone" style="font-size: 0.7rem; margin-right: 2px;"></i> {{ $user->telefono ?? 'N/A' }}
+                                    <i class="fa-solid fa-phone" style="font-size: 0.7rem; margin-right: 2px;"></i> {{ $user->telefono ?? 'N/A' }}
                                 </div>
                             </td>
                             <td>
                                 <span class="role-badge {{ !$user->isAdmin() ? 'worker' : '' }}">
-                                    <i class="fas {{ $user->isAdmin() ? 'fa-user-shield' : 'fa-user-hard-hat' }}"></i>
+                                    <i class="fa-solid {{ $user->isAdmin() ? 'fa-user-shield' : 'fa-helmet-safety' }}"></i>
                                     {{ $user->rol->nombre }}
                                 </span>
                             </td>
@@ -330,11 +348,11 @@
                             <td>
                                 <div class="actions-flex">
                                     <a href="{{ route('usuarios.show', $user) }}" class="btn-action-info" title="Ver Perfil">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="fa-solid fa-eye"></i>
                                     </a>
                                     
                                     <a href="{{ route('usuarios.edit', $user) }}" class="btn-action-primary" title="Editar">
-                                        <i class="fas fa-pen"></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
 
                                     @if($user->id !== auth()->id())
@@ -342,7 +360,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-action-danger" title="Eliminar / Desactivar">
-                                            <i class="fas fa-ban"></i>
+                                            <i class="fa-solid fa-ban"></i>
                                         </button>
                                     </form>
                                     @endif

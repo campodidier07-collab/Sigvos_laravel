@@ -171,12 +171,30 @@
             
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="form-header-title m-0">Editar Usuario: {{ $usuario->nombre }}</h3>
-                <a href="{{ route('usuarios.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
+                <a href="{{ route('usuarios.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fa-solid fa-xmark"></i></a>
             </div>
             
-            <form action="{{ route('usuarios.update', $usuario) }}" method="POST">
+            <form action="{{ route('usuarios.update', $usuario) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                <!-- Foto de Perfil Actual y Carga -->
+                <div class="d-flex align-items-center mb-4 p-3" style="background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; gap: 20px;">
+                    <div style="width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: #e2e8f0; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center;">
+                        @if($usuario->foto_perfil)
+                            <img id="editAvatarPreview" src="{{ asset('storage/' . $usuario->foto_perfil) }}" alt="{{ $usuario->nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        @else
+                            <div id="editAvatarPreviewText" style="width: 100%; height: 100%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800;">
+                                {{ strtoupper(substr($usuario->nombre, 0, 1)) }}
+                            </div>
+                        @endif
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <label class="custom-label mb-1" for="foto_perfil">Fotografía de Perfil</label>
+                        <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="form-control-file" style="font-size: 0.85rem;" onchange="previewEditAvatar(this)">
+                        <small class="text-muted d-block mt-1">Formatos permitidos: JPG, PNG, WEBP (máx. 2MB)</small>
+                    </div>
+                </div>
                 
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3 mb-md-0">
@@ -247,7 +265,7 @@
                 </div>
 
                 <div class="section-divider"></div>
-                <h5 class="section-title"><i class="fas fa-lock mr-2 text-muted"></i> Actualizar Contraseña</h5>
+                <h5 class="section-title"><i class="fa-solid fa-lock mr-2 text-muted"></i> Actualizar Contraseña</h5>
                 <p class="text-sm text-muted mb-4">Deja estos campos en blanco si no deseas cambiar la contraseña actual.</p>
 
                 <div class="row" style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0;">
@@ -286,3 +304,33 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function previewEditAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let img = document.getElementById('editAvatarPreview');
+            const placeholder = document.getElementById('editAvatarPreviewText');
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+            if (!img) {
+                img = document.createElement('img');
+                img.id = 'editAvatarPreview';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                if (placeholder && placeholder.parentElement) {
+                    placeholder.parentElement.appendChild(img);
+                }
+            }
+            img.src = e.target.result;
+            img.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+@endpush

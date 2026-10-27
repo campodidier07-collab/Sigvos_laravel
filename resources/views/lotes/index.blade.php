@@ -154,11 +154,11 @@
     <x-module-header 
         title="Lotes" 
         subtitle="Gestión y registro de lotes de la finca." 
-        icon="fa-map-marked-alt"
+        icon="fa-solid fa-map-location-dot"
     >
         @if(auth()->user()->isAdmin())
         <a href="{{ route('lotes.create') }}" class="btn-add-lote shadow-sm">
-            <i class="fas fa-plus mr-1"></i> Nuevo Lote
+            <i class="fa-solid fa-plus mr-1"></i> Nuevo Lote
         </a>
         @endif
     </x-module-header>
@@ -166,12 +166,12 @@
     <!-- Filtros -->
     <div class="unified-search-bar">
         <form action="{{ route('lotes.index') }}" method="GET" id="form-filtro" class="unified-search-form">
-            <i class="fas fa-search unified-search-icon"></i>
+            <i class="fa-solid fa-magnifying-glass unified-search-icon"></i>
             <input type="text" name="buscar" class="unified-search-input" placeholder="Buscar lotes..." value="{{ request('buscar') }}">
             
             <div class="unified-search-filters-wrapper">
                 <button type="button" class="btn-filtros-toggle" onclick="toggleFiltros(event)">
-                    <i class="fas fa-sliders-h"></i> Filtros
+                    <i class="fa-solid fa-sliders"></i> Filtros
                 </button>
                 <div class="filtros-dropdown-menu" id="unified-filtros-dropdown">
                     <label class="custom-label mb-2 d-block" style="font-size:0.75rem; color:#64748b; font-weight:700;">Estado del Lote</label>
@@ -227,7 +227,7 @@
                                 <img src="{{ asset('storage/' . $l->fotografia) }}" alt="Lote" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
                             @else
                                 <div style="width: 40px; height: 40px; border-radius: 8px; background: #f1f5f9; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                                    <i class="fas fa-map text-sm"></i>
+                                    <i class="fa-solid fa-map text-sm"></i>
                                 </div>
                             @endif
                         </td>
@@ -247,18 +247,18 @@
                         </td>
                         <td class="text-right">
                             <div class="d-flex justify-content-end" style="gap: 8px;">
-                                <a href="{{ route('lotes.show', $l) }}" class="btn-action-info">
-                                    <i class="fas fa-eye"></i>
+                                <a href="{{ route('lotes.show', $l) }}" class="btn-action-info" title="Ver detalle">
+                                    <i class="fa-solid fa-eye"></i>
                                 </a>
                                 @if(auth()->user()->isAdmin())
                                 <a href="{{ route('lotes.edit', $l) }}" class="btn-action-primary" title="Editar">
-                                    <i class="fas fa-pen"></i>
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 <form action="{{ route('lotes.destroy', $l) }}" method="POST" class="d-inline" onsubmit="confirmarEliminacion(event, this, '¿Eliminar lote?', '¿Estás seguro de eliminar el lote {{ addslashes($l->nombre) }}?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-action-danger" title="Eliminar">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </form>
                                 @endif
@@ -268,8 +268,15 @@
                     @empty
                     <tr>
                         <td colspan="7" class="text-center py-5 text-muted">
-                            <i class="fas fa-map" style="font-size: 3rem; color: #e2e8f0; margin-bottom: 16px;"></i>
-                            <p style="font-size: 0.875rem; color: #94a3b8; margin: 0;">No hay lotes registrados aún.</p>
+                            <i class="fa-solid fa-layer-group" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 16px;"></i>
+                            @if(auth()->user()->esTrabajador())
+                                <h5 class="font-weight-bold text-dark mt-2">Sin asignaciones activas</h5>
+                                <p style="font-size: 0.875rem; color: #64748b; margin: 0; max-width: 450px; margin-inline: auto;">
+                                    Actualmente no tienes lotes activos asignados bajo tu responsabilidad. El administrador debe asignarte uno para que puedas visualizarlo aquí.
+                                </p>
+                            @else
+                                <p style="font-size: 0.875rem; color: #94a3b8; margin: 0;">No hay lotes registrados aún.</p>
+                            @endif
                         </td>
                     </tr>
                     @endforelse

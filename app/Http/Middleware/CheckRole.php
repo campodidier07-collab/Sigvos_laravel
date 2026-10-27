@@ -41,7 +41,7 @@ class CheckRole
         }
 
         // Verifica bloqueo temporal
-        if ($user->blocked_until && $user->blocked_until->isFuture()) {
+        if ($user->bloqueado_hasta && $user->bloqueado_hasta->isFuture()) {
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

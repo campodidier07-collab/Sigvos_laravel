@@ -193,19 +193,19 @@
     <x-module-header 
         title="Galería de Fotografías" 
         subtitle="Visualiza y organiza las imágenes de lotes, cultivos y el progreso de siembras." 
-        icon="fa-images"
+        icon="fa-solid fa-images"
     />
 
     <!-- Pestañas -->
     <div class="custom-tabs">
         <button class="custom-tab-btn active" onclick="openTab('tab-cultivos', this)">
-            <i class="fas fa-seedling mr-2"></i> Portadas de Cultivos
+            <i class="fa-solid fa-seedling mr-2"></i> Portadas de Cultivos
         </button>
         <button class="custom-tab-btn" onclick="openTab('tab-lotes', this)">
-            <i class="fas fa-map mr-2"></i> Portadas de Lotes
+            <i class="fa-solid fa-map mr-2"></i> Portadas de Lotes
         </button>
         <button class="custom-tab-btn" onclick="openTab('tab-actividades', this)">
-            <i class="fas fa-clipboard-check mr-2"></i> Evidencia de Actividades
+            <i class="fa-solid fa-clipboard-check mr-2"></i> Evidencia de Actividades
         </button>
     </div>
 
@@ -213,7 +213,7 @@
     <div id="tab-actividades" class="tab-content-pane">
         @if($actividades->isEmpty())
             <div class="glass-card empty-state">
-                <i class="fas fa-clipboard-check block"></i>
+                <i class="fa-solid fa-clipboard-check block"></i>
                 <h5>Aún no se han registrado evidencias de actividades.</h5>
                 <p>Las fotos se suben directamente al registrar o completar una actividad agrícola.</p>
             </div>
@@ -240,8 +240,8 @@
                             @endif
                         </p>
                         <div class="photo-meta">
-                            <span><i class="far fa-user mr-1"></i> {{ explode(' ', $actividad->ejecutadoPor->nombre ?? 'Usuario')[0] }}</span>
-                            <span><i class="far fa-calendar-alt mr-1"></i> {{ $actividad->fecha_programada->format('d M Y') }}</span>
+                            <span><i class="fa-regular fa-user mr-1"></i> {{ explode(' ', $actividad->ejecutadoPor->nombre ?? 'Usuario')[0] }}</span>
+                            <span><i class="fa-regular fa-calendar-days mr-1"></i> {{ $actividad->fecha_programada->format('d M Y') }}</span>
                         </div>
                     </div>
                 </div>
@@ -254,7 +254,7 @@
     <div id="tab-cultivos" class="tab-content-pane active">
         @if($cultivos->isEmpty())
             <div class="glass-card empty-state">
-                <i class="fas fa-seedling block"></i>
+                <i class="fa-solid fa-seedling block"></i>
                 <h5>No hay cultivos con imagen de portada.</h5>
                 <p>Puedes subir una imagen principal al crear o editar un cultivo.</p>
             </div>
@@ -278,7 +278,7 @@
                         </p>
                         <p class="text-center text-sm text-muted mb-3">{{ $cultivo->variedad->nombre ?? 'Sin variedad' }}</p>
                         <div class="photo-meta text-center" style="justify-content: center;">
-                            <a href="{{ route('cultivos.show', $cultivo) }}" style="color: #2563eb; text-decoration: none; font-weight: 600;">Ver Cultivo <i class="fas fa-arrow-right ml-1"></i></a>
+                            <a href="{{ route('cultivos.show', $cultivo) }}" style="color: #2563eb; text-decoration: none; font-weight: 600;">Ver Cultivo <i class="fa-solid fa-arrow-right ml-1"></i></a>
                         </div>
                     </div>
                 </div>
@@ -291,7 +291,7 @@
     <div id="tab-lotes" class="tab-content-pane">
         @if($lotes->isEmpty())
             <div class="glass-card empty-state">
-                <i class="fas fa-map block"></i>
+                <i class="fa-solid fa-map block"></i>
                 <h5>No hay lotes con imagen de portada.</h5>
                 <p>Puedes subir una imagen principal al crear o editar un lote.</p>
             </div>
@@ -315,7 +315,7 @@
                         </p>
                         <p class="text-center text-sm text-muted mb-3">{{ Str::limit($lote->ubicacion, 35) }}</p>
                         <div class="photo-meta text-center" style="justify-content: center;">
-                            <a href="{{ route('lotes.show', $lote) }}" style="color: #2563eb; text-decoration: none; font-weight: 600;">Ver Lote <i class="fas fa-arrow-right ml-1"></i></a>
+                            <a href="{{ route('lotes.show', $lote) }}" style="color: #2563eb; text-decoration: none; font-weight: 600;">Ver Lote <i class="fa-solid fa-arrow-right ml-1"></i></a>
                         </div>
                     </div>
                 </div>

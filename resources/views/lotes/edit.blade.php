@@ -134,8 +134,22 @@
             
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="form-header-title m-0">Editar Lote</h3>
-                <a href="{{ route('lotes.index') }}" class="text-muted" style="font-size: 1.25rem;"><i class="fas fa-times"></i></a>
+                <a href="{{ route('lotes.show', $lote) }}" class="text-muted" style="font-size: 1.25rem;" title="Cancelar"><i class="fa-solid fa-xmark"></i></a>
             </div>
+
+            @if($lote->cultivoActivo)
+                <div class="alert mb-4" style="border-radius: 14px; border-left: 5px solid #f59e0b; background-color: #fffbeb; color: #92400e; padding: 16px; box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1);">
+                    <div class="d-flex align-items-start">
+                        <i class="fa-solid fa-triangle-exclamation fa-2x mr-3 text-warning mt-1"></i>
+                        <div>
+                            <strong style="font-size: 1rem; color: #78350f;">Lote con Cultivo Activo ({{ $lote->cultivoActivo->codigo }})</strong>
+                            <p class="mb-0 text-sm mt-1" style="color: #92400e;">
+                                Este lote tiene actualmente un cultivo en desarrollo. Para evitar inconsistencias agronómicas y de rendimientos, el <strong>área del terreno se encuentra protegida</strong> y no puede ser modificada hasta finalizar la cosecha.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
             
             <form action="{{ route('lotes.update', $lote) }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -143,19 +157,42 @@
                 
                 <div class="row mb-3">
                     <div class="col-md-6 mb-3 mb-md-0">
-                        <label class="custom-label" for="identificador">Identificador *</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="custom-label mb-0" for="identificador">Identificador *</label>
+                            <span class="badge badge-secondary" style="font-size: 0.7rem; background-color: #64748b; padding: 3px 6px; border-radius: 6px;">
+                                <i class="fa-solid fa-lock mr-1"></i> Bloqueado
+                            </span>
+                        </div>
                         <input type="text" class="custom-input @error('identificador') is-invalid-custom @enderror" 
                                id="identificador" name="identificador" value="{{ old('identificador', $lote->identificador) }}" 
-                               placeholder="Ej: A" maxlength="1" required style="text-transform: uppercase;">
+                               readonly style="background-color: #f1f5f9; color: #64748b; cursor: not-allowed; font-weight: 700; letter-spacing: 0.05em;">
+                        <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                            <i class="fa-solid fa-circle-info mr-1"></i> El identificador único no puede ser modificado.
+                        </small>
                         @error('identificador')
                             <div class="error-text">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="custom-label" for="area_ha">Área (ha) *</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="custom-label mb-0" for="area_ha">Área (ha) *</label>
+                            @if($lote->cultivoActivo)
+                                <span class="badge badge-warning" style="font-size: 0.7rem; background-color: #f59e0b; color: white; padding: 3px 6px; border-radius: 6px;">
+                                    <i class="fa-solid fa-lock mr-1"></i> Protegido
+                                </span>
+                            @endif
+                        </div>
                         <input type="number" step="0.01" min="0.01" class="custom-input @error('area_ha') is-invalid-custom @enderror" 
                                id="area_ha" name="area_ha" value="{{ old('area_ha', $lote->area_ha) }}" 
-                               placeholder="Ej: 2.5" required>
+                               placeholder="Ej: 2.5" required
+                               @if($lote->cultivoActivo) readonly style="background-color: #f1f5f9; cursor: not-allowed;" @endif>
+                        @if($lote->cultivoActivo)
+                            <small class="text-warning font-weight-bold d-block mt-1" style="font-size: 0.75rem;">
+                                <i class="fa-solid fa-shield-halved mr-1"></i> Modificación limitada por cultivo activo.
+                            </small>
+                        @else
+                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Mínimo permitido: 0.01 ha.</small>
+                        @endif
                         @error('area_ha')
                             <div class="error-text">{{ $message }}</div>
                         @enderror
@@ -204,7 +241,7 @@
                         </label>
                         <label class="checkbox-wrapper m-0">
                             <input type="checkbox" class="checkbox-custom" id="activo" name="activo" value="1" {{ old('activo', $lote->activo) ? 'checked' : '' }}>
-                            <span class="checkbox-label" style="color: {{ old('activo', $lote->activo) ? '#059669' : '#ef4444' }};">Lote Activo</span>
+                            <span class="checkbox-label {{ old('activo', $lote->activo) ? 'text-success' : 'text-danger' }}">Lote Activo</span>
                         </label>
                     </div>
                 </div>
@@ -229,7 +266,7 @@
 
                 <div class="row mt-5">
                     <div class="col-6">
-                        <a href="{{ route('lotes.index') }}" class="btn-cancel-custom">
+                        <a href="{{ route('lotes.show', $lote) }}" class="btn-cancel-custom" id="btn-cancelar-edicion">
                             Cancelar
                         </a>
                     </div>

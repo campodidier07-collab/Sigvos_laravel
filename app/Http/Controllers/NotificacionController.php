@@ -12,8 +12,15 @@ class NotificacionController extends Controller
      */
     public function index(Request $request)
     {
+        // HU DP-18 Criterio 1: Ordenadas por prioridad (alta -> media -> baja) y fecha más reciente
         $notificaciones = $request->user()->notificaciones()
-            ->orderByDesc('created_at')
+            ->orderByRaw("CASE
+                WHEN prioridad = 'alta' THEN 1
+                WHEN prioridad = 'media' THEN 2
+                WHEN prioridad = 'baja' THEN 3
+                ELSE 4
+            END ASC")
+            ->orderByDesc('creado_en')
             ->paginate(15);
             
         return view('notificaciones.index', compact('notificaciones'));

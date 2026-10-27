@@ -7,7 +7,7 @@
     <link rel="icon" href="{{ asset('img/icono-pagina.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/output.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f2fbf5; }
         h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Outfit', sans-serif; }
@@ -89,12 +89,12 @@
                 <!-- Stats / Info -->
                 <div class="grid grid-cols-2 gap-4 mt-8">
                     <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 animate-float" style="animation-delay: 0s;">
-                        <div class="text-agro-300 mb-2"><i class="fas fa-chart-line text-2xl"></i></div>
+                        <div class="text-agro-300 mb-2"><i class="fa-solid fa-chart-line text-2xl"></i></div>
                         <h4 class="font-bold text-lg">Productividad</h4>
                         <p class="text-xs text-agro-100 opacity-80">Métricas exactas de cosecha</p>
                     </div>
                     <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 animate-float" style="animation-delay: 1s;">
-                        <div class="text-agro-300 mb-2"><i class="fas fa-seedling text-2xl"></i></div>
+                        <div class="text-agro-300 mb-2"><i class="fa-solid fa-seedling text-2xl"></i></div>
                         <h4 class="font-bold text-lg">Trazabilidad</h4>
                         <p class="text-xs text-agro-100 opacity-80">Historial completo del lote</p>
                     </div>
@@ -133,7 +133,7 @@
                 @if ($errors->any())
                 <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
                     <div class="flex items-center gap-2 mb-1 font-bold">
-                        <i class="fas fa-exclamation-circle"></i> Acceso denegado
+                        <i class="fa-solid fa-circle-exclamation"></i> Acceso denegado
                     </div>
                     @foreach ($errors->all() as $error)
                         <p>{{ $error }}</p>
@@ -144,7 +144,7 @@
                 @if (session('status'))
                 <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">
                     <div class="flex items-center gap-2 font-bold">
-                        <i class="fas fa-check-circle"></i> {{ session('status') }}
+                        <i class="fa-solid fa-circle-check"></i> {{ session('status') }}
                     </div>
                 </div>
                 @endif
@@ -155,7 +155,7 @@
                     <!-- Email -->
                     <div class="input-group">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 z-10 pointer-events-none">
-                            <i class="fas fa-envelope text-sm"></i>
+                            <i class="fa-solid fa-envelope text-sm"></i>
                         </span>
                         <input type="email" name="email" id="email" placeholder=" " required
                             value="{{ old('email') }}"
@@ -166,7 +166,7 @@
                     <!-- Contraseña -->
                     <div class="input-group">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 z-10 pointer-events-none">
-                            <i class="fas fa-lock text-sm"></i>
+                            <i class="fa-solid fa-lock text-sm"></i>
                         </span>
                         <input type="password" name="password" id="password" placeholder=" " required
                             class="w-full pl-11 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none transition-all text-sm text-gray-900 font-medium">
@@ -174,7 +174,7 @@
                         <!-- Toggle ojo -->
                         <button type="button" id="togglePass" aria-label="Mostrar contraseña"
                             class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-agro-600 transition-colors z-10 focus:outline-none">
-                            <i class="fas fa-eye text-sm" id="eyeIcon"></i>
+                            <i class="fa-solid fa-eye text-sm" id="eyeIcon"></i>
                         </button>
                     </div>
 
@@ -183,7 +183,7 @@
                         <label class="flex items-center gap-2 cursor-pointer select-none group">
                             <div class="relative flex items-center justify-center">
                                 <input type="checkbox" name="remember" id="remember" class="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-md checked:bg-agro-500 checked:border-agro-500 transition-all cursor-pointer focus:ring-2 focus:ring-agro-500/30 outline-none">
-                                <i class="fas fa-check absolute text-white text-xs opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></i>
+                                <i class="fa-solid fa-check absolute text-white text-xs opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></i>
                             </div>
                             <span class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">Recordar mi sesión</span>
                         </label>
@@ -196,7 +196,7 @@
                     <button type="submit" id="submitBtn"
                         class="w-full bg-agro-600 hover:bg-agro-500 text-white font-bold py-4 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(43,132,90,0.3)] hover:shadow-[0_0_25px_rgba(43,132,90,0.5)] flex items-center justify-center gap-2 mt-4 hover:-translate-y-1">
                         <span id="btnText" class="tracking-wide">Ingresar al Panel</span>
-                        <i class="fas fa-arrow-right text-sm" id="btnIcon"></i>
+                        <i class="fa-solid fa-arrow-right text-sm" id="btnIcon"></i>
                         <svg id="btnSpinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
@@ -219,7 +219,7 @@
                 <div class="mt-8 flex justify-center">
                     <a href="{{ url('/') }}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-agro-600 transition-colors group">
                         <span class="w-8 h-8 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center mr-3 group-hover:bg-agro-50 group-hover:border-agro-200 transition-colors">
-                            <i class="fas fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i>
+                            <i class="fa-solid fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i>
                         </span>
                         Volver al inicio
                     </a>
@@ -237,7 +237,7 @@
         togglePass.addEventListener('click', () => {
             const isPassword = passwordInput.type === 'password';
             passwordInput.type = isPassword ? 'text' : 'password';
-            eyeIcon.className = isPassword ? 'fas fa-eye-slash text-sm' : 'fas fa-eye text-sm';
+            eyeIcon.className = isPassword ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm';
         });
 
         // Loading state al hacer submit
