@@ -288,7 +288,7 @@
                         <tr>
                             <td>
                                 @if($cultivo->fotografia)
-                                    <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Cultivo" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Cultivo" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;" onerror="this.onerror=null; this.src='/storage/cultivos/default.svg';">
                                 @else
                                     <div style="width: 40px; height: 40px; border-radius: 8px; background: #f1f5f9; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
                                         <i class="fa-solid fa-seedling text-sm"></i>

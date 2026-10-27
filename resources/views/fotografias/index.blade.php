@@ -223,7 +223,7 @@
                 <div class="photo-card">
                     <div class="photo-wrapper">
                         <a href="{{ asset('storage/' . $actividad->fotografia) }}" target="_blank">
-                            <img src="{{ asset('storage/' . $actividad->fotografia) }}" alt="Evidencia de actividad">
+                            <img src="{{ asset('storage/' . $actividad->fotografia) }}" alt="Evidencia de actividad" onerror="this.onerror=null; this.src='/storage/actividades/default.svg';">
                         </a>
                         <div class="photo-overlay">
                             <span class="photo-badge" style="background: rgba(245, 158, 11, 0.8);">
@@ -264,7 +264,7 @@
                 <div class="photo-card">
                     <div class="photo-wrapper">
                         <a href="{{ asset('storage/' . $cultivo->fotografia) }}" target="_blank">
-                            <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Portada de Cultivo">
+                            <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Portada de Cultivo" onerror="this.onerror=null; this.src='/storage/cultivos/default.svg';">
                         </a>
                         <div class="photo-overlay">
                             <span class="photo-badge" style="background: rgba(16, 185, 129, 0.8);">
@@ -301,7 +301,7 @@
                 <div class="photo-card">
                     <div class="photo-wrapper">
                         <a href="{{ asset('storage/' . $lote->fotografia) }}" target="_blank">
-                            <img src="{{ asset('storage/' . $lote->fotografia) }}" alt="Portada de Lote">
+                            <img src="{{ asset('storage/' . $lote->fotografia) }}" alt="Portada de Lote" onerror="this.onerror=null; this.src='/storage/lotes/default.svg';">
                         </a>
                         <div class="photo-overlay">
                             <span class="photo-badge" style="background: rgba(37, 99, 235, 0.8);">

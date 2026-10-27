@@ -182,7 +182,7 @@
                 <div class="d-flex align-items-center mb-4 p-3" style="background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; gap: 20px;">
                     <div style="width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: #e2e8f0; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center;">
                         @if($usuario->foto_perfil)
-                            <img id="editAvatarPreview" src="{{ asset('storage/' . $usuario->foto_perfil) }}" alt="{{ $usuario->nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img id="editAvatarPreview" src="{{ asset('storage/' . $usuario->foto_perfil) }}" alt="{{ $usuario->nombre }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/storage/fotos_perfil/default.svg';">
                         @else
                             <div id="editAvatarPreviewText" style="width: 100%; height: 100%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800;">
                                 {{ strtoupper(substr($usuario->nombre, 0, 1)) }}

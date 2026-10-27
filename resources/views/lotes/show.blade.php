@@ -397,7 +397,7 @@
                     @if($lote->fotografia)
                         <div class="lote-hero-media">
                             <a href="{{ asset('storage/' . $lote->fotografia) }}" target="_blank" title="Ver fotografía en tamaño completo">
-                                <img src="{{ asset('storage/' . $lote->fotografia) }}" alt="Fotografía del {{ $lote->nombre }}" class="lote-hero-img">
+                                <img src="{{ asset('storage/' . $lote->fotografia) }}" alt="Fotografía del {{ $lote->nombre }}" class="lote-hero-img" onerror="this.onerror=null; this.src='/storage/lotes/default.svg';">
                                 <div class="lote-hero-overlay"></div>
                                 <div class="lote-hero-zoom">
                                     <i class="fa-solid fa-expand"></i>

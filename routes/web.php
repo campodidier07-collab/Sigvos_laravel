@@ -89,4 +89,10 @@ Route::middleware(['auth', 'verified', 'role:admin,worker'])->group(function () 
     });
 });
 
+// ── Manejo inteligente de assets y fotografías en storage (Fallback ante archivos faltantes) ──
+Route::get('/storage/{folder}/{filename}', [\App\Http\Controllers\StorageFallbackController::class, 'serve'])
+    ->where('folder', '[a-zA-Z0-9_-]+')
+    ->where('filename', '.*')
+    ->name('storage.fallback');
+
 require __DIR__.'/auth.php';

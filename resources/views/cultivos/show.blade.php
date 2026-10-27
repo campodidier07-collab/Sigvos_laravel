@@ -450,7 +450,7 @@
                     @if($cultivo->fotografia)
                         <div class="cultivo-hero-media">
                             <a href="{{ asset('storage/' . $cultivo->fotografia) }}" target="_blank" title="Ver fotografía en tamaño completo">
-                                <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Fotografía del cultivo {{ $cultivo->codigo }}" class="cultivo-hero-img">
+                                <img src="{{ asset('storage/' . $cultivo->fotografia) }}" alt="Fotografía del cultivo {{ $cultivo->codigo }}" class="cultivo-hero-img" onerror="this.onerror=null; this.src='/storage/cultivos/default.svg';">
                                 <div class="cultivo-hero-overlay"></div>
                                 <div class="cultivo-hero-zoom">
                                     <i class="fa-solid fa-expand"></i>

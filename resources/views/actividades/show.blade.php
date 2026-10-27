@@ -544,7 +544,7 @@
                                     <div class="info-label mb-2"><i class="fa-solid fa-camera mr-1"></i> Evidencia Fotográfica de la Labor</div>
                                     <div class="evidencia-card">
                                         <a href="{{ asset('storage/' . $actividad->fotografia) }}" target="_blank" title="Ver fotografía en tamaño completo">
-                                            <img src="{{ asset('storage/' . $actividad->fotografia) }}" alt="Evidencia de actividad" class="evidencia-img">
+                                            <img src="{{ asset('storage/' . $actividad->fotografia) }}" alt="Evidencia de actividad" class="evidencia-img" onerror="this.onerror=null; this.src='/storage/actividades/default.svg';">
                                         </a>
                                     </div>
                                 </div>
@@ -581,11 +581,11 @@
                     <!-- Pie de Auditoría -->
                     <div class="d-flex justify-content-between align-items-center text-muted text-xs pt-3 border-top mt-4 flex-wrap" style="gap: 8px;">
                         <span>
-                            <i class="fa-solid fa-user-pen mr-1"></i> Programada por: 
+                            <i class="fa-solid fa-user-pen mr-1"></i> Programada por:
                             <strong>{{ $actividad->creadoPor->nombre ?? 'Administrador' }}</strong>
                         </span>
                         <span>
-                            <i class="fa-regular fa-clock mr-1"></i> Registrada el: 
+                            <i class="fa-regular fa-clock mr-1"></i> Registrada el:
                             <strong>{{ $actividad->created_at ? $actividad->created_at->format('d/m/Y H:i') : 'N/A' }}</strong>
                         </span>
                     </div>

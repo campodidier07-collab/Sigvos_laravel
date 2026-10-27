@@ -203,7 +203,7 @@
                     <input type="file" id="avatarInput" name="foto_perfil" accept="image/*" style="display:none">
                     <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()" title="Cambiar foto">
                         @if(auth()->user()->foto_perfil)
-                            <img id="avatarPreview" src="{{ asset('storage/' . auth()->user()->foto_perfil) }}" class="avatar-img" alt="Foto de perfil">
+                            <img id="avatarPreview" src="{{ asset('storage/' . auth()->user()->foto_perfil) }}" class="avatar-img" alt="Foto de perfil" onerror="this.onerror=null; this.src='/storage/fotos_perfil/default.svg';">
                         @else
                             <div class="avatar-initials" id="avatarInitials">
                                 {{ strtoupper(substr(auth()->user()->nombre ?? 'U', 0, 1)) }}
