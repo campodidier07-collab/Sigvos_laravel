@@ -1,2 +1,5 @@
-*
 !.gitignore
+!actividades_evidencia/*
+!cultivos_portadas/*
+!fotos_perfil/*
+!lotes/*

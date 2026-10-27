@@ -14,7 +14,10 @@ chmod -R 775 storage bootstrap/cache
 
 # Enlace simbólico de storage para fotos y archivos públicos
 echo "Ensuring storage symlink..."
-php artisan storage:link || true
+rm -rf public/storage
+php artisan storage:link
+chown -R www-data:www-data storage public/storage
+chmod -R 775 storage
 
 # Ejecutar migraciones si está configurado en el entorno
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
