@@ -120,4 +120,56 @@ class DashboardTest extends TestCase
         $response->assertSee('Verificar válvula en lote 3.');
         $response->assertSee('offlineBanner');
     }
+
+    public function test_dashboard_metrics_update_dynamically_when_creating_lote_cultivo_actividad(): void
+    {
+        // 1. Initial counts: 0 lotes, 0 cultivos, 0 actividades
+        $res1 = $this->actingAs($this->admin)->getJson('/dashboard/data');
+        $res1->assertStatus(200);
+        $this->assertEquals(0, $res1->json('estadisticas.total_lotes'));
+        $this->assertEquals(0, $res1->json('estadisticas.cultivos_activos'));
+        $this->assertEquals(0, $res1->json('estadisticas.actividades_pendientes'));
+
+        // 2. Create a Lote
+        $lote = Lote::create([
+            'identificador' => 'X',
+            'nombre'        => 'Lote X Experimental',
+            'area_ha'       => 5.0,
+            'ubicacion'     => 'Sector Sur',
+            'activo'        => true,
+            'estado'        => 'disponible',
+        ]);
+
+        $res2 = $this->actingAs($this->admin)->getJson('/dashboard/data');
+        $this->assertEquals(1, $res2->json('estadisticas.total_lotes'));
+
+        // 3. Create a Cultivo on Lote X
+        $cultivo = Cultivo::create([
+            'id_lote'                => $lote->id,
+            'id_variedad'            => 1,
+            'codigo'                 => 'CUL-X-01',
+            'estado'                 => 'sembrado',
+            'fecha_siembra'          => now(),
+            'fecha_cosecha_estimada' => now()->addDays(90),
+            'activo_en_lote'         => $lote->id,
+            'registrado_por'         => $this->admin->id,
+        ]);
+
+        $res3 = $this->actingAs($this->admin)->getJson('/dashboard/data');
+        $this->assertEquals(1, $res3->json('estadisticas.cultivos_activos'));
+
+        // 4. Create an Actividad on Cultivo
+        Actividad::create([
+            'id_cultivo'        => $cultivo->id,
+            'id_tipo_actividad' => 1,
+            'asignado_a'        => $this->admin->id,
+            'creado_por'        => $this->admin->id,
+            'fecha_programada'  => now()->addDays(2),
+            'descripcion'       => 'Fertilización con urea',
+            'estado'            => 'pendiente',
+        ]);
+
+        $res4 = $this->actingAs($this->admin)->getJson('/dashboard/data');
+        $this->assertEquals(1, $res4->json('estadisticas.actividades_pendientes'));
+    }
 }

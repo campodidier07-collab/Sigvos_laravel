@@ -458,7 +458,8 @@
         }
 
         try {
-            const response = await fetch(WORKER_ENDPOINT, {
+            const sep = WORKER_ENDPOINT.includes('?') ? '&' : '?';
+            const response = await fetch(`${WORKER_ENDPOINT}${sep}_t=${Date.now()}`, {
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
@@ -472,7 +473,9 @@
             const data = await response.json();
 
             // 1. Persistir en caché local (localStorage) para modo offline
-            localStorage.setItem(WORKER_CACHE_KEY, JSON.stringify(data));
+            try {
+                localStorage.setItem(WORKER_CACHE_KEY, JSON.stringify(data));
+            } catch (e) {}
 
             // 2. Actualizar vista y estado exitoso
             updateWorkerDOM(data);
@@ -496,11 +499,13 @@
                     syncErrorMessage.textContent = error.message || 'Ocurrió un error durante la sincronización. Por favor verifica tu señal y reintenta.';
                 }
             }
-            if (syncStatusText) syncStatusText.textContent = 'Error en sincronización';
+            if (syncStatusText) syncStatusText.textContent = 'Modo local';
             if (liveDot) {
                 liveDot.style.backgroundColor = '#ef4444';
             }
-            loadWorkerFromLocalStorage();
+            if (!navigator.onLine) {
+                loadWorkerFromLocalStorage();
+            }
         } finally {
             if (refreshIcon) refreshIcon.classList.remove('fa-spin');
         }
@@ -554,7 +559,7 @@
         }
     }
 
-    // Inicializar estado de red y programar sondeo
+    // Inicializar estado de red y programar sondeo reactivo
     document.addEventListener('DOMContentLoaded', () => {
         updateWorkerNetworkStatus();
         if (!navigator.onLine) {
@@ -562,9 +567,35 @@
         } else {
             fetchWorkerData();
         }
+
+        // 1. Polling silencioso cada 8 segundos
         setInterval(() => {
+            if (document.visibilityState === 'visible' && navigator.onLine) {
+                fetchWorkerData();
+            }
+        }, 8000);
+
+        // 2. Reactividad al volver a la pestaña o ventana
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && navigator.onLine) {
+                fetchWorkerData();
+            }
+        });
+
+        window.addEventListener('focus', () => {
             if (navigator.onLine) fetchWorkerData();
-        }, 25000);
+        });
+
+        window.addEventListener('pageshow', () => {
+            if (navigator.onLine) fetchWorkerData();
+        });
+
+        // 3. Sincronización entre pestañas
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'sigvos_data_updated' && navigator.onLine) {
+                fetchWorkerData();
+            }
+        });
     });
 </script>
 @endpush

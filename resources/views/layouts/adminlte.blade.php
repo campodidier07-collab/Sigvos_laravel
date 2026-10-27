@@ -1180,6 +1180,14 @@
     }
 </script>
 
+@if(session('success') || session('status'))
+<script>
+    try {
+        localStorage.setItem('sigvos_data_updated', Date.now().toString());
+    } catch (e) {}
+</script>
+@endif
+
 @stack('scripts')
 <script>
   function toggleFiltros(event) {

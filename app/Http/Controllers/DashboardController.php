@@ -19,42 +19,16 @@ class DashboardController extends Controller
         /** @var Usuario $usuario */
         $usuario = $request->user();
 
-        // ── KPIs generales (Segmentados por rol según HU DP-8) ─────────────
-        $actividadesQuery = Actividad::query();
-        
-        if ($usuario->esTrabajador()) {
-            $actividadesQuery->where('asignado_a', $usuario->id);
-            $totalLotes = $usuario->lotes()->count();
-            $cultivosActivos = Cultivo::whereNotNull('activo_en_lote')
-                ->whereHas('lote.trabajadores', fn($q) => $q->where('id_usuario', $usuario->id))
-                ->count();
-        } else {
-            $totalLotes = Lote::where('activo', true)->count();
-            $cultivosActivos = Cultivo::whereNotNull('activo_en_lote')->count();
-        }
+        // ── KPIs generales calculados en tiempo real ────────────────────────
+        $estadisticas = $this->calcularEstadisticas($usuario);
 
-        $estadisticas = [
-            'total_lotes'              => $totalLotes,
-            'cultivos_activos'         => $cultivosActivos,
-            'actividades_pendientes'   => (clone $actividadesQuery)->where('estado', 'pendiente')->count(),
-            'actividades_completadas'  => (clone $actividadesQuery)->where('estado', 'completada')->count(),
-        ];
-
-        // ── Solo admin ve stats de usuarios ──────────────────────────────
-        if ($usuario->isAdmin()) {
-            $estadisticas['total_usuarios']    = Usuario::where('activo', true)->count();
-            $estadisticas['total_trabajadores'] = Usuario::where('id_rol', 2)->where('activo', true)->count();
-        }
-
-        // ── Actividades próximas (7 días) y del día de hoy ────────────────
+        // ── Actividades pendientes próximas y del día de hoy ───────────────
         $actividadesProximas = Actividad::with([
                 'cultivo.lote',
                 'tipoActividad',
                 'asignadoA',
             ])
             ->where('estado', 'pendiente')
-            ->whereNotNull('fecha_programada')
-            ->whereBetween('fecha_programada', [now()->startOfDay(), now()->addDays(7)->endOfDay()])
             ->when($usuario->esTrabajador(), fn ($q) => $q->where('asignado_a', $usuario->id))
             ->orderBy('fecha_programada')
             ->limit(10)
@@ -72,13 +46,15 @@ class DashboardController extends Controller
             ->orderBy('fecha_programada')
             ->get();
 
-        // ── Cultivos con cosecha próxima (30 días) ────────────────────────
+        // ── Cultivos activos para la tabla del dashboard ───────────────────
         $cosechasProximas = Cultivo::with(['lote', 'variedad.tipoCultivo'])
-            ->whereNotNull('activo_en_lote')
-            ->where('estado', 'sembrado')
-            ->whereBetween('fecha_cosecha_estimada', [now()->startOfDay(), now()->addDays(30)])
+            ->where(function($q) {
+                $q->whereNotNull('activo_en_lote')
+                  ->orWhereIn('estado', ['sembrado', 'creciendo', 'en_desarrollo', 'produccion']);
+            })
+            ->whereNotIn('estado', ['cosechado', 'perdido'])
             ->when($usuario->esTrabajador(), fn ($q) => $q->whereHas('lote.trabajadores', fn ($t) => $t->where('id_usuario', $usuario->id)))
-            ->orderBy('fecha_cosecha_estimada')
+            ->orderByDesc('fecha_siembra')
             ->limit(5)
             ->get();
 
@@ -117,29 +93,8 @@ class DashboardController extends Controller
         /** @var Usuario $usuario */
         $usuario = $request->user();
 
-        $actividadesQuery = Actividad::query();
-        if ($usuario->esTrabajador()) {
-            $actividadesQuery->where('asignado_a', $usuario->id);
-            $totalLotes = $usuario->lotes()->count();
-            $cultivosActivos = Cultivo::whereNotNull('activo_en_lote')
-                ->whereHas('lote.trabajadores', fn($q) => $q->where('id_usuario', $usuario->id))
-                ->count();
-        } else {
-            $totalLotes = Lote::where('activo', true)->count();
-            $cultivosActivos = Cultivo::whereNotNull('activo_en_lote')->count();
-        }
-
-        $estadisticas = [
-            'total_lotes'              => $totalLotes,
-            'cultivos_activos'         => $cultivosActivos,
-            'actividades_pendientes'   => (clone $actividadesQuery)->where('estado', 'pendiente')->count(),
-            'actividades_completadas'  => (clone $actividadesQuery)->where('estado', 'completada')->count(),
-        ];
-
-        if ($usuario->isAdmin()) {
-            $estadisticas['total_usuarios']     = Usuario::where('activo', true)->count();
-            $estadisticas['total_trabajadores'] = Usuario::where('id_rol', 2)->where('activo', true)->count();
-        }
+        // ── KPIs generales calculados en tiempo real ────────────────────────
+        $estadisticas = $this->calcularEstadisticas($usuario);
 
         $actividadesProximas = Actividad::with([
                 'cultivo.lote',
@@ -147,8 +102,6 @@ class DashboardController extends Controller
                 'asignadoA',
             ])
             ->where('estado', 'pendiente')
-            ->whereNotNull('fecha_programada')
-            ->whereBetween('fecha_programada', [now()->startOfDay(), now()->addDays(7)->endOfDay()])
             ->when($usuario->esTrabajador(), fn ($q) => $q->where('asignado_a', $usuario->id))
             ->orderBy('fecha_programada')
             ->limit(10)
@@ -185,11 +138,13 @@ class DashboardController extends Controller
             ]);
 
         $cosechasProximas = Cultivo::with(['lote', 'variedad.tipoCultivo'])
-            ->whereNotNull('activo_en_lote')
-            ->where('estado', 'sembrado')
-            ->whereBetween('fecha_cosecha_estimada', [now()->startOfDay(), now()->addDays(30)])
+            ->where(function($q) {
+                $q->whereNotNull('activo_en_lote')
+                  ->orWhereIn('estado', ['sembrado', 'creciendo', 'en_desarrollo', 'produccion']);
+            })
+            ->whereNotIn('estado', ['cosechado', 'perdido'])
             ->when($usuario->esTrabajador(), fn ($q) => $q->whereHas('lote.trabajadores', fn ($t) => $t->where('id_usuario', $usuario->id)))
-            ->orderBy('fecha_cosecha_estimada')
+            ->orderByDesc('fecha_siembra')
             ->limit(5)
             ->get()
             ->map(fn ($c) => [
@@ -277,5 +232,56 @@ class DashboardController extends Controller
             'tipo_red'            => $tipoRed,
             'timestamp'           => now()->format('H:i:s'),
         ]);
+    }
+
+    /**
+     * Calcula las métricas ejecutivas en tiempo real desde la base de datos.
+     */
+    private function calcularEstadisticas(Usuario $usuario): array
+    {
+        $actividadesQuery = Actividad::query();
+
+        if ($usuario->esTrabajador()) {
+            $actividadesQuery->where('asignado_a', $usuario->id);
+            $totalLotes = $usuario->lotes()->where(function ($q) {
+                $q->where('lotes.activo', true)->orWhereNull('lotes.activo');
+            })->count();
+
+            $cultivosActivos = Cultivo::where(function ($q) {
+                $q->whereNotNull('activo_en_lote')
+                  ->orWhereIn('estado', ['sembrado', 'creciendo', 'en_desarrollo', 'produccion']);
+            })
+            ->whereNotIn('estado', ['cosechado', 'perdido'])
+            ->whereHas('lote.trabajadores', fn ($q) => $q->where('id_usuario', $usuario->id))
+            ->count();
+        } else {
+            $totalLotes = Lote::where(function ($q) {
+                $q->where('lotes.activo', true)->orWhereNull('lotes.activo');
+            })->count();
+
+            $cultivosActivos = Cultivo::where(function ($q) {
+                $q->whereNotNull('activo_en_lote')
+                  ->orWhereIn('estado', ['sembrado', 'creciendo', 'en_desarrollo', 'produccion']);
+            })
+            ->whereNotIn('estado', ['cosechado', 'perdido'])
+            ->count();
+        }
+
+        $estadisticas = [
+            'total_lotes'             => $totalLotes,
+            'cultivos_activos'        => $cultivosActivos,
+            'actividades_pendientes'  => (clone $actividadesQuery)->where('estado', 'pendiente')->count(),
+            'actividades_completadas' => (clone $actividadesQuery)->where('estado', 'completada')->count(),
+        ];
+
+        if ($usuario->isAdmin()) {
+            $estadisticas['total_usuarios']     = Usuario::where('activo', true)->count();
+            $estadisticas['total_trabajadores'] = Usuario::where(function ($q) {
+                $q->where('id_rol', 2)
+                  ->orWhereHas('rol', fn ($r) => $r->where('nombre', 'like', '%trabajador%')->orWhere('nombre', 'like', '%productor%'));
+            })->where('activo', true)->count();
+        }
+
+        return $estadisticas;
     }
 }

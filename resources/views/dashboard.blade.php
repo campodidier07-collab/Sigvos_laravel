@@ -126,6 +126,19 @@
         font-weight: 500;
         white-space: nowrap;
     }
+    @keyframes statNumberPulse {
+        0% { transform: scale(1); }
+        35% { transform: scale(1.15); color: #10b981; }
+        100% { transform: scale(1); }
+    }
+    .stat-number-updated {
+        display: inline-block;
+        animation: statNumberPulse 0.6s ease-out;
+    }
+    .card-pulse-active {
+        border-color: #10b981 !important;
+        box-shadow: 0 4px 18px rgba(16, 185, 129, 0.22) !important;
+    }
 
     /* Tablas y Secciones Inferiores */
     .table-section-card {
@@ -428,7 +441,7 @@
         @if(auth()->user()->isAdmin())
         <div class="{{ $cardColClass }}">
             <a href="{{ route('usuarios.index') }}" class="stat-card-link" title="Ir a Gestión de Usuarios">
-                <div class="stat-card-solid">
+                <div class="stat-card-solid" id="stat-card-usuarios">
                     <div class="stat-icon-pastel bg-blue-100 text-blue-600">
                         <i class="fa-solid fa-users"></i>
                     </div>
@@ -443,7 +456,7 @@
 
         <div class="{{ $cardColClass }}">
             <a href="{{ route('cultivos.index') }}" class="stat-card-link" title="Ver listado de Cultivos">
-                <div class="stat-card-solid">
+                <div class="stat-card-solid" id="stat-card-cultivos">
                     <div class="stat-icon-pastel bg-emerald-100 text-emerald-600">
                         <i class="fa-solid fa-seedling"></i>
                     </div>
@@ -457,7 +470,7 @@
 
         <div class="{{ $cardColClass }}">
             <a href="{{ route('actividades.index') }}" class="stat-card-link" title="Ver Actividades Pendientes">
-                <div class="stat-card-solid">
+                <div class="stat-card-solid" id="stat-card-pendientes">
                     <div class="stat-icon-pastel bg-amber-100 text-amber-600">
                         <i class="fa-solid fa-bolt"></i>
                     </div>
@@ -471,7 +484,7 @@
 
         <div class="{{ $cardColClass }}">
             <a href="{{ route('lotes.index') }}" class="stat-card-link" title="Ver Lotes de la Finca">
-                <div class="stat-card-solid">
+                <div class="stat-card-solid" id="stat-card-lotes">
                     <div class="stat-icon-pastel bg-purple-100 text-purple-600">
                         <i class="fa-solid fa-map-location-dot"></i>
                     </div>
@@ -687,7 +700,7 @@
     window.addEventListener('online', () => {
         updateNetworkStatus();
         console.log('Conexión reanudada: Sincronización automática de datos con la nube iniciada.');
-        fetchDashboardData();
+        fetchDashboardData(true);
     });
 
     window.addEventListener('offline', () => {
@@ -695,12 +708,16 @@
         loadFromLocalStorage();
     });
 
-    // Función principal para obtener y actualizar datos sin recargar la pantalla (Criterio 3: Manual forzada)
-    async function fetchDashboardData(forcePhotos = false) {
+    // Función principal para obtener y actualizar datos en tiempo real
+    let isFetchingDashboard = false;
+    async function fetchDashboardData(force = false) {
+        if (isFetchingDashboard) return;
+
         const refreshIcon = document.getElementById('refreshIcon');
         const syncStatusText = document.getElementById('syncStatusText');
+        const syncTime = document.getElementById('syncTimeText');
         if (refreshIcon) refreshIcon.classList.add('fa-spin');
-        if (syncStatusText && navigator.onLine) syncStatusText.textContent = 'Sincronizando...';
+        if (syncStatusText && navigator.onLine) syncStatusText.textContent = 'Actualizando...';
 
         if (!navigator.onLine) {
             loadFromLocalStorage();
@@ -708,11 +725,12 @@
             return;
         }
 
+        isFetchingDashboard = true;
         try {
             const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            const isWifi = forcePhotos || (!connection || connection.type === 'wifi' || connection.effectiveType === '4g');
+            const isWifi = force || (!connection || connection.type === 'wifi' || connection.effectiveType === '4g');
 
-            const response = await fetch(`${ENDPOINT}?tipo_red=${isWifi ? 'wifi' : 'movil'}`, {
+            const response = await fetch(`${ENDPOINT}?tipo_red=${isWifi ? 'wifi' : 'movil'}&_t=${Date.now()}`, {
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
@@ -725,13 +743,14 @@
             const data = await response.json();
 
             // 1. Guardar en caché local para soporte offline
-            localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-            localStorage.setItem('sigvos_last_sync_timestamp', Date.now().toString());
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                localStorage.setItem('sigvos_last_sync_timestamp', Date.now().toString());
+            } catch (e) {}
 
-            // 2. Actualizar KPIs del DOM
+            // 2. Actualizar KPIs y componentes del DOM
             updateDashboardDOM(data);
 
-            const syncTime = document.getElementById('syncTimeText');
             if (syncTime && data.timestamp) {
                 syncTime.textContent = `(${data.timestamp})`;
             }
@@ -740,16 +759,45 @@
                 syncStatusText.textContent = isWifi ? 'Sincronizado (WiFi)' : 'Sincronizado (Red Móvil)';
             }
 
-            // Ocultar alerta de sincronización prolongada tras sincronizar exitosamente
             const prolongedAlert = document.getElementById('prolongedSyncAlert');
             if (prolongedAlert) prolongedAlert.style.display = 'none';
 
         } catch (error) {
-            console.warn('Fallo de red al sincronizar dashboard, cargando caché local:', error);
-            if (syncStatusText) syncStatusText.textContent = 'Error en sincronización';
-            loadFromLocalStorage();
+            console.warn('Fallo de red al sincronizar dashboard:', error);
+            if (syncStatusText) syncStatusText.textContent = 'Modo local';
+            if (!navigator.onLine) {
+                loadFromLocalStorage();
+            }
         } finally {
-            if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+            isFetchingDashboard = false;
+            if (refreshIcon) {
+                setTimeout(() => refreshIcon.classList.remove('fa-spin'), 500);
+            }
+        }
+    }
+
+    function animateCounter(elementId, newText, isHtml = false, cardId = null) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        const current = isHtml ? el.innerHTML.trim() : el.textContent.trim();
+        const incoming = (newText || '').toString().trim();
+        if (current !== incoming) {
+            if (isHtml) el.innerHTML = incoming;
+            else el.textContent = incoming;
+
+            el.classList.remove('stat-number-updated');
+            void el.offsetWidth;
+            el.classList.add('stat-number-updated');
+
+            if (cardId) {
+                const card = document.getElementById(cardId);
+                if (card) {
+                    card.classList.remove('card-pulse-active');
+                    void card.offsetWidth;
+                    card.classList.add('card-pulse-active');
+                    setTimeout(() => card.classList.remove('card-pulse-active'), 1200);
+                }
+            }
         }
     }
 
@@ -758,19 +806,15 @@
 
         const stats = data.estadisticas;
 
-        // Actualizar contadores
-        const elCultivos = document.getElementById('stat-cultivos');
-        if (elCultivos) elCultivos.textContent = stats.cultivos_activos;
-
-        const elPendientes = document.getElementById('stat-pendientes');
-        if (elPendientes) elPendientes.textContent = stats.actividades_pendientes;
-
-        const elLotes = document.getElementById('stat-lotes');
-        if (elLotes) elLotes.textContent = stats.total_lotes;
+        // Actualizar tarjetas de conteo ejecutivo con animación
+        animateCounter('stat-cultivos', stats.cultivos_activos, false, 'stat-card-cultivos');
+        animateCounter('stat-pendientes', stats.actividades_pendientes, false, 'stat-card-pendientes');
+        animateCounter('stat-lotes', stats.total_lotes, false, 'stat-card-lotes');
 
         const elUsuarios = document.getElementById('stat-usuarios');
         if (elUsuarios && stats.total_trabajadores !== undefined) {
-            elUsuarios.innerHTML = `${stats.total_trabajadores}<span style="font-size: 1rem; color: #94a3b8; font-weight: 600;">/${stats.total_usuarios || 0}</span>`;
+            const userHtml = `${stats.total_trabajadores}<span style="font-size: 0.95rem; color: #94a3b8; font-weight: 600;">/${stats.total_usuarios || 0}</span>`;
+            animateCounter('stat-usuarios', userHtml, true, 'stat-card-usuarios');
         }
 
         // Hero pills
@@ -784,6 +828,66 @@
 
         const pillPendientes = document.getElementById('hero-pendientes');
         if (pillPendientes) pillPendientes.textContent = `${stats.actividades_pendientes} actividades pendientes`;
+
+        // Actualizar tabla de cultivos activos si cambió
+        if (Array.isArray(data.cosechasProximas)) {
+            const tbody = document.getElementById('tbodyCultivos');
+            if (tbody) {
+                if (data.cosechasProximas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">No hay cultivos activos en este momento.</td></tr>';
+                } else {
+                    tbody.innerHTML = data.cosechasProximas.map(c => `
+                        <tr class="clickable-row" onclick="window.location='${c.url}'" title="Ver detalle de cultivo ${c.codigo}">
+                            <td>
+                                <a href="${c.url}" class="font-weight-bold text-success" onclick="event.stopPropagation();">
+                                    ${c.codigo}
+                                </a>
+                            </td>
+                            <td style="color: #475569; font-weight: 500;">${c.variedad || '—'}</td>
+                            <td>
+                                <a href="/lotes/${c.lote_id || ''}" class="text-secondary" onclick="event.stopPropagation();" title="Ver lote ${c.lote || ''}">
+                                    ${c.lote || '—'}
+                                </a>
+                            </td>
+                            <td style="color: #64748b;">
+                                <i class="fa-regular fa-calendar-days mr-1"></i> ${c.fecha_cosecha || '—'}
+                            </td>
+                            <td>
+                                <span class="status-text mid">${c.estado ? c.estado.charAt(0).toUpperCase() + c.estado.slice(1) : 'Sembrado'}</span>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+
+        // Actualizar lista de actividades pendientes si cambió
+        if (Array.isArray(data.actividadesProximas)) {
+            const contenedor = document.getElementById('contenedorActividades');
+            if (contenedor) {
+                if (data.actividadesProximas.length === 0) {
+                    contenedor.innerHTML = '<div class="text-center py-4 text-muted"><i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> No tienes actividades pendientes por atender.</div>';
+                } else {
+                    contenedor.innerHTML = data.actividadesProximas.slice(0, 5).map(p => `
+                        <a href="${p.url}" class="activity-item-interactive" title="Ir a actividad: ${p.nombre}">
+                            <div style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; margin-top: 6px; flex-shrink: 0;"></div>
+                            <div style="flex-grow: 1;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h5 style="margin: 0; font-size: 0.88rem; font-weight: 700; color: #1e293b;">
+                                        ${p.nombre}
+                                    </h5>
+                                    <span class="badge ${p.prioridad === 'alta' ? 'badge-danger' : 'badge-warning'}" style="font-size: 0.65rem; text-transform: uppercase;">${p.prioridad}</span>
+                                </div>
+                                <div style="font-size: 0.78rem; color: #64748b;">
+                                    <span><i class="fa-solid fa-map-location-dot mr-1"></i> Lote ${p.lote}</span>
+                                    <span class="ml-2"><i class="fa-regular fa-calendar-days mr-1"></i> ${p.fecha_programada}</span>
+                                </div>
+                            </div>
+                        </a>
+                    `).join('');
+                }
+            }
+        }
     }
 
     function loadFromLocalStorage() {
@@ -802,11 +906,14 @@
         }
     }
 
-    // Inicialización y polling cada 25 segundos
+    // Inicialización y reactividad en tiempo real
     document.addEventListener('DOMContentLoaded', () => {
         updateNetworkStatus();
 
-        // Botón manual de refresco (HU DP-19 Criterio 3: Sincronización manual forzada)
+        // 1. Carga inmediata al montar la vista
+        fetchDashboardData(true);
+
+        // 2. Botón manual de refresco
         const btnManual = document.getElementById('btnManualRefresh');
         if (btnManual) {
             btnManual.addEventListener('click', (e) => {
@@ -815,8 +922,40 @@
             });
         }
 
-        // Auto-refresh periódico en segundo plano
-        setInterval(fetchDashboardData, 25000);
+        // 3. Polling silencioso en segundo plano cada 8 segundos
+        setInterval(() => {
+            if (document.visibilityState === 'visible' && navigator.onLine) {
+                fetchDashboardData();
+            }
+        }, 8000);
+
+        // 4. Actualización instantánea al regresar a la pestaña o ventana
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && navigator.onLine) {
+                fetchDashboardData(true);
+            }
+        });
+
+        window.addEventListener('focus', () => {
+            if (navigator.onLine) {
+                fetchDashboardData(true);
+            }
+        });
+
+        // 5. Soporte para navegación Back/Forward Cache
+        window.addEventListener('pageshow', (event) => {
+            if (navigator.onLine) {
+                fetchDashboardData(true);
+            }
+        });
+
+        // 6. Sincronización instantánea entre pestañas cuando se crea/modifica un recurso
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'sigvos_data_updated') {
+                console.log('Detectado cambio de datos en el sistema desde otra pestaña. Actualizando dashboard...');
+                fetchDashboardData(true);
+            }
+        });
     });
 </script>
 @endpush
